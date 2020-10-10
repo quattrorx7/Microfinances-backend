@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'color' => null,
+    'interactive' => true,
+    'help' => null,
+    'sourcePath' => '@app',
+    'messagePath' => '@app/messages',
+    'languages' => ['ru-RU'],
+    'translator' => 'Yii::t',
+    'sort' => false,
+    'overwrite' => true,
+    'removeUnused' => false,
+    'markUnused' => true,
+    'except' => [
+        '.svn',
+        '.git',
+        '/vendor',
+        '.gitignore',
+        '.gitkeep',
+        '.hgignore',
+        '.hgkeep',
+        '/messages',
+        '/tests',
+        '/BaseYii.php',
+    ],
+    'only' => [
+        '*.php',
+    ],
+    'format' => 'php',
+    'db' => 'db',
+    'sourceMessageTable' => '{{%source_message}}',
+    'messageTable' => '{{%message}}',
+    'catalog' => 'messages',
+    'ignoreCategories' => [],
+    'phpFileHeader' => '',
+    'phpDocBlock' => null,
+];
