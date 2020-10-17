@@ -20,7 +20,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-RU',
-    'name' => 'yii2-template',
+    'name' => '',
     'bootstrap' => [
         'log',
         'app\bootstrap\ContainerBootstrap',

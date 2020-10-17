@@ -22,7 +22,8 @@
         "yiisoft/yii2-gii": "*",
         "yiisoft/yii2-queue": "^2.3",
         "ext-zlib": "*",
-        "enqueue/amqp-lib": "^0.10.1"
+        "enqueue/amqp-lib": "^0.10.1",
+        "samdark/yii2-webshell": "~2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

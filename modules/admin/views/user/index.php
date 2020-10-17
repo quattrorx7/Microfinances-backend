@@ -22,13 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
-                    'id',
+                    'fullname',
                     'username',
-                    'email:email',
-                    'email_confirmed',
-                    'superadmin',
-                    'created_at',
-                    'deleted_at',
 
                     ['class' => ActionColumn::class],
                 ],

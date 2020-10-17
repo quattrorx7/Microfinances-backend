@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\constants\UrlConst;
 use Yii;
 use yii\web\Controller;
 
@@ -27,6 +28,6 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->redirect(UrlConst::LOGIN_ADMIN_PAGE);
     }
 }

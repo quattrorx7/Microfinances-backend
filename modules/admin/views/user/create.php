@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\user\models\forms\UserCreateForm;
+use app\modules\user\forms\UserCreateForm;
 
 /* @var $this yii\web\View */
 /* @var $model UserCreateForm */

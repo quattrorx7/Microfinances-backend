@@ -45,16 +45,6 @@ $config = [
         'mailer' => $mailer,
         'db' => $db,
     ],
-    'controllerMap' => [
-        'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
-            'migrationPath' => null,
-            'migrationNamespaces' => [
-                'app\migrations',
-                'app\modules\apiLogger\migrations',
-            ],
-        ],
-    ],
     'params' => $params,
 ];
 

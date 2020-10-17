@@ -19,6 +19,11 @@ class AdminModule extends \yii\base\Module
     {
         parent::init();
 
-        // custom initialization code goes here
+        $this->modules = [
+            'webshell' => [
+                'class' => 'samdark\webshell\Module',
+                'allowedIPs' => ['*'],
+            ],
+        ];
     }
 }

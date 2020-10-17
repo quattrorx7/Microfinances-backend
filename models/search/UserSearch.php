@@ -34,16 +34,17 @@ class UserSearch extends User
 
     /**
      * Creates data provider instance with search query applied
-     *
      * @param array $params
-     *
+     * @param bool $hideAdmin
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $hideAdmin = false)
     {
         $query = User::find();
 
-        // add conditions that should always apply here
+        if ($hideAdmin) {
+            $query->andWhere(['superadmin' => User::USER]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

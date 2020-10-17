@@ -17,12 +17,6 @@ class AdminMenu
                 'items' => []
             ],
             [
-                'label' => Yii::t('app', 'ApiLogger (File)'),
-                'icon'  => 'history',
-                'url'   => ['/apiLogger/show-log/index'],
-                'items' => []
-            ],
-            [
                 'label' => Yii::t('app', 'ApiLogger (Database)'),
                 'icon'  => 'history',
                 'url'   => ['/apiLogger/default/index'],

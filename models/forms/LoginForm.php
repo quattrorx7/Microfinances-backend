@@ -4,6 +4,7 @@ namespace app\models\forms;
 
 use app\models\User;
 use app\modules\user\components\UserRepository;
+use app\modules\user\exceptions\UserNotFoundException;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use Yii;
@@ -70,6 +71,7 @@ class LoginForm extends Model
 
     /**
      * @return bool
+     * @throws UserNotFoundException
      */
     public function loginUser(): bool
     {
@@ -82,6 +84,7 @@ class LoginForm extends Model
 
     /**
      * @return User|null
+     * @throws UserNotFoundException
      */
     public function getUser(): ?User
     {
