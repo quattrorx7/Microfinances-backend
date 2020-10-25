@@ -80,4 +80,9 @@ class UserService extends BaseService
     {
         $model->delete();
     }
+
+    public function mapAllByIdAndUsername()
+    {
+
+    }
 }

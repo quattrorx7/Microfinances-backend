@@ -12,13 +12,15 @@ class UserSerializer extends AbstractProperties
     {
         return [
             User::class => [
+                'id',
                 'fullname',
-                'id' => static function(User $user) {
-                    return $user->username;
-                },
+                'username',
                 'status',
                 'accessToken' => static function(User $user) {
                     return $user->_currentApiAuthToken->auth_key ?? '';
+                },
+                'isDirector' => static function (User $user) {
+                    return $user->superadmin === User::SUPERADMIN;
                 }
             ]
         ];

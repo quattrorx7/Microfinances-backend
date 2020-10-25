@@ -17,7 +17,13 @@ class AdminMenu
                 'items' => []
             ],
             [
-                'label' => Yii::t('app', 'ApiLogger (Database)'),
+                'label' => 'Районы',
+                'icon'  => 'users',
+                'url'   => ['/admin/district/index'],
+                'items' => []
+            ],
+            [
+                'label' => Yii::t('app', 'ApiLogger'),
                 'icon'  => 'history',
                 'url'   => ['/apiLogger/default/index'],
                 'items' => []

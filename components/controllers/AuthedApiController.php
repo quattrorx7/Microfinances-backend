@@ -33,4 +33,8 @@ class AuthedApiController extends BaseApiController
         return Yii::$app->user->identity;
     }
 
+    public function isSuperadmin(User $user): bool
+    {
+        return $user->superadmin === User::SUPERADMIN;
+    }
 }

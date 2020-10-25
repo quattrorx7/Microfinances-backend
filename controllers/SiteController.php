@@ -30,4 +30,10 @@ class SiteController extends Controller
     {
         return $this->redirect(UrlConst::LOGIN_ADMIN_PAGE);
     }
+
+    public function actionDocs(): void
+    {
+        Yii::$app->response->sendFile('../docs/micro.postman_collection.json');
+    }
+
 }

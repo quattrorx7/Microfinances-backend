@@ -1,0 +1,414 @@
+{
+	"info": {
+		"_postman_id": "c98b61f8-4519-41f7-a356-af4f94675b79",
+		"name": "micro",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Авторизация",
+			"item": [
+				{
+					"name": "Авторизация по id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1e1ea07c-26a9-45ca-bcdd-5ab68b8f9117",
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"accessToken\", data.data.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 22222222,\n    \"password\": \"2\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/auth/login",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Выход",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/auth/logout",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "56c2bf91-4b84-46d0-a030-31c515bdfc31",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6a72f0ec-cdcf-4c41-bd64-f68b3abb289d",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Районы",
+			"item": [
+				{
+					"name": "Список районов",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/district/index",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"district",
+								"index"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Клиенты",
+			"item": [
+				{
+					"name": "Добавить нового",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Иван44",
+									"type": "text"
+								},
+								{
+									"key": "surname",
+									"value": "Иванов44",
+									"type": "text"
+								},
+								{
+									"key": "patronymic",
+									"value": "Иванович44",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "86665456511",
+									"type": "text"
+								},
+								{
+									"key": "additional_phone",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "residence_address",
+									"value": "2Адрес 1",
+									"type": "text"
+								},
+								{
+									"key": "district_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "files[0]",
+									"type": "file",
+									"src": "/home/oem/Загрузки/IMG_20200217_131407.jpg"
+								},
+								{
+									"key": "files[1]",
+									"type": "file",
+									"src": "/home/oem/Загрузки/joins.jpg"
+								},
+								{
+									"key": "work_address",
+									"value": "уппкекпе",
+									"type": "text"
+								},
+								{
+									"key": "activity",
+									"value": "Вид деятельности",
+									"type": "text"
+								},
+								{
+									"key": "profit",
+									"value": "10 руб",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "комммент",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/client",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Редактировать",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Иван1",
+									"type": "text"
+								},
+								{
+									"key": "surname",
+									"value": "Иванов1",
+									"type": "text"
+								},
+								{
+									"key": "patronymic",
+									"value": "Иванович1",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "86665456564",
+									"type": "text"
+								},
+								{
+									"key": "additional_phone",
+									"value": "86665456564",
+									"type": "text"
+								},
+								{
+									"key": "residence_address",
+									"value": "33333333",
+									"type": "text"
+								},
+								{
+									"key": "district_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "files[0]",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "files[1]",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "work_address",
+									"value": "dfdgdgdfgdfgdf",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/client/1",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"client",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Просмотр",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Иван",
+									"type": "text"
+								},
+								{
+									"key": "surname",
+									"value": "Иванов",
+									"type": "text"
+								},
+								{
+									"key": "patronymic",
+									"value": "Иванович",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "86665456564",
+									"type": "text"
+								},
+								{
+									"key": "additional_phone",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "residence_address",
+									"value": "2Адрес 1",
+									"type": "text"
+								},
+								{
+									"key": "district_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "files[0]",
+									"type": "file",
+									"src": "/home/oem/Загрузки/IMG_20200217_131407.jpg"
+								},
+								{
+									"key": "files[1]",
+									"type": "file",
+									"src": "/home/oem/Загрузки/joins.jpg"
+								},
+								{
+									"key": "work_address",
+									"value": "уппкекпе",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/client/2",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"client",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{accessToken}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Access-Token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "44139b18-0c76-424c-af8f-c8dcd527287d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0f6e7913-0f0c-4350-8230-39d81465eb59",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d5c792bd-8b42-4c8c-b640-a5109cf2e4f5",
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"id": "39ceb553-94d3-4cd0-9571-50566eaddb02",
+			"key": "microApiUrl",
+			"value": "https://mikrofhinans.ru/api"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

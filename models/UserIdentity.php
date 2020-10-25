@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 
 trait UserIdentity
 {
@@ -20,7 +21,9 @@ trait UserIdentity
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return static::find()
-            ->where(['auth_key' => $token])
+            ->innerJoinWith(['userAuthTokens' => function(ActiveQuery $query) use ($token) {
+                $query->onCondition(['user_auth_token.auth_key' => $token]);
+            }])
             ->andWhere(['IS', 'deleted_at', null])
             ->one();
     }

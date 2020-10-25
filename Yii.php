@@ -1,6 +1,7 @@
 <?php
 
 use app\models\UserConfig;
+use creocoder\flysystem\LocalFilesystem;
 use yii\BaseYii;
 
 /**
@@ -29,6 +30,7 @@ abstract class BaseApplication extends yii\base\Application
  * Include only Web application related components here
  *
  * @property UserConfig $user
+ * @property LocalFilesystem $fs
  * @property yii\queue\amqp_interop\Queue $apiloggerQueue
  */
 class WebApplication extends yii\web\Application

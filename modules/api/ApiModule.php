@@ -30,7 +30,7 @@ class ApiModule extends \yii\base\Module
 
     protected function initEvents(): void
     {
-        $serviceFactory = new FileLoggerCreator();
+        $serviceFactory = new DbLoggerCreator();
         $apiLoggerService = $serviceFactory->createService();
 
         $this->on(Application::EVENT_BEFORE_ACTION, static function () use ($apiLoggerService) {

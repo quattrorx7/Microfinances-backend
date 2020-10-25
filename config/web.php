@@ -40,6 +40,10 @@ $config = [
         'request' => [
             'cookieValidationKey' => 'km3tio54ig4rgjnkrg43pfj3nfhb4312omfwjn',
         ],
+        'fs' => [
+            'class' => 'creocoder\flysystem\LocalFilesystem',
+            'path'  => '@webroot/files',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -75,15 +79,7 @@ $config = [
                     'fileMap'=>[
                         'app'=>'app.php'
                     ]
-                ],
-                'yii' => [
-                    'class' => yii\i18n\PhpMessageSource::class,
-                    'basePath' => '@app/messages',
-                    'sourceLanguage' => 'en-US',
-                    'fileMap' => [
-                        'yii' => 'yii.php',
-                    ]
-                ],
+                ]
             ]
         ],
     ],
