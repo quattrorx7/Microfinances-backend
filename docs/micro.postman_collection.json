@@ -9,7 +9,7 @@
 			"name": "Авторизация",
 			"item": [
 				{
-					"name": "Авторизация по id",
+					"name": "Авторизация сотрудника",
 					"event": [
 						{
 							"listen": "test",
@@ -28,7 +28,47 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 22222222,\n    \"password\": \"2\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
+							"raw": "{\n    \"id\": \"22222222\",\n    \"password\": \"2\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/auth/login",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Авторизация админа",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1cedf366-4754-42d6-8aea-edc9696b7178",
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"accessToken\", data.data.accessToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"admin@admin.ru\",\n    \"password\": \"admin\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -146,7 +186,7 @@
 								},
 								{
 									"key": "phone",
-									"value": "86665456511",
+									"value": "86635413510",
 									"type": "text"
 								},
 								{
@@ -192,6 +232,21 @@
 								{
 									"key": "comment",
 									"value": "комммент",
+									"type": "text"
+								},
+								{
+									"key": "created_at",
+									"value": "2020-10-22",
+									"type": "text"
+								},
+								{
+									"key": "amount",
+									"value": "30000",
+									"type": "text"
+								},
+								{
+									"key": "limitation",
+									"value": "15",
 									"type": "text"
 								}
 							]
@@ -283,67 +338,9 @@
 				},
 				{
 					"name": "Просмотр",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "Иван",
-									"type": "text"
-								},
-								{
-									"key": "surname",
-									"value": "Иванов",
-									"type": "text"
-								},
-								{
-									"key": "patronymic",
-									"value": "Иванович",
-									"type": "text"
-								},
-								{
-									"key": "phone",
-									"value": "86665456564",
-									"type": "text"
-								},
-								{
-									"key": "additional_phone",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "residence_address",
-									"value": "2Адрес 1",
-									"type": "text"
-								},
-								{
-									"key": "district_id",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "files[0]",
-									"type": "file",
-									"src": "/home/oem/Загрузки/IMG_20200217_131407.jpg"
-								},
-								{
-									"key": "files[1]",
-									"type": "file",
-									"src": "/home/oem/Загрузки/joins.jpg"
-								},
-								{
-									"key": "work_address",
-									"value": "уппкекпе",
-									"type": "text"
-								}
-							]
-						},
 						"url": {
 							"raw": "{{microApiUrl}}/client/2",
 							"host": [
@@ -400,12 +397,12 @@
 	],
 	"variable": [
 		{
-			"id": "d5c792bd-8b42-4c8c-b640-a5109cf2e4f5",
+			"id": "dfd21a8b-1dfb-4ef4-88be-4e419b82c487",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "39ceb553-94d3-4cd0-9571-50566eaddb02",
+			"id": "cdee33fb-f1f1-45fa-b314-2dfc7e55c0fc",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
 		}
