@@ -13,7 +13,8 @@ class UserPopulator extends AbstractPopulator
     public function populateFromCreateForm(User $model, UserCreateForm $form): self
     {
         $this->populateAttributes($model, $form->attributes, [
-            'username'
+            'username',
+            'fullname'
         ]);
 
         return $this;
@@ -22,7 +23,8 @@ class UserPopulator extends AbstractPopulator
     public function populateFromUpdateForm(User $model, UserUpdateForm $form): self
     {
         $this->populateAttributes($model, $form->attributes, [
-
+            'username',
+            'fullname'
         ]);
 
         return $this;

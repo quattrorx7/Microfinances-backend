@@ -15,7 +15,7 @@ class AuthForm extends Model
     public function rules(): array
     {
         return [
-            ['id', 'integer', 'min' => 10000000, 'max' => 99999999],
+            ['id', 'string'],
             [['password', 'id', 'device_id'], 'required'],
             [['password', 'device_id'], 'string'],
         ];

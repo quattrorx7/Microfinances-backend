@@ -5,14 +5,13 @@ namespace app\modules\admin\controllers;
 use app\components\exceptions\UnSuccessModelException;
 use app\modules\user\components\UserService;
 use app\modules\user\exceptions\UserNotFoundException;
+use app\modules\user\exceptions\ValidateUserUpdateException;
 use app\modules\user\forms\UserCreateForm;
+use app\modules\user\forms\UserUpdateForm;
 use app\modules\user\providers\UserProvider;
 use Yii;
-use app\models\User;
 use app\components\controllers\AuthedAdminController;
 use yii\base\Exception;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
@@ -29,21 +28,6 @@ class UserController extends AuthedAdminController
     {
         $this->userService = $userService;
         $this->userProvider = $userProvider;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
     }
 
     /**
@@ -93,50 +77,27 @@ class UserController extends AuthedAdminController
     }
 
     /**
-     * Updates an existing User model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
+     * @param $id
+     * @return string|Response
+     * @throws UnSuccessModelException
+     * @throws UserNotFoundException
+     * @throws ValidateUserUpdateException
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->userService->getUser($id);
+        $form = UserUpdateForm::loadAndValidate($model->attributes);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if (Yii::$app->request->isPost) {
+
+            $form->load(Yii::$app->request->post());
+            $model = $this->userService->updateByForm($model, $form);
+
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
-    }
 
-    /**
-     * Deletes an existing User model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the User model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return User the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = User::findByPk($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        return $this->render('update', [
+            'model' => $form,
+        ]);
     }
 }

@@ -1,14 +1,13 @@
 <?php
 
-use app\modules\user\models\forms\UserUpdateForm;
+use app\modules\user\forms\UserUpdateForm;
 
 /* @var $this yii\web\View */
 /* @var $model UserUpdateForm */
 /* @var $id int */
 
-$this->title = Yii::t('app', 'Update');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->username, 'url' => ['view', 'id' => $id]];
+$this->title = 'Редактировать';
+$this->params['breadcrumbs'][] = ['label' => 'Сотрудники', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-update">

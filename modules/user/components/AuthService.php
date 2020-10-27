@@ -57,9 +57,8 @@ class AuthService extends BaseService
         if (!$model) {
             $model = new UserAuthToken();
             $model->device_id = $deviceId;
-            $model->populateRelation('user', $user);
         }
-
+        $model->populateRelation('user', $user);
         $model->status_id = UserAuthToken::STATUS_ACTIVE;
         $model->auth_key = \Yii::$app->security->generateRandomString(32);
 

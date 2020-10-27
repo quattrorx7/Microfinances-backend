@@ -3,6 +3,9 @@
 namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
+use app\modules\advance\components\AdvanceService;
+use app\modules\advance\forms\AdvanceCreateForm;
+use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\api\serializer\client\ClientSerializer;
 use app\modules\client\components\ClientService;
 use app\modules\client\exceptions\ValidateClientCreateException;
@@ -10,6 +13,7 @@ use app\modules\client\exceptions\ValidateClientUpdateException;
 use app\modules\client\forms\ClientCreateForm;
 use app\modules\client\forms\ClientUpdateForm;
 use app\modules\client\providers\ClientProvider;
+use app\modules\user\components\UserService;
 use Yii;
 use yii\base\Exception;
 
@@ -18,12 +22,18 @@ class ClientController extends AuthedApiController
 
     protected ClientService $clientService;
 
+    protected AdvanceService $advanceService;
+
+    protected UserService $userService;
+
     protected ClientProvider $clientProvider;
 
-    public function injectDependencies(ClientService $clientService, ClientProvider $clientProvider): void
+    public function injectDependencies(UserService $userService, ClientService $clientService, ClientProvider $clientProvider, AdvanceService $advanceService): void
     {
         $this->clientService = $clientService;
         $this->clientProvider = $clientProvider;
+        $this->advanceService = $advanceService;
+        $this->userService = $userService;
     }
 
     protected function verbs(): array
@@ -54,9 +64,23 @@ class ClientController extends AuthedApiController
     public function actionCreate(): array
     {
         $form = ClientCreateForm::loadAndValidate(Yii::$app->request->bodyParams);
-        $model = $this->clientService->createByForm($form, $this->currentUser);
 
-        return ClientSerializer::serialize($model);
+        if ($this->isSuperadmin($this->currentUser)) {
+            $advanceForm = AdvanceCreateForm::loadAndValidate(Yii::$app->request->bodyParams);
+
+            $client = $this->clientService->createByForm($form, $this->currentUser);
+            $user = $this->userService->getUser($advanceForm->user_id);
+            $this->advanceService->createByForm($advanceForm, $user, $client);
+
+            return ClientSerializer::serialize($client);
+        }
+
+        $advanceForm = AdvanceCreateWithClientForm::loadAndValidate(Yii::$app->request->bodyParams);
+
+        $client = $this->clientService->createByForm($form, $this->currentUser);
+        $this->advanceService->createForClient($advanceForm, $this->currentUser, $client);
+
+        return ClientSerializer::serialize($client);
     }
 
     /**
