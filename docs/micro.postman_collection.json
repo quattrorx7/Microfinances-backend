@@ -504,6 +504,25 @@
 						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
 					},
 					"response": []
+				},
+				{
+					"name": "Просмотр по id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/user/2",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -548,12 +567,12 @@
 	],
 	"variable": [
 		{
-			"id": "29ef08f7-1c21-4222-aeb6-afa19505d74c",
+			"id": "ea209512-30bb-464c-a268-ca60449a4a37",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "10496b59-5023-4246-a59c-a9a6a467abdb",
+			"id": "9549a2e7-e182-4844-8a4d-2b7aae5aaef4",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
 		}

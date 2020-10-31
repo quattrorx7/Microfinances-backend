@@ -32,6 +32,7 @@ class UserController extends AuthedApiController
 
         $behaviors['access'] = [
             'class' => AccessControl::class,
+            'only' => ['index'],
             'rules' => [
                 [
                     'allow' => true,
