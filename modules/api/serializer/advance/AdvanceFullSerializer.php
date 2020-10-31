@@ -5,9 +5,10 @@ namespace app\modules\api\serializer\advance;
 use app\models\Advance;
 use app\components\serializers\AbstractProperties;
 use app\modules\advance\formatters\AdvanceStatusFormatter;
+use app\modules\api\serializer\client\ClientSerializer;
 use app\modules\api\serializer\files\FilesSerializer;
 
-class AdvanceSerializer extends AbstractProperties
+class AdvanceFullSerializer extends AbstractProperties
 {
 
     public function getProperties(): array
@@ -21,9 +22,9 @@ class AdvanceSerializer extends AbstractProperties
                 'status' => function(Advance $model) {
                     return AdvanceStatusFormatter::formatter($model);
                 },
-                'note'
+                'client'
             ],
-            FilesSerializer::class
+            ClientSerializer::class
         ];
     }
 

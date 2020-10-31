@@ -2,9 +2,11 @@
 
 namespace app\modules\advance\providers;
 
+use app\models\Advance;
 use app\models\search\AdvanceSearch;
 
-class AdvanceProvider{
+class AdvanceProvider
+{
 
     /**
     * @param $params
@@ -16,4 +18,5 @@ class AdvanceProvider{
         $dataProvider = $searchModel->search($params);
         return [$searchModel, $dataProvider];
     }
+
 }

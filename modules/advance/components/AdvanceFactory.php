@@ -19,4 +19,13 @@ class AdvanceFactory extends BaseFactory
 
         return $model;
     }
+
+    public function createWithAdmin(): Advance
+    {
+        $model = new Advance();
+        $model->deleted_at = null;
+        $model->status = Advance::STATE_APPROVED;
+
+        return $model;
+    }
 }

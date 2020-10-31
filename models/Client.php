@@ -27,6 +27,9 @@ class Client extends \app\models\base\Client
 
     public function getActiveAdvances(): ActiveQuery
     {
-        return $this->hasMany(Advance::class, ['client_id' => 'id'])->andOnCondition(['IS', 'deleted_at', null]);
+        return $this
+            ->hasMany(Advance::class, ['client_id' => 'id'])
+            ->andOnCondition(['IS', 'deleted_at', null]);
+            //->andOnCondition(['status' => Advance::]);
     }
 }

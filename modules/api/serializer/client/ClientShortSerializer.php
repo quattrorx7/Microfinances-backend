@@ -9,7 +9,7 @@ use app\modules\api\serializer\district\DistrictSerializer;
 use app\modules\api\serializer\files\FilesSerializer;
 use app\modules\api\serializer\user\OwnerSerializer;
 
-class ClientSerializer extends AbstractProperties
+class ClientShortSerializer extends AbstractProperties
 {
 
     public function getProperties(): array
@@ -20,21 +20,9 @@ class ClientSerializer extends AbstractProperties
                 'name',
                 'surname',
                 'patronymic',
-                'phone',
-                'additional_phone',
-                'district',
-                'files',
-                'residence_address',
-                'work_address',
-                'owner',
-                'activity',
-                'profit',
-                'comment'
+                'district'
             ],
-            DistrictSerializer::class,
-            FilesSerializer::class,
-            OwnerSerializer::class,
-            AdvanceSerializer::class
+            DistrictSerializer::class
         ];
     }
 

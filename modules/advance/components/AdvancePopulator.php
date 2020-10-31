@@ -9,6 +9,8 @@ use app\models\User;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
+use app\modules\files\services\FilesService;
+use yii\web\UploadedFile;
 
 class AdvancePopulator extends AbstractPopulator
 {
@@ -44,6 +46,27 @@ class AdvancePopulator extends AbstractPopulator
             'amount',
             'created_at',
             'limitation'
+        ]);
+
+        return $this;
+    }
+
+    public function populateNote(Advance $model, UploadedFile $uploadedFile)
+    {
+        $fileService = \Yii::createObject(FilesService::class);
+        $file = $fileService->saveUploadedFile($uploadedFile);
+
+        if ($file) {
+            $model->setNote($file);
+        }
+
+        return $this;
+    }
+
+    public function changeStatus(Advance $model, string $status)
+    {
+        $this->populateAttributes($model, ['status' => $status], [
+            'status'
         ]);
 
         return $this;

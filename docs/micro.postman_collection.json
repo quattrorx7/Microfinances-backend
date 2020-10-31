@@ -49,7 +49,7 @@
 					"response": []
 				},
 				{
-					"name": "Авторизация админа",
+					"name": "Авторизация руководителя",
 					"event": [
 						{
 							"listen": "test",
@@ -68,7 +68,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"admin@admin.ru\",\n    \"password\": \"admin\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
+							"raw": "{\n    \"id\": 10000000,\n    \"password\": \"admin\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -186,7 +186,7 @@
 								},
 								{
 									"key": "phone",
-									"value": "86635413510",
+									"value": "86605411610",
 									"type": "text"
 								},
 								{
@@ -247,6 +247,12 @@
 								{
 									"key": "limitation",
 									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "2",
+									"description": "Владелец (тот на кого назначается займ)",
 									"type": "text"
 								}
 							]
@@ -342,15 +348,160 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/client/2",
+							"raw": "{{microApiUrl}}/client/5",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"client",
-								"2"
+								"5"
 							]
 						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Заявки",
+			"item": [
+				{
+					"name": "Список заявок",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/advance",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				},
+				{
+					"name": "Список статусов",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/advance/status",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"status"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				},
+				{
+					"name": "Просмотр заявки по id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/advance/2",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"2"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				},
+				{
+					"name": "загрузка расписки",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "note",
+									"type": "file",
+									"src": "/home/oem/Загрузки/joins.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/advance/6/load-note",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"6",
+								"load-note"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				},
+				{
+					"name": "Выдать займ (или отказ)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"issued\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/advance/6/issue-loan",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"6",
+								"issue-loan"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Сотрудники",
+			"item": [
+				{
+					"name": "Список",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/user",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
 					},
 					"response": []
 				}
@@ -397,12 +548,12 @@
 	],
 	"variable": [
 		{
-			"id": "dfd21a8b-1dfb-4ef4-88be-4e419b82c487",
+			"id": "29ef08f7-1c21-4222-aeb6-afa19505d74c",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "cdee33fb-f1f1-45fa-b314-2dfc7e55c0fc",
+			"id": "10496b59-5023-4246-a59c-a9a6a467abdb",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
 		}

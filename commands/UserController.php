@@ -13,8 +13,11 @@ class UserController extends Controller
 {
     public function actionCreate(): int
     {
-        echo 'Enter login: ' . PHP_EOL;
-        $data['login'] = fgets(STDIN);
+        echo 'Enter email: ' . PHP_EOL;
+        $data['email'] = fgets(STDIN);
+
+        echo 'Enter username: ' . PHP_EOL;
+        $data['username'] = fgets(STDIN);
 
         echo 'Enter password: ' . PHP_EOL;
         $data['password'] = fgets(STDIN);
@@ -26,9 +29,9 @@ class UserController extends Controller
 
         $model = new DynamicModel(['login', 'password', 'isAdmin']);
         $model
-            ->addRule(['login', 'password'], 'required')
-            ->addRule(['login', 'password'], 'trim')
-            ->addRule(['login'], 'email')
+            ->addRule(['email', 'password', 'username'], 'required')
+            ->addRule(['email', 'password', 'username'], 'trim')
+            ->addRule(['email'], 'email')
             ->addRule('isAdmin', 'in', ['range' => [0, 1]])
             ->addRule('password', 'string', ['max' => 32]);
 
@@ -40,8 +43,8 @@ class UserController extends Controller
         }
 
         $user = new User();
-        $user->username = $model->login;
-        $user->email = $model->login;
+        $user->username = $model->username;
+        $user->email = $model->email;
         $user->email_confirmed = 1;
         $user->superadmin = $model->isAdmin;
         $user->status = User::STATUS_ACTIVE;

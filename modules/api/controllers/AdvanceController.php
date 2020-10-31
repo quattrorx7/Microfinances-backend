@@ -2,21 +2,26 @@
 
 namespace app\modules\api\controllers;
 
-use app\components\controllers\BaseApiController;
-use app\components\JSendResponse;
+use app\components\controllers\AuthedApiController;
+use app\components\exceptions\UnSuccessModelException;
+use app\components\exceptions\ValidateException;
+use app\modules\advance\exceptions\AdvanceNotFoundException;
+use app\modules\advance\exceptions\AdvanceStatusException;
+use app\modules\advance\forms\AdvanceNoteForm;
+use app\modules\advance\forms\AdvanceStatusForm;
+use app\modules\advance\helpers\AdvanceHelper;
+use app\modules\api\serializer\advance\AdvanceFullSerializer;
+use app\modules\api\serializer\advance\AdvanceListSerializer;
 use app\modules\api\serializer\advance\AdvanceSerializer;
 use app\modules\advance\components\AdvanceService;
-use app\modules\advance\exceptions\AdvanceNotFoundException;
-use app\modules\advance\exceptions\ValidateAdvanceCreateException;
-use app\modules\advance\exceptions\ValidateAdvanceUpdateException;
-use app\modules\advance\forms\AdvanceCreateForm;
-use app\modules\advance\forms\AdvanceUpdateForm;
 use app\modules\advance\providers\AdvanceProvider;
+use app\modules\api\serializer\advance\AdvanceShortSerializer;
 use Yii;
 use yii\base\Exception;
-use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\web\ForbiddenHttpException;
 
-class AdvanceController extends BaseApiController
+class AdvanceController extends AuthedApiController
 {
 
     protected AdvanceService $advanceService;
@@ -29,14 +34,32 @@ class AdvanceController extends BaseApiController
         $this->advanceProvider = $advanceProvider;
     }
 
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'only' => ['load-note', 'issue-loan'],
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['load-note', 'issue-loan'],
+                    'matchCallback' => function($rule, $action){
+                        return !$this->currentUser->isSuperadmin;
+                    }
+                ],
+            ],
+        ];
+        return $behaviors;
+    }
+
     protected function verbs(): array
     {
         return [
             'index' => ['GET'],
-            'create' => ['POST'],
             'view' => ['GET'],
-            'update' => ['POST'],
-            'delete' => ['DELETE']
+            'load-note' => ['POST']
         ];
     }
 
@@ -46,21 +69,16 @@ class AdvanceController extends BaseApiController
     */
     public function actionIndex(): array
     {
-        [$searchModel, $dataProvider] = $this->advanceProvider->search(Yii::$app->request->queryParams);
-        return AdvanceSerializer::serialize($dataProvider->getModels());
+        $advances = $this->isSuperadmin($this->currentUser) ?
+            $this->advanceService->searchLast() :
+            $this->currentUser->lastAdvances;
+
+        return AdvanceListSerializer::serialize($advances);
     }
 
-    /**
-     * @return array
-     * @throws ValidateAdvanceCreateException
-     * @throws Exception
-     */
-    public function actionCreate(): array
+    public function actionStatus(): array
     {
-        $form = AdvanceCreateForm::loadAndValidate(Yii::$app->request->bodyParams);
-        $model = $this->advanceService->createByForm($form);
-
-        return AdvanceSerializer::serialize($model);
+        return AdvanceHelper::getStatuses();
     }
 
     /**
@@ -71,37 +89,42 @@ class AdvanceController extends BaseApiController
     public function actionView(int $id): array
     {
         $model = $this->advanceService->getAdvance($id);
-        return AdvanceSerializer::serialize($model);
+
+        if ($this->isSuperadmin($this->currentUser) && $model->isSent()) {
+            return AdvanceFullSerializer::serialize($model);
+        }
+
+        if ($model->isApproved() && $model->isOwner($this->currentUser)) {
+            return AdvanceShortSerializer::serialize($model);
+        }
+
+        throw new ForbiddenHttpException('Доступ запрещен');
     }
 
     /**
-     * @param int $id
+     * @param int $advanceId
      * @return array
+     * @throws AdvanceStatusException
      * @throws Exception
-     * @throws ValidateAdvanceUpdateException
+     * @throws ValidateException
      */
-    public function actionUpdate(int $id): array
+    public function actionLoadNote(int $advanceId): array
     {
-        $form = AdvanceUpdateForm::loadAndValidate(Yii::$app->request->bodyParams);
-        $model = $this->advanceService->getAdvance($id);
-
-        $model = $this->advanceService->updateByForm($model, $form);
+        $form = AdvanceNoteForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $model = $this->advanceService->loadNote($advanceId, $form);
         return AdvanceSerializer::serialize($model);
     }
 
     /**
-     * @param int $id
-     * @return JSendResponse
-     * @throws \Throwable
+     * @param int $advanceId
+     * @return string
+     * @throws AdvanceStatusException
+     * @throws UnSuccessModelException
      * @throws AdvanceNotFoundException
-     * @throws StaleObjectException
      */
-    public function actionDelete(int $id): JSendResponse
+    public function actionIssueLoan(int $advanceId): string
     {
-        $model = $this->advanceService->getAdvance($id);
-        $this->advanceService->deleteAdvance($model);
-
-        return JSendResponse::success('Удалено');
+        $form = AdvanceStatusForm::loadAndValidate(Yii::$app->request->bodyParams);
+        return $this->advanceService->issueAdvance($advanceId, $form);
     }
-
 }

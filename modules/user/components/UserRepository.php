@@ -54,6 +54,14 @@ class UserRepository extends BaseRepository
         return $model;
     }
 
+    public function getAll()
+    {
+        return User::find()
+            ->andWhere(['status' => User::STATUS_ACTIVE])
+            ->andWhere(['superadmin' => User::USER])
+            ->all();
+    }
+
     public function getActiveUserByUsername(string $username)
     {
         $model = User::find()

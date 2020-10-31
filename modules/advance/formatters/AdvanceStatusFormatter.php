@@ -7,8 +7,11 @@ use app\modules\advance\helpers\AdvanceHelper;
 
 class AdvanceStatusFormatter
 {
-    public static function formatter(Advance $model): string
+    public static function formatter(Advance $model): array
     {
-        return AdvanceHelper::getStatusById($model->status);
+        return [
+            'text' => AdvanceHelper::getStatusById($model->status),
+            'name' => $model->status
+        ];
     }
 }

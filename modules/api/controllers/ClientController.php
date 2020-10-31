@@ -59,7 +59,7 @@ class ClientController extends AuthedApiController
     /**
      * @return array
      * @throws ValidateClientCreateException
-     * @throws Exception
+     * @throws \Exception
      */
     public function actionCreate(): array
     {
@@ -70,7 +70,7 @@ class ClientController extends AuthedApiController
 
             $client = $this->clientService->createByForm($form, $this->currentUser);
             $user = $this->userService->getUser($advanceForm->user_id);
-            $this->advanceService->createByForm($advanceForm, $user, $client);
+            $this->advanceService->createByForm($advanceForm, $user, $client, true);
 
             return ClientSerializer::serialize($client);
         }
