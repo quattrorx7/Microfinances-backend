@@ -17,6 +17,12 @@ class AdminMenu
                 'items' => []
             ],
             [
+                'label' => 'Клиенты',
+                'icon'  => 'users',
+                'url'   => ['/admin/client/index'],
+                'items' => []
+            ],
+            [
                 'label' => 'Районы',
                 'icon'  => 'users',
                 'url'   => ['/admin/district/index'],

@@ -4,9 +4,11 @@ namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
 use app\components\exceptions\UnSuccessModelException;
+use app\modules\api\serializer\user\UserProfileSerializer;
 use app\modules\api\serializer\user\UserSerializer;
 use app\modules\user\components\UserManager;
 use app\modules\user\components\UserService;
+use app\modules\user\exceptions\UserNotFoundException;
 use app\modules\user\exceptions\ValidateUserUpdateException;
 use app\modules\user\forms\UserUpdateForm;
 use Yii;
@@ -32,13 +34,20 @@ class UserController extends AuthedApiController
 
         $behaviors['access'] = [
             'class' => AccessControl::class,
-            'only' => ['index'],
+            'only' => ['index', 'view'],
             'rules' => [
                 [
                     'allow' => true,
                     'actions' => ['index'],
                     'matchCallback' => function($rule, $action){
                         return $this->currentUser->isSuperadmin;
+                    }
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'matchCallback' => function($rule, $action){
+                        return $this->currentUser->isSuperadmin || $this->currentUser->id === (int)Yii::$app->request->get('id');
                     }
                 ],
             ],
@@ -56,13 +65,15 @@ class UserController extends AuthedApiController
     }
 
     /**
+     * @param int $id
      * @return array
      * @throws Exception
+     * @throws UserNotFoundException
      */
-    public function actionView(): array
+    public function actionView(int $id): array
     {
-        $model = $this->currentUser;
-        return UserSerializer::serialize($model);
+        $model = $this->userManager->getUserById($id);
+        return UserProfileSerializer::serialize($model);
     }
 
     /**

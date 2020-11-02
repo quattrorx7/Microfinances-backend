@@ -3,6 +3,8 @@
 namespace app\modules\user\components;
 
 use app\components\BaseService;
+use app\models\User;
+use app\modules\user\exceptions\UserNotFoundException;
 
 /**
  *
@@ -21,6 +23,16 @@ class UserManager extends BaseService
     public function getAllUsers()
     {
         return $this->userRepository->getAll();
+    }
+
+    /**
+     * @param int $userId
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public function getUserById(int $userId): User
+    {
+        return $this->userRepository->getUserById($userId);
     }
 
 }

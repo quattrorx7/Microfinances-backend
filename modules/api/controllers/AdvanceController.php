@@ -4,15 +4,15 @@ namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
 use app\components\exceptions\UnSuccessModelException;
-use app\components\exceptions\ValidateException;
+use app\components\exceptions\UserException;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
 use app\modules\advance\exceptions\AdvanceStatusException;
+use app\modules\advance\exceptions\ValidateAdvanceCreateException;
+use app\modules\advance\forms\AdvanceApprovedForm;
 use app\modules\advance\forms\AdvanceNoteForm;
-use app\modules\advance\forms\AdvanceStatusForm;
 use app\modules\advance\helpers\AdvanceHelper;
 use app\modules\api\serializer\advance\AdvanceFullSerializer;
 use app\modules\api\serializer\advance\AdvanceListSerializer;
-use app\modules\api\serializer\advance\AdvanceSerializer;
 use app\modules\advance\components\AdvanceService;
 use app\modules\advance\providers\AdvanceProvider;
 use app\modules\api\serializer\advance\AdvanceShortSerializer;
@@ -40,13 +40,20 @@ class AdvanceController extends AuthedApiController
 
         $behaviors['access'] = [
             'class' => AccessControl::class,
-            'only' => ['load-note', 'issue-loan'],
+            'only' => ['issue-loan', 'denied', 'approved', 'percent'],
             'rules' => [
                 [
                     'allow' => true,
-                    'actions' => ['load-note', 'issue-loan'],
+                    'actions' => ['issue-loan'],
                     'matchCallback' => function($rule, $action){
                         return !$this->currentUser->isSuperadmin;
+                    }
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['denied', 'approved', 'percent'],
+                    'matchCallback' => function($rule, $action){
+                        return $this->currentUser->isSuperadmin;
                     }
                 ],
             ],
@@ -58,8 +65,12 @@ class AdvanceController extends AuthedApiController
     {
         return [
             'index' => ['GET'],
+            'status' => ['GET'],
             'view' => ['GET'],
-            'load-note' => ['POST']
+            'issue-loan' => ['POST'],
+            'denied' => ['POST'],
+            'approved' => ['POST'],
+            'percent' => ['GET'],
         ];
     }
 
@@ -103,16 +114,32 @@ class AdvanceController extends AuthedApiController
 
     /**
      * @param int $advanceId
-     * @return array
+     * @return string
+     * @throws AdvanceNotFoundException
      * @throws AdvanceStatusException
-     * @throws Exception
-     * @throws ValidateException
+     * @throws UnSuccessModelException
      */
-    public function actionLoadNote(int $advanceId): array
+    public function actionDenied(int $advanceId): string
     {
-        $form = AdvanceNoteForm::loadAndValidate(Yii::$app->request->bodyParams);
-        $model = $this->advanceService->loadNote($advanceId, $form);
-        return AdvanceSerializer::serialize($model);
+        $this->advanceService->deniedAdvance($advanceId);
+        return 'В заявке отказано';
+    }
+
+    /**
+     * @param int $advanceId
+     * @return string
+     * @throws AdvanceNotFoundException
+     * @throws AdvanceStatusException
+     * @throws UnSuccessModelException
+     * @throws UserException
+     * @throws ValidateAdvanceCreateException
+     */
+    public function actionApproved(int $advanceId): string
+    {
+        $form = AdvanceApprovedForm::loadAndValidate(\Yii::$app->request->bodyParams);
+
+        $this->advanceService->approvedAdvance($advanceId, $form);
+        return 'Одобрено';
     }
 
     /**
@@ -124,7 +151,15 @@ class AdvanceController extends AuthedApiController
      */
     public function actionIssueLoan(int $advanceId): string
     {
-        $form = AdvanceStatusForm::loadAndValidate(Yii::$app->request->bodyParams);
-        return $this->advanceService->issueAdvance($advanceId, $form);
+        $form = AdvanceNoteForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $this->advanceService->issueAdvance($advanceId, $form);
+
+        return 'Займ выдан';
+    }
+
+    public function actionPercent(int $advanceId): array
+    {
+        $advanceDto = $this->advanceService->getAdvanceDto($advanceId);
+        return $advanceDto->getAttributes();
     }
 }

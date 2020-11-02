@@ -34,7 +34,7 @@ class AdvanceRepository extends BaseRepository
     {
         return Advance::find()
             ->andWhere(['IS', 'deleted_at', null])
-            ->orderBy(['created_at' => SORT_DESC])
+            ->orderBy(['id' => SORT_DESC])
             ->all();
     }
 

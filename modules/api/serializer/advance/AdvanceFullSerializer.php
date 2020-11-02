@@ -16,7 +16,7 @@ class AdvanceFullSerializer extends AbstractProperties
         return [
             Advance::class => [
                 'id',
-                'created_at',
+                'issue_date',
                 'amount',
                 'limitation',
                 'status' => function(Advance $model) {

@@ -21,4 +21,13 @@ return [
 
     #статусы заявок
     'POST api/advance/status' => 'api/advance/status',
+
+    #отказать в заявке
+    'POST api/advance/<advanceId:\d+>/denied' => 'api/advance/denied',
+
+    #одобрить заявку
+    'POST api/advance/<advanceId:\d+>/approved' => 'api/advance/approved',
+
+    #проценты
+    'GET api/advance/<advanceId:\d+>/percent' => 'api/advance/percent',
 ];

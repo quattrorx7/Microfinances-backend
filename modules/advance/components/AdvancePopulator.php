@@ -6,6 +6,8 @@ use app\components\populator\AbstractPopulator;
 use app\models\Advance;
 use app\models\Client;
 use app\models\User;
+use app\modules\advance\dto\AdvanceDto;
+use app\modules\advance\forms\AdvanceApprovedForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
@@ -19,7 +21,7 @@ class AdvancePopulator extends AbstractPopulator
     {
         $this->populateAttributes($model, $form->attributes, [
             'amount',
-            'created_at',
+            'issue_date',
             'limitation'
         ]);
 
@@ -44,8 +46,31 @@ class AdvancePopulator extends AbstractPopulator
     {
         $this->populateAttributes($model, $form->attributes, [
             'amount',
-            'created_at',
+            'issue_date',
             'limitation'
+        ]);
+
+        return $this;
+    }
+
+    public function populateFromApprovedForm(Advance $model, AdvanceApprovedForm $form): self
+    {
+        $this->populateAttributes($model, $form->attributes, [
+            'amount',
+            'created_at',
+            'limitation',
+            'user_id',
+            'daily_payment'
+        ]);
+
+        return $this;
+    }
+
+    public function populateFromCalculateDto(Advance $model, AdvanceDto $dto): self
+    {
+        $this->populateAttributes($model, $dto->getAttributes(), [
+            'summa_with_percent',
+            'percent'
         ]);
 
         return $this;

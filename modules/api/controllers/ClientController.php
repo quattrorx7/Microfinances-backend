@@ -106,7 +106,7 @@ class ClientController extends AuthedApiController
         $model = $this->clientService->getClient($id);
 
         if ($this->isSuperadmin($this->currentUser)) {
-            // тут редактирует руководитель
+            //@todo тут редактирует руководитель
 
             return ClientSerializer::serialize($model);
         }

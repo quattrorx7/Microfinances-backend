@@ -19,7 +19,7 @@ class AdvanceListSerializer extends AbstractProperties
                 'status' => function(Advance $model) {
                     return AdvanceStatusFormatter::formatter($model);
                 },
-                'created_at',
+                'issue_date',
                 'amount',
                 'client',
                 'note'

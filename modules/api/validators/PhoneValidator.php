@@ -14,6 +14,9 @@ class PhoneValidator extends Validator
         if (!preg_match('/^\d{11}$/', $model->$attribute)) {
             $this->addError($model, $attribute, 'Номер телефона должен содержать 11 цифр');
         }
+        if (!preg_match('/^(7)?[\d]{10}$/', $model->$attribute)) {
+            $this->addError($model, $attribute, 'Номер телефона должен начинаться с 7');
+        }
     }
 
 }

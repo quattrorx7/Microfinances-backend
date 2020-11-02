@@ -31,7 +31,7 @@ class User extends \app\models\base\User implements \yii\web\IdentityInterface
     {
         return $this->hasMany(Advance::class, ['user_id' => 'id'])
             ->andOnCondition(['IS', 'deleted_at', null])
-            ->orderBy(['created_at' => SORT_DESC]);
+            ->orderBy(['id' => SORT_DESC]);
     }
 
     public function getIsSuperadmin(): bool
