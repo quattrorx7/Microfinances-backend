@@ -31,7 +31,7 @@ class AdvanceDto
             throw new UserException('Сумма с процентами ' . $this->summa_with_percent . ' не может быть меньше суммы займа '. $amount);
         }
 
-        $this->percent = round(100 * $this->summa_with_percent / $amount, 2);
+        $this->percent = round(100 - 100 * $amount / $this->summa_with_percent, 2);
     }
 
     public function attributes(): array

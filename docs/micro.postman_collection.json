@@ -399,6 +399,29 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Список клиентов с сортировкой и поиском",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/client?search=Иванов446 Иван",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"client"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "Иванов446 Иван"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -517,6 +540,65 @@
 								"description": "дубль для Клиенты\\Добавить нового"
 							},
 							"response": []
+						},
+						{
+							"name": "создание заявки на существующего клиента",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "files[0]",
+											"type": "file",
+											"src": "/home/oem/Загрузки/IMG_20200217_131407.jpg"
+										},
+										{
+											"key": "files[1]",
+											"type": "file",
+											"src": "/home/oem/Загрузки/joins.jpg"
+										},
+										{
+											"key": "issue_date",
+											"value": "2020-10-22",
+											"type": "text"
+										},
+										{
+											"key": "amount",
+											"value": "76000",
+											"type": "text"
+										},
+										{
+											"key": "limitation",
+											"value": "65",
+											"type": "text"
+										},
+										{
+											"key": "user_id",
+											"value": "2",
+											"description": "Владелец (сотрудник на кого назначается займ)",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "15",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{microApiUrl}}/advance",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"advance"
+									]
+								},
+								"description": "дубль для Клиенты\\Добавить нового"
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -586,8 +668,17 @@
 						{
 							"name": "Рассчитать проценты",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 30000,\n    \"limitation\": 15,\n    \"daily_payment\": 2200\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
 									"raw": "{{microApiUrl}}/advance/12/percent",
 									"host": [
@@ -745,6 +836,30 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Профиль",
+			"item": [
+				{
+					"name": "Свой профиль",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/profile",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"profile"
+							]
+						},
+						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -786,12 +901,12 @@
 	],
 	"variable": [
 		{
-			"id": "852a0273-71e3-4b64-baea-cb155f0eed7b",
+			"id": "cba8503c-9a74-420d-b972-01c3c767256c",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "38e4c12d-ffee-403f-a377-2df929845417",
+			"id": "7eb5a13b-7d73-4aca-80b6-ce1ec8c0c56c",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
 		}

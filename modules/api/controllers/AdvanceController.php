@@ -5,17 +5,23 @@ namespace app\modules\api\controllers;
 use app\components\controllers\AuthedApiController;
 use app\components\exceptions\UnSuccessModelException;
 use app\components\exceptions\UserException;
+use app\components\exceptions\ValidateException;
+use app\components\JSendResponse;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
 use app\modules\advance\exceptions\AdvanceStatusException;
 use app\modules\advance\exceptions\ValidateAdvanceCreateException;
 use app\modules\advance\forms\AdvanceApprovedForm;
+use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceNoteForm;
+use app\modules\advance\forms\AdvancePercentForm;
 use app\modules\advance\helpers\AdvanceHelper;
 use app\modules\api\serializer\advance\AdvanceFullSerializer;
 use app\modules\api\serializer\advance\AdvanceListSerializer;
 use app\modules\advance\components\AdvanceService;
 use app\modules\advance\providers\AdvanceProvider;
 use app\modules\api\serializer\advance\AdvanceShortSerializer;
+use app\modules\client\components\ClientService;
+use app\modules\client\forms\ClientFileForm;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
@@ -26,12 +32,19 @@ class AdvanceController extends AuthedApiController
 
     protected AdvanceService $advanceService;
 
+    protected ClientService $clientService;
+
     protected AdvanceProvider $advanceProvider;
 
-    public function injectDependencies(AdvanceService $advanceService, AdvanceProvider $advanceProvider): void
+    public function injectDependencies(
+        AdvanceService $advanceService,
+        AdvanceProvider $advanceProvider,
+        ClientService $clientService
+    ): void
     {
         $this->advanceService = $advanceService;
         $this->advanceProvider = $advanceProvider;
+        $this->clientService = $clientService;
     }
 
     public function behaviors(): array
@@ -70,7 +83,8 @@ class AdvanceController extends AuthedApiController
             'issue-loan' => ['POST'],
             'denied' => ['POST'],
             'approved' => ['POST'],
-            'percent' => ['GET'],
+            'percent' => ['POST'],
+            'create' => ['POST'],
         ];
     }
 
@@ -114,52 +128,74 @@ class AdvanceController extends AuthedApiController
 
     /**
      * @param int $advanceId
-     * @return string
+     * @return JSendResponse
      * @throws AdvanceNotFoundException
      * @throws AdvanceStatusException
      * @throws UnSuccessModelException
      */
-    public function actionDenied(int $advanceId): string
+    public function actionDenied(int $advanceId): JSendResponse
     {
         $this->advanceService->deniedAdvance($advanceId);
-        return 'В заявке отказано';
+        return JSendResponse::success('В заявке отказано');
     }
 
     /**
      * @param int $advanceId
-     * @return string
+     * @return JSendResponse
      * @throws AdvanceNotFoundException
      * @throws AdvanceStatusException
      * @throws UnSuccessModelException
      * @throws UserException
      * @throws ValidateAdvanceCreateException
      */
-    public function actionApproved(int $advanceId): string
+    public function actionApproved(int $advanceId): JSendResponse
     {
         $form = AdvanceApprovedForm::loadAndValidate(\Yii::$app->request->bodyParams);
-
         $this->advanceService->approvedAdvance($advanceId, $form);
-        return 'Одобрено';
+        return JSendResponse::success('Одобрено');
     }
 
     /**
      * @param int $advanceId
-     * @return string
-     * @throws AdvanceStatusException
-     * @throws UnSuccessModelException
+     * @return JSendResponse
      * @throws AdvanceNotFoundException
+     * @throws AdvanceStatusException
+     * @throws ValidateException
      */
-    public function actionIssueLoan(int $advanceId): string
+    public function actionIssueLoan(int $advanceId): JSendResponse
     {
         $form = AdvanceNoteForm::loadAndValidate(Yii::$app->request->bodyParams);
         $this->advanceService->issueAdvance($advanceId, $form);
 
-        return 'Займ выдан';
+        return JSendResponse::success('Займ выдан');
     }
 
+    /**
+     * @param int $advanceId
+     * @return array
+     * @throws ValidateAdvanceCreateException
+     */
     public function actionPercent(int $advanceId): array
     {
-        $advanceDto = $this->advanceService->getAdvanceDto($advanceId);
+        $form = AdvancePercentForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $advanceDto = $this->advanceService->calculate($form->amount, $form->limitation, $form->daily_payment);
+
         return $advanceDto->getAttributes();
+    }
+
+    /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionCreate(): JSendResponse
+    {
+        $form = AdvanceCreateByClientForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $clientFilesForm = ClientFileForm::loadAndValidate(Yii::$app->request->bodyParams);
+
+        $this->clientService->loadFiles($form->client_id, $clientFilesForm);
+        $result = $this->advanceService->createByClientForm($form, $this->currentUser);
+
+        return JSendResponse::success($result);
     }
 }

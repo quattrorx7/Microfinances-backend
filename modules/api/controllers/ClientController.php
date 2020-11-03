@@ -7,10 +7,12 @@ use app\modules\advance\components\AdvanceService;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\api\serializer\client\ClientSerializer;
+use app\modules\client\components\ClientManager;
 use app\modules\client\components\ClientService;
 use app\modules\client\exceptions\ValidateClientCreateException;
 use app\modules\client\exceptions\ValidateClientUpdateException;
 use app\modules\client\forms\ClientCreateForm;
+use app\modules\client\forms\ClientSearchForm;
 use app\modules\client\forms\ClientUpdateForm;
 use app\modules\client\providers\ClientProvider;
 use app\modules\user\components\UserService;
@@ -26,14 +28,23 @@ class ClientController extends AuthedApiController
 
     protected UserService $userService;
 
+    protected ClientManager $clientManager;
+
     protected ClientProvider $clientProvider;
 
-    public function injectDependencies(UserService $userService, ClientService $clientService, ClientProvider $clientProvider, AdvanceService $advanceService): void
+    public function injectDependencies(
+        UserService $userService,
+        ClientService $clientService,
+        ClientProvider $clientProvider,
+        AdvanceService $advanceService,
+        ClientManager $clientManager
+    ): void
     {
         $this->clientService = $clientService;
         $this->clientProvider = $clientProvider;
         $this->advanceService = $advanceService;
         $this->userService = $userService;
+        $this->clientManager = $clientManager;
     }
 
     protected function verbs(): array
@@ -52,8 +63,9 @@ class ClientController extends AuthedApiController
     */
     public function actionIndex(): array
     {
-        [$searchModel, $dataProvider] = $this->clientProvider->search(Yii::$app->request->queryParams);
-        return ClientSerializer::serialize($dataProvider->getModels());
+        $form = ClientSearchForm::loadAndValidate(Yii::$app->request->queryParams);
+        $models = $this->clientManager->getClients($form);
+        return ClientSerializer::serialize($models);
     }
 
     /**

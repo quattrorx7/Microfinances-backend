@@ -5,20 +5,17 @@ namespace app\modules\advance\forms;
 use app\modules\advance\exceptions\ValidateAdvanceCreateException;
 use yii\base\Model;
 
-class AdvanceApprovedForm extends Model
+class AdvancePercentForm extends Model
 {
-    public $created_at;
     public $amount;
     public $limitation;
-    public $user_id;
     public $daily_payment;
 
     public function rules(): array
     {
         return [
-            ['created_at', 'date', 'format' => 'php:Y-m-d'],
-            [['created_at', 'amount', 'limitation', 'user_id', 'daily_payment'], 'required'],
-            [['amount', 'user_id'], 'integer'],
+            [['amount', 'limitation', 'daily_payment'], 'required'],
+            [['amount'], 'integer'],
             ['limitation', 'integer', 'min' => 1],
             ['amount', 'integer', 'min' => 1],
             ['daily_payment', 'integer']
@@ -28,10 +25,8 @@ class AdvanceApprovedForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'created_at' => 'Дата выдачи',
             'amount' => 'Сумма',
             'limitation' => 'Срок займа',
-            'user_id' => 'Сотрудник',
             'daily_payment' => 'Ежедневный платеж',
         ];
     }

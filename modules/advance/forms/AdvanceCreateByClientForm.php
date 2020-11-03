@@ -2,37 +2,41 @@
 
 namespace app\modules\advance\forms;
 
+use app\models\Client;
+use app\models\User;
 use app\modules\advance\exceptions\ValidateAdvanceCreateException;
 use yii\base\Model;
 
-class AdvanceApprovedForm extends Model
+class AdvanceCreateByClientForm extends Model
 {
-    public $created_at;
+    public $issue_date;
     public $amount;
     public $limitation;
     public $user_id;
-    public $daily_payment;
+    public $client_id;
 
     public function rules(): array
     {
         return [
-            ['created_at', 'date', 'format' => 'php:Y-m-d'],
-            [['created_at', 'amount', 'limitation', 'user_id', 'daily_payment'], 'required'],
-            [['amount', 'user_id'], 'integer'],
+            ['issue_date', 'date', 'format' => 'php:Y-m-d'],
+            [['issue_date', 'amount', 'limitation', 'user_id'], 'required'],
+            [['amount', 'user_id', 'client_id'], 'integer'],
             ['limitation', 'integer', 'min' => 1],
             ['amount', 'integer', 'min' => 1],
-            ['daily_payment', 'integer']
+            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Client::class, 'targetAttribute' => ['client_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+
         ];
     }
 
     public function attributeLabels(): array
     {
         return [
-            'created_at' => 'Дата выдачи',
+            'issue_date' => 'Дата выдачи',
             'amount' => 'Сумма',
             'limitation' => 'Срок займа',
             'user_id' => 'Сотрудник',
-            'daily_payment' => 'Ежедневный платеж',
+            'client_id' => 'Клиент',
         ];
     }
 

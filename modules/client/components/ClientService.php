@@ -9,6 +9,7 @@ use app\models\User;
 use app\modules\client\exceptions\ClientNotFoundException;
 use app\modules\client\exceptions\ValidateClientCreateException;
 use app\modules\client\forms\ClientCreateForm;
+use app\modules\client\forms\ClientFileForm;
 use app\modules\client\forms\ClientUpdateForm;
 use app\modules\client\validators\ClientPhoneValidator;
 use app\modules\district\components\DistrictService;
@@ -66,6 +67,19 @@ class ClientService extends BaseService
         if (!(new ClientPhoneValidator())->validate($model, 'additional_phone')) {
             throw new ValidateClientCreateException($model);
         }
+
+        $this->clientRepository->saveClient($model);
+
+        return $model;
+    }
+
+    public function loadFiles(int $clientId, ClientFileForm $form)
+    {
+        $model = $this->clientRepository->getClientById($clientId);
+
+        $model = $this->clientPopulator
+            ->populateFiles($model, $form->files)
+            ->getModel($model);
 
         $this->clientRepository->saveClient($model);
 

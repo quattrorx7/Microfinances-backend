@@ -12,12 +12,14 @@ use app\modules\advance\dto\AdvanceDto;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
 use app\modules\advance\exceptions\AdvanceStatusException;
 use app\modules\advance\forms\AdvanceApprovedForm;
+use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceNoteForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
+use app\modules\client\components\ClientRepository;
+use app\modules\user\components\UserManager;
 use Exception;
-use yii\db\StaleObjectException;
 use yii\web\UploadedFile;
 
 class AdvanceService extends BaseService
@@ -27,13 +29,25 @@ class AdvanceService extends BaseService
 
     protected AdvanceRepository $advanceRepository;
 
+    protected ClientRepository $clientRepository;
+
     protected AdvancePopulator $advancePopulator;
 
-    public function injectDependencies(AdvanceFactory $advanceFactory, AdvanceRepository $advanceRepository, AdvancePopulator $advancePopulator): void
+    protected UserManager $userManager;
+
+    public function injectDependencies(
+        AdvanceFactory $advanceFactory,
+        AdvanceRepository $advanceRepository,
+        AdvancePopulator $advancePopulator,
+        UserManager $userManager,
+        ClientRepository $clientRepository
+    ): void
     {
         $this->advanceFactory = $advanceFactory;
         $this->advanceRepository = $advanceRepository;
+        $this->clientRepository = $clientRepository;
         $this->advancePopulator = $advancePopulator;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -149,14 +163,12 @@ class AdvanceService extends BaseService
         $this->advanceRepository->save($model);
     }
 
-    public function getAdvanceDto(int $advanceId): AdvanceDto
+    public function calculate(int $amount, int $limitation, int $daily_payment): AdvanceDto
     {
-        $model = $this->advanceRepository->getAdvanceById($advanceId);
-
         return (new AdvanceCalculator())->calculate(
-            $model->amount,
-            $model->limitation,
-            $model->daily_payment
+            $amount,
+            $limitation,
+            $daily_payment
         );
     }
 
@@ -182,13 +194,20 @@ class AdvanceService extends BaseService
         $this->advanceRepository->saveAdvanceNote($model);
     }
 
-    /**
-     * @param Advance $model
-     * @throws StaleObjectException
-     * @throws \Throwable
-     */
-    public function deleteAdvance(Advance $model): void
+    public function createByClientForm(AdvanceCreateByClientForm $form, User $currentUser): string
     {
-        $model->delete();
+        $client = $this->clientRepository->getClientById($form->client_id);
+
+        $model = $currentUser->isSuperadmin ? $this->advanceFactory->createWithAdmin() : $this->advanceFactory->create();
+        $user = $currentUser->isSuperadmin ? $this->userManager->getUserById($form->user_id) : $currentUser;
+
+        $this->advancePopulator
+            ->populateFromCreateByClientForm($model, $form)
+            ->populateClient($model, $client)
+            ->populateUser($model, $user);
+
+        $this->advanceRepository->saveAdvance($model);
+
+        return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
     }
 }

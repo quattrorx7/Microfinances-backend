@@ -70,4 +70,19 @@ class ClientRepository extends BaseRepository
             throw $exception;
         }
     }
+
+    /**
+     * @param $search
+     * @return array
+     */
+    public function getBySearch($search): array
+    {
+        $query = Client::find();
+
+        if ($search) {
+            $query->andWhere(['LIKE', "CONCAT(surname,' ',name,' ',patronymic)", $search]);
+        }
+
+        return $query->all();
+    }
 }

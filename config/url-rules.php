@@ -29,5 +29,5 @@ return [
     'POST api/advance/<advanceId:\d+>/approved' => 'api/advance/approved',
 
     #проценты
-    'GET api/advance/<advanceId:\d+>/percent' => 'api/advance/percent',
+    'POST api/advance/<advanceId:\d+>/percent' => 'api/advance/percent',
 ];

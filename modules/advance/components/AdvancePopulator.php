@@ -8,6 +8,7 @@ use app\models\Client;
 use app\models\User;
 use app\modules\advance\dto\AdvanceDto;
 use app\modules\advance\forms\AdvanceApprovedForm;
+use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
@@ -43,6 +44,17 @@ class AdvancePopulator extends AbstractPopulator
 
 
     public function populateFromCreateForm(Advance $model, AdvanceCreateForm $form): self
+    {
+        $this->populateAttributes($model, $form->attributes, [
+            'amount',
+            'issue_date',
+            'limitation'
+        ]);
+
+        return $this;
+    }
+
+    public function populateFromCreateByClientForm(Advance $model, AdvanceCreateByClientForm $form): self
     {
         $this->populateAttributes($model, $form->attributes, [
             'amount',
