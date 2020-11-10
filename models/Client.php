@@ -9,6 +9,9 @@ use yii\db\ActiveQuery;
  * @package app\models
  *
  * @property-write File $file
+ * @property-read mixed $lastDebtPayments
+ * @property-read ActiveQuery $activeAdvances
+ * @property-read mixed $allDebts
  * @property-read ActiveQuery $files
  */
 class Client extends \app\models\base\Client
@@ -29,7 +32,24 @@ class Client extends \app\models\base\Client
     {
         return $this
             ->hasMany(Advance::class, ['client_id' => 'id'])
-            ->andOnCondition(['IS', 'deleted_at', null]);
-            //->andOnCondition(['status' => Advance::]);
+            ->andOnCondition(['IS', 'deleted_at', null])
+            ->andOnCondition(['status' => Advance::STATE_ISSUED]);
+    }
+
+    /**
+     * получить все платежи кроме сегодняшнего на которых есть долги
+     */
+    public function getLastDebtPayments(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Payment::class, ['client_id' => 'id'])
+            ->andOnCondition(['>', 'amount', 0]);
+    }
+
+    /** общая сумма долга за предыдущие дни */
+    public function getAllDebts()
+    {
+        $payments = $this->lastDebtPayments;
+        return array_sum(array_column($payments, 'amount'));
     }
 }

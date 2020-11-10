@@ -146,7 +146,7 @@ class AdvanceService extends BaseService
         $model = $this->advanceRepository->getAdvanceById($advanceId);
 
         if (!$model->isSent()) {
-            throw new AdvanceStatusException('Обобрить заявку можно только в статусе "Отправлено"');
+            throw new AdvanceStatusException('Одобрить заявку можно только в статусе "Отправлено"');
         }
 
         $calculateDto = (new AdvanceCalculator())->calculate(
@@ -191,6 +191,9 @@ class AdvanceService extends BaseService
         $this->advancePopulator
             ->populateNote($model, UploadedFile::getInstanceByName('note'))
             ->changeStatus($model, Advance::STATE_ISSUED);
+
+        $model->activatePaymentProcess();
+
         $this->advanceRepository->saveAdvanceNote($model);
     }
 
@@ -209,5 +212,10 @@ class AdvanceService extends BaseService
         $this->advanceRepository->saveAdvance($model);
 
         return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
+    }
+
+    public function getActiveAdvancesByDate(string $date)
+    {
+        return $this->advanceRepository->getActiveAdvances($date);
     }
 }

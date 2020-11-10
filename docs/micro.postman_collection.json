@@ -211,22 +211,22 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Иван44",
+									"value": "Иван",
 									"type": "text"
 								},
 								{
 									"key": "surname",
-									"value": "Иванов44",
+									"value": "Иванов",
 									"type": "text"
 								},
 								{
 									"key": "patronymic",
-									"value": "Иванович44",
+									"value": "Иванович",
 									"type": "text"
 								},
 								{
 									"key": "phone",
-									"value": "86605411610",
+									"value": "78888888888",
 									"type": "text"
 								},
 								{
@@ -236,7 +236,7 @@
 								},
 								{
 									"key": "residence_address",
-									"value": "2Адрес 1",
+									"value": "Москва Ленина 34",
 									"type": "text"
 								},
 								{
@@ -252,48 +252,50 @@
 								{
 									"key": "files[1]",
 									"type": "file",
-									"src": "/home/oem/Загрузки/joins.jpg"
+									"src": "/home/oem/Загрузки/joins.jpg",
+									"disabled": true
 								},
 								{
 									"key": "work_address",
-									"value": "уппкекпе",
+									"value": "Москва Строителей 1",
 									"type": "text"
 								},
 								{
 									"key": "activity",
-									"value": "Вид деятельности",
+									"value": "Продажа запчастей",
 									"type": "text"
 								},
 								{
 									"key": "profit",
-									"value": "10 руб",
+									"value": "90000 руб",
 									"type": "text"
 								},
 								{
 									"key": "comment",
-									"value": "комммент",
+									"value": "Комментарий 555 от сотрудника",
 									"type": "text"
 								},
 								{
 									"key": "issue_date",
-									"value": "2020-10-22",
+									"value": "2020-11-05",
 									"type": "text"
 								},
 								{
 									"key": "amount",
-									"value": "30000",
+									"value": "100000",
 									"type": "text"
 								},
 								{
 									"key": "limitation",
-									"value": "15",
+									"value": "60",
 									"type": "text"
 								},
 								{
 									"key": "user_id",
 									"value": "2",
 									"description": "Владелец (тот на кого назначается займ)",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -388,13 +390,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/client/5",
+							"raw": "{{microApiUrl}}/client/18",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"client",
-								"5"
+								"18"
 							]
 						}
 					},
@@ -442,12 +444,12 @@
 									"formdata": [
 										{
 											"key": "name",
-											"value": "Иван44",
+											"value": "Петр",
 											"type": "text"
 										},
 										{
 											"key": "surname",
-											"value": "Иванов446",
+											"value": "етровП",
 											"type": "text"
 										},
 										{
@@ -457,7 +459,7 @@
 										},
 										{
 											"key": "phone",
-											"value": "76608410110",
+											"value": "76608410111",
 											"type": "text"
 										},
 										{
@@ -512,7 +514,7 @@
 										},
 										{
 											"key": "amount",
-											"value": "30000",
+											"value": "90000",
 											"type": "text"
 										},
 										{
@@ -557,21 +559,22 @@
 										{
 											"key": "files[1]",
 											"type": "file",
-											"src": "/home/oem/Загрузки/joins.jpg"
+											"src": "/home/oem/Загрузки/joins.jpg",
+											"disabled": true
 										},
 										{
 											"key": "issue_date",
-											"value": "2020-10-22",
+											"value": "2020-11-05",
 											"type": "text"
 										},
 										{
 											"key": "amount",
-											"value": "76000",
+											"value": "75000",
 											"type": "text"
 										},
 										{
 											"key": "limitation",
-											"value": "65",
+											"value": "90",
 											"type": "text"
 										},
 										{
@@ -582,7 +585,7 @@
 										},
 										{
 											"key": "client_id",
-											"value": "15",
+											"value": "17",
 											"type": "text"
 										}
 									]
@@ -622,13 +625,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/6/denied",
+									"raw": "{{microApiUrl}}/advance/3/denied",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"6",
+										"3",
 										"denied"
 									]
 								},
@@ -643,7 +646,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"created_at\": \"2020-10-22\",\n    \"amount\": 30000,\n    \"limitation\": 17,\n    \"user_id\": 2,\n    \"daily_payment\": 6700\n}",
+									"raw": "{\n    \"created_at\": \"2020-11-02\",\n    \"amount\": 75000,\n    \"limitation\": 90,\n    \"user_id\": 2,\n    \"daily_payment\": 1000\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -651,13 +654,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/12/approved",
+									"raw": "{{microApiUrl}}/advance/5/approved",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"12",
+										"5",
 										"approved"
 									]
 								},
@@ -672,7 +675,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"amount\": 30000,\n    \"limitation\": 15,\n    \"daily_payment\": 2200\n}",
+									"raw": "{\n    \"amount\": 20000,\n    \"limitation\": 4,\n    \"daily_payment\": 6000\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -680,13 +683,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/12/percent",
+									"raw": "{{microApiUrl}}/advance/1/percent",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"12",
+										"1",
 										"percent"
 									]
 								},
@@ -717,13 +720,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/12/issue-loan",
+									"raw": "{{microApiUrl}}/advance/4/issue-loan",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"12",
+										"4",
 										"issue-loan"
 									]
 								},
@@ -860,6 +863,89 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Платежи",
+			"item": [
+				{
+					"name": "Список активных платежей (Главная)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/payment",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список закрытых платежей (Главная)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/payment/closed",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"payment",
+								"closed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список архивных платежей (Главная)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/advance/archive?search=",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"archive"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список долгов (Главная)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/advance/debt",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"debt"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -884,7 +970,7 @@
 				"id": "44139b18-0c76-424c-af8f-c8dcd527287d",
 				"type": "text/javascript",
 				"exec": [
-					""
+					"pm.request.headers.add({key: 'app-version', value: '1.0'})"
 				]
 			}
 		},
@@ -901,12 +987,12 @@
 	],
 	"variable": [
 		{
-			"id": "cba8503c-9a74-420d-b972-01c3c767256c",
+			"id": "480edd73-e323-4d7b-b7e3-da65e646d402",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "7eb5a13b-7d73-4aca-80b6-ce1ec8c0c56c",
+			"id": "bdac2834-4258-4929-aeab-428b11b2a2d8",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
 		}

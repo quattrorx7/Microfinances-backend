@@ -3,8 +3,10 @@
 namespace app\modules\advance\components;
 
 use app\components\BaseRepository;
+use app\helpers\DateHelper;
 use app\models\Advance;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
+use yii\db\ActiveQuery;
 
 /**
  *
@@ -79,6 +81,37 @@ class AdvanceRepository extends BaseRepository
             $transaction->rollBack();
             throw $exception;
         }
+    }
+
+    public function getActiveAdvances(string $date)
+    {
+        return Advance::find()
+            ->andWhere(['IS', 'deleted_at', null])
+            ->andWhere(['payment_status' => Advance::PAYMENT_STATUS_STARTED])
+            ->andWhere(['>', 'summa_left_to_pay', 0])
+            ->andWhere(['<>', 'issue_date', $date])
+            ->andWhere(['>', 'payment_left', 0])
+            ->all();
+    }
+
+    public function createSearchQuery(): ActiveQuery
+    {
+        return Advance::find()
+            ->andWhere(['IS', 'deleted_at', null])
+            ->andWhere(['payment_status' => Advance::PAYMENT_STATUS_CLOSED]);
+    }
+
+    public function createDebtQuery(): ActiveQuery
+    {
+        return Advance::find()
+            ->joinWith(['payments' => static function(ActiveQuery $activeQuery) {
+                $activeQuery->andOnCondition(['payment.created_at' => DateHelper::nowWithoutHours()]);
+            }])
+            ->andWhere(['IS', 'deleted_at', null])
+            ->andWhere(['payment_status' => Advance::PAYMENT_STATUS_STARTED])
+            ->andWhere(['payment_left' => 0])
+            ->andWhere(['>', 'summa_left_to_pay', 0])
+            ->andWhere(['IS', 'payment.id', null]);
     }
 
 }

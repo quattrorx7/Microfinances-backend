@@ -7,6 +7,7 @@ use app\components\exceptions\UnSuccessModelException;
 use app\components\exceptions\UserException;
 use app\components\exceptions\ValidateException;
 use app\components\JSendResponse;
+use app\modules\advance\components\AdvanceManager;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
 use app\modules\advance\exceptions\AdvanceStatusException;
 use app\modules\advance\exceptions\ValidateAdvanceCreateException;
@@ -15,6 +16,8 @@ use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceNoteForm;
 use app\modules\advance\forms\AdvancePercentForm;
 use app\modules\advance\helpers\AdvanceHelper;
+use app\modules\api\serializer\advance\AdvanceClientSerializer;
+use app\modules\api\serializer\advance\AdvanceDebtSerializer;
 use app\modules\api\serializer\advance\AdvanceFullSerializer;
 use app\modules\api\serializer\advance\AdvanceListSerializer;
 use app\modules\advance\components\AdvanceService;
@@ -22,6 +25,7 @@ use app\modules\advance\providers\AdvanceProvider;
 use app\modules\api\serializer\advance\AdvanceShortSerializer;
 use app\modules\client\components\ClientService;
 use app\modules\client\forms\ClientFileForm;
+use app\modules\client\forms\ClientSearchForm;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
@@ -36,15 +40,19 @@ class AdvanceController extends AuthedApiController
 
     protected AdvanceProvider $advanceProvider;
 
+    protected AdvanceManager $advanceManager;
+
     public function injectDependencies(
         AdvanceService $advanceService,
         AdvanceProvider $advanceProvider,
-        ClientService $clientService
+        ClientService $clientService,
+        AdvanceManager $advanceManager
     ): void
     {
         $this->advanceService = $advanceService;
         $this->advanceProvider = $advanceProvider;
         $this->clientService = $clientService;
+        $this->advanceManager = $advanceManager;
     }
 
     public function behaviors(): array
@@ -85,6 +93,7 @@ class AdvanceController extends AuthedApiController
             'approved' => ['POST'],
             'percent' => ['POST'],
             'create' => ['POST'],
+            'archive' => ['GET'],
         ];
     }
 
@@ -99,6 +108,21 @@ class AdvanceController extends AuthedApiController
             $this->currentUser->lastAdvances;
 
         return AdvanceListSerializer::serialize($advances);
+    }
+
+    public function actionArchive(): array
+    {
+        $form = ClientSearchForm::loadAndValidate(Yii::$app->request->queryParams);
+        $advances = $this->advanceManager->search($form, $this->currentUser);
+
+        return AdvanceClientSerializer::serialize($advances);
+    }
+
+    public function actionDebt(): array
+    {
+        $advances = $this->advanceManager->debts($this->currentUser);
+
+        return AdvanceDebtSerializer::serialize($advances);
     }
 
     public function actionStatus(): array

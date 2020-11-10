@@ -19,6 +19,10 @@ class DateHelper
         return (new DateTime('now', new DateTimeZone($timezone)))->format('Y-m-d H:i:s');
     }
 
+    public static function nowWithoutHours($timezone = 'Europe/Moscow'): string
+    {
+        return (new DateTime('now', new DateTimeZone($timezone)))->format('Y-m-d');
+    }
     /**
      * Ответ в секундах
      * todo возможно расширить до миллисекунд?

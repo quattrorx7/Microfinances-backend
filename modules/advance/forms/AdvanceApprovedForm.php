@@ -8,6 +8,7 @@ use yii\base\Model;
 class AdvanceApprovedForm extends Model
 {
     public $created_at;
+    public $issue_date;
     public $amount;
     public $limitation;
     public $user_id;
@@ -46,6 +47,7 @@ class AdvanceApprovedForm extends Model
     {
         $self = new self();
         $self->load($bodyParams, $formName);
+        $self->issue_date = $self->created_at;
 
         if ($self->validate()) {
             return $self;
