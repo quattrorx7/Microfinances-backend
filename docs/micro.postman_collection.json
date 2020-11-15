@@ -811,11 +811,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/refinancing/",
+									"raw": "{{microApiUrl}}/advance/refinancing/",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
+										"advance",
 										"refinancing",
 										""
 									]
@@ -1468,6 +1469,70 @@
 								""
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Досрочное погашение",
+			"item": [
+				{
+					"name": "Досрочное погашение",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"advance_ids\": [15,32]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/advance/close/",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"close",
+								""
+							]
+						},
+						"description": "дубль для Клиенты\\Добавить нового"
+					},
+					"response": []
+				},
+				{
+					"name": "Расчет",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"advance_ids\": [18]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/advance/close/percent/",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								"close",
+								"percent",
+								""
+							]
+						},
+						"description": "дубль для Клиенты\\Добавить нового"
 					},
 					"response": []
 				}
