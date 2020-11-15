@@ -15,7 +15,6 @@ use app\modules\advance\forms\AdvanceApprovedForm;
 use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
-use app\modules\advance\forms\AdvanceNoteForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
 use app\modules\client\components\ClientRepository;
 use app\modules\user\components\UserManager;
@@ -61,10 +60,22 @@ class AdvanceService extends BaseService
     public function createByForm(AdvanceCreateForm $form, User $user, Client $client, $isAdmin = false): Advance
     {
         $model = $isAdmin ? $this->advanceFactory->createWithAdmin() : $this->advanceFactory->create();
+
+        $calculateDto = (new AdvanceCalculator())->calculate(
+            $form->amount,
+            $form->limitation,
+            $form->daily_payment
+        );
+
         $this->advancePopulator
             ->populateFromCreateForm($model, $form)
             ->populateClient($model, $client)
-            ->populateUser($model, $user);
+            ->populateUser($model, $user)
+            ->populateFromCalculateDto($model, $calculateDto);
+
+        if ($isAdmin) {
+            $this->calculate($form->amount, $form->limitation, $form->daily_payment);
+        }
 
         $this->advanceRepository->saveAdvance($model);
 
@@ -175,12 +186,11 @@ class AdvanceService extends BaseService
     /**
      * Выдача займа c загрузкой расписки
      * @param int $advanceId
-     * @param AdvanceNoteForm $form
      * @throws AdvanceNotFoundException
      * @throws AdvanceStatusException
      * @throws Exception
      */
-    public function issueAdvance(int $advanceId, AdvanceNoteForm $form): void
+    public function issueAdvance(int $advanceId): void
     {
         $model = $this->advanceRepository->getAdvanceById($advanceId);
 
@@ -203,11 +213,19 @@ class AdvanceService extends BaseService
 
         $model = $currentUser->isSuperadmin ? $this->advanceFactory->createWithAdmin() : $this->advanceFactory->create();
         $user = $currentUser->isSuperadmin ? $this->userManager->getUserById($form->user_id) : $currentUser;
+        $form->daily_payment = $currentUser->isSuperadmin ? $form->daily_payment : null;
 
         $this->advancePopulator
             ->populateFromCreateByClientForm($model, $form)
             ->populateClient($model, $client)
             ->populateUser($model, $user);
+
+        if ($currentUser->isSuperadmin) {
+            $calculateDto = $this->calculate($form->amount, $form->limitation, $form->daily_payment);
+
+            $this->advancePopulator
+                ->populateFromCalculateDto($model, $calculateDto);
+        }
 
         $this->advanceRepository->saveAdvance($model);
 

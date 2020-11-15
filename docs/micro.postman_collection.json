@@ -444,22 +444,22 @@
 									"formdata": [
 										{
 											"key": "name",
-											"value": "Петр",
+											"value": "Петр 222",
 											"type": "text"
 										},
 										{
 											"key": "surname",
-											"value": "етровП",
+											"value": "етровП 222",
 											"type": "text"
 										},
 										{
 											"key": "patronymic",
-											"value": "Ива6нович44",
+											"value": "Ива6нович44 222",
 											"type": "text"
 										},
 										{
 											"key": "phone",
-											"value": "76608410111",
+											"value": "76608410662",
 											"type": "text"
 										},
 										{
@@ -480,12 +480,14 @@
 										{
 											"key": "files[0]",
 											"type": "file",
-											"src": "/home/oem/Загрузки/IMG_20200217_131407.jpg"
+											"src": "/home/oem/Загрузки/IMG_20200217_131407.jpg",
+											"disabled": true
 										},
 										{
 											"key": "files[1]",
 											"type": "file",
-											"src": "/home/oem/Загрузки/joins.jpg"
+											"src": "/home/oem/Загрузки/joins.jpg",
+											"disabled": true
 										},
 										{
 											"key": "work_address",
@@ -519,14 +521,21 @@
 										},
 										{
 											"key": "limitation",
-											"value": "15",
+											"value": "2",
 											"type": "text"
 										},
 										{
 											"key": "user_id",
-											"value": "2",
+											"value": "1",
 											"description": "Владелец (сотрудник на кого назначается займ)",
-											"type": "text"
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "daily_payment",
+											"value": "50000",
+											"type": "text",
+											"disabled": true
 										}
 									]
 								},
@@ -564,7 +573,7 @@
 										},
 										{
 											"key": "issue_date",
-											"value": "2020-11-05",
+											"value": "2020-11-11",
 											"type": "text"
 										},
 										{
@@ -574,7 +583,7 @@
 										},
 										{
 											"key": "limitation",
-											"value": "90",
+											"value": "2",
 											"type": "text"
 										},
 										{
@@ -585,7 +594,12 @@
 										},
 										{
 											"key": "client_id",
-											"value": "17",
+											"value": "22",
+											"type": "text"
+										},
+										{
+											"key": "daily_payment",
+											"value": "45000",
 											"type": "text"
 										}
 									]
@@ -646,7 +660,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"created_at\": \"2020-11-02\",\n    \"amount\": 75000,\n    \"limitation\": 90,\n    \"user_id\": 2,\n    \"daily_payment\": 1000\n}",
+									"raw": "{\n    \"issue_date\": \"2020-11-02\",\n    \"amount\": 90000,\n    \"limitation\": 10,\n    \"user_id\": 2,\n    \"daily_payment\": 10000\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -654,13 +668,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/5/approved",
+									"raw": "{{microApiUrl}}/advance/14/approved",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"5",
+										"14",
 										"approved"
 									]
 								},
@@ -675,7 +689,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"amount\": 20000,\n    \"limitation\": 4,\n    \"daily_payment\": 6000\n}",
+									"raw": "{\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"daily_payment\": 40000\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -683,13 +697,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/1/percent",
+									"raw": "{{microApiUrl}}/advance/4/percent",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"1",
+										"4",
 										"percent"
 									]
 								},
@@ -720,13 +734,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/4/issue-loan",
+									"raw": "{{microApiUrl}}/advance/14/issue-loan",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"4",
+										"14",
 										"issue-loan"
 									]
 								},
@@ -946,6 +960,40 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Оплата",
+			"item": [
+				{
+					"name": "Принять оплату",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/payment/22/pay",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"payment",
+								"22",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -987,12 +1035,12 @@
 	],
 	"variable": [
 		{
-			"id": "480edd73-e323-4d7b-b7e3-da65e646d402",
+			"id": "70e1ff74-ead8-45fc-a91e-b5b94a4c8f7f",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "bdac2834-4258-4929-aeab-428b11b2a2d8",
+			"id": "7b13173b-24c6-4963-b69f-50142bcfba23",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
 		}

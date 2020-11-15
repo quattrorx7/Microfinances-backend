@@ -48,7 +48,8 @@ class AdvancePopulator extends AbstractPopulator
         $this->populateAttributes($model, $form->attributes, [
             'amount',
             'issue_date',
-            'limitation'
+            'limitation',
+            'daily_payment'
         ]);
 
         return $this;
@@ -59,7 +60,8 @@ class AdvancePopulator extends AbstractPopulator
         $this->populateAttributes($model, $form->attributes, [
             'amount',
             'issue_date',
-            'limitation'
+            'limitation',
+            'daily_payment'
         ]);
 
         return $this;

@@ -7,7 +7,6 @@ use yii\base\Model;
 
 class AdvanceApprovedForm extends Model
 {
-    public $created_at;
     public $issue_date;
     public $amount;
     public $limitation;
@@ -17,8 +16,8 @@ class AdvanceApprovedForm extends Model
     public function rules(): array
     {
         return [
-            ['created_at', 'date', 'format' => 'php:Y-m-d'],
-            [['created_at', 'amount', 'limitation', 'user_id', 'daily_payment'], 'required'],
+            ['issue_date', 'date', 'format' => 'php:Y-m-d'],
+            [['issue_date', 'amount', 'limitation', 'user_id', 'daily_payment'], 'required'],
             [['amount', 'user_id'], 'integer'],
             ['limitation', 'integer', 'min' => 1],
             ['amount', 'integer', 'min' => 1],
@@ -29,7 +28,7 @@ class AdvanceApprovedForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'created_at' => 'Дата выдачи',
+            'issue_date' => 'Дата выдачи',
             'amount' => 'Сумма',
             'limitation' => 'Срок займа',
             'user_id' => 'Сотрудник',
@@ -47,7 +46,6 @@ class AdvanceApprovedForm extends Model
     {
         $self = new self();
         $self->load($bodyParams, $formName);
-        $self->issue_date = $self->created_at;
 
         if ($self->validate()) {
             return $self;

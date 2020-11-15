@@ -189,7 +189,7 @@ class AdvanceController extends AuthedApiController
     public function actionIssueLoan(int $advanceId): JSendResponse
     {
         $form = AdvanceNoteForm::loadAndValidate(Yii::$app->request->bodyParams);
-        $this->advanceService->issueAdvance($advanceId, $form);
+        $this->advanceService->issueAdvance($advanceId);
 
         return JSendResponse::success('Займ выдан');
     }
@@ -214,7 +214,7 @@ class AdvanceController extends AuthedApiController
      */
     public function actionCreate(): JSendResponse
     {
-        $form = AdvanceCreateByClientForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $form = AdvanceCreateByClientForm::loadAndValidate(Yii::$app->request->bodyParams, '', $this->currentUser->isSuperadmin);
         $clientFilesForm = ClientFileForm::loadAndValidate(Yii::$app->request->bodyParams);
 
         $this->clientService->loadFiles($form->client_id, $clientFilesForm);

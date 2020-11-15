@@ -26,6 +26,9 @@ return [
     'POST api/advance/<advanceId:\d+>/denied' => 'api/advance/denied',
 
     #одобрить заявку
+    'POST api/payment/<clientId:\d+>/pay' => 'api/payment/pay',
+
+    #принять оплату
     'POST api/advance/<advanceId:\d+>/approved' => 'api/advance/approved',
 
     #проценты

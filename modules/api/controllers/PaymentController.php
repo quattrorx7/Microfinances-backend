@@ -3,8 +3,10 @@
 namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
+use app\components\JSendResponse;
 use app\helpers\DateHelper;
 use app\modules\api\serializer\payment\PaymentSerializer;
+use app\modules\payment\components\CreatePayService;
 use app\modules\payment\components\PaymentService;
 use app\modules\payment\exceptions\ValidatePaymentCreateException;
 use app\modules\payment\exceptions\ValidatePaymentUpdateException;
@@ -19,11 +21,14 @@ class PaymentController extends AuthedApiController
 
     protected PaymentService $paymentService;
 
+    protected CreatePayService $createPayService;
+
     protected PaymentProvider $paymentProvider;
 
-    public function injectDependencies(PaymentService $paymentService, PaymentProvider $paymentProvider): void
+    public function injectDependencies(PaymentService $paymentService, PaymentProvider $paymentProvider, CreatePayService $createPayService): void
     {
         $this->paymentService = $paymentService;
+        $this->createPayService = $createPayService;
         $this->paymentProvider = $paymentProvider;
     }
 
@@ -33,7 +38,8 @@ class PaymentController extends AuthedApiController
             'index' => ['GET'],
             'create' => ['POST'],
             'view' => ['GET'],
-            'update' => ['POST']
+            'update' => ['POST'],
+            'pay' => ['POST']
         ];
     }
 
@@ -92,6 +98,13 @@ class PaymentController extends AuthedApiController
 
         $model = $this->paymentService->updateByForm($model, $form);
         return PaymentSerializer::serialize($model);
+    }
+
+    public function actionPay(int $clientId)
+    {
+        $this->createPayService->execute($this->currentUser, $clientId);
+
+        return JSendResponse::success('либо оплачено либо погашено');
     }
 
 }
