@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function($data){
                     return Html::a(
                         'Перейти',
-                        'http://micro.local/admin/payment/index?PaymentSearch[advance_id]='.$data->id,
+                        '/admin/payment/index?PaymentSearch[advance_id]='.$data->id,
                         [
                             'title' => '',
                             'target' => '_blank'
