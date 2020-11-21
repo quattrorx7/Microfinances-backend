@@ -28,7 +28,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"22222222\",\n    \"password\": \"2\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
+							"raw": "{\n    \"id\": \"{{user1Login}}\",\n    \"password\": \"{{user1Password}}\",\n    \"device_id\": \"dsfdsfsdfsdfsdfsdfsdfsdf\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -390,13 +390,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/client/18",
+							"raw": "{{microApiUrl}}/client/22",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"client",
-								"18"
+								"22"
 							]
 						}
 					},
@@ -573,7 +573,7 @@
 										},
 										{
 											"key": "issue_date",
-											"value": "2020-11-11",
+											"value": "2020-11-14",
 											"type": "text"
 										},
 										{
@@ -583,7 +583,7 @@
 										},
 										{
 											"key": "limitation",
-											"value": "2",
+											"value": "20",
 											"type": "text"
 										},
 										{
@@ -599,7 +599,7 @@
 										},
 										{
 											"key": "daily_payment",
-											"value": "45000",
+											"value": "4000",
 											"type": "text"
 										}
 									]
@@ -660,7 +660,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"issue_date\": \"2020-11-02\",\n    \"amount\": 90000,\n    \"limitation\": 10,\n    \"user_id\": 2,\n    \"daily_payment\": 10000\n}",
+									"raw": "{\n    \"issue_date\": \"2020-11-02\",\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"user_id\": 2,\n    \"daily_payment\": 40000\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -668,13 +668,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/14/approved",
+									"raw": "{{microApiUrl}}/advance/15/approved",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"14",
+										"15",
 										"approved"
 									]
 								},
@@ -734,13 +734,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/14/issue-loan",
+									"raw": "{{microApiUrl}}/advance/15/issue-loan",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"14",
+										"15",
 										"issue-loan"
 									]
 								},
@@ -965,13 +965,13 @@
 			"name": "Оплата",
 			"item": [
 				{
-					"name": "Принять оплату",
+					"name": "Принять оплату по id клиента",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \n}",
+							"raw": "{\n    \"advance_ids\": [8],\n    \"amount\": 80000,\n    \"in_cart\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -987,6 +987,32 @@
 								"payment",
 								"22",
 								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "История платежей",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/payment/:clientId/history",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"payment",
+								":clientId",
+								"history"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "22",
+									"description": "id клиента"
+								}
 							]
 						}
 					},
@@ -1035,14 +1061,24 @@
 	],
 	"variable": [
 		{
-			"id": "70e1ff74-ead8-45fc-a91e-b5b94a4c8f7f",
+			"id": "cf533356-2e11-4301-82f1-9089fa1e12bd",
 			"key": "accessToken",
 			"value": ""
 		},
 		{
-			"id": "7b13173b-24c6-4963-b69f-50142bcfba23",
+			"id": "160b8886-b5c1-47c6-b4c2-468ca0268b2d",
 			"key": "microApiUrl",
 			"value": "https://mikrofhinans.ru/api"
+		},
+		{
+			"id": "e86ddf83-6486-429a-b8d1-c68301e83a56",
+			"key": "user1Login",
+			"value": "70000000"
+		},
+		{
+			"id": "739af431-5811-44cb-ac52-e148fdb169a7",
+			"key": "user1Password",
+			"value": "12345"
 		}
 	],
 	"protocolProfileBehavior": {}
