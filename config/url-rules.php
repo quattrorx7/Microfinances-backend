@@ -25,10 +25,13 @@ return [
     #отказать в заявке
     'POST api/advance/<advanceId:\d+>/denied' => 'api/advance/denied',
 
-    #одобрить заявку
+    #принять оплату
     'POST api/payment/<clientId:\d+>/pay' => 'api/payment/pay',
 
-    #принять оплату
+    #история оплат
+    'GET api/payment/<clientId:\d+>/history' => 'api/payment/history',
+
+    #одобрить заявку
     'POST api/advance/<advanceId:\d+>/approved' => 'api/advance/approved',
 
     #проценты

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\DateHelper;
 use yii\db\ActiveQuery;
 
 /**
@@ -10,9 +11,10 @@ use yii\db\ActiveQuery;
  *
  * @property-write File $file
  * @property-read mixed $lastDebtPayments
- * @property-read ActiveQuery $activeAdvances
+ * @property-read mixed $activeAdvances
  * @property-read mixed $allDebts
- * @property-read ActiveQuery $files
+ * @property-read mixed $activePayments
+ * @property-read mixed $files
  */
 class Client extends \app\models\base\Client
 {
@@ -36,6 +38,14 @@ class Client extends \app\models\base\Client
             ->andOnCondition(['status' => Advance::STATE_ISSUED]);
     }
 
+    public function getActivePayments(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Payment::class, ['client_id' => 'id'])
+            ->andOnCondition(['created_at' => DateHelper::nowWithoutHours()])
+            ->andOnCondition(['<>', 'amount', 0]);
+    }
+
     /**
      * получить все платежи кроме сегодняшнего на которых есть долги
      */
@@ -43,7 +53,8 @@ class Client extends \app\models\base\Client
     {
         return $this
             ->hasMany(Payment::class, ['client_id' => 'id'])
-            ->andOnCondition(['>', 'amount', 0]);
+            ->andOnCondition(['>', 'amount', 0])
+            ->andOnCondition(['<>', 'created_at', DateHelper::nowWithoutHours()]);
     }
 
     /** общая сумма долга за предыдущие дни */

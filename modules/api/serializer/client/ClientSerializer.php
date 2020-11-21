@@ -33,7 +33,8 @@ class ClientSerializer extends AbstractProperties
                 'activeAdvances',
                 'debt' => static function(Client $client) {
                     return $client->getAllDebts();
-                }
+                },
+                'balance'
             ],
             DistrictSerializer::class,
             FilesSerializer::class,

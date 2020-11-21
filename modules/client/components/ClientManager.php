@@ -19,4 +19,9 @@ class ClientManager extends BaseService
     {
         return $this->clientRepository->getBySearch($form->search);
     }
+
+    public function getClientById(int $clientId)
+    {
+        return $this->clientRepository->getClientById($clientId);
+    }
 }

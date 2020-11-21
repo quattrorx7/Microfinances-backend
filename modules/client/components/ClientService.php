@@ -135,4 +135,16 @@ class ClientService extends BaseService
     {
         $model->delete();
     }
+
+    public function updateBalance(Client $model, int $amount): void
+    {
+        $model->balance += $amount;
+        $this->clientRepository->save($model);
+    }
+
+    public function updateBalanceWIthAutoPayment(Client $model, int $amount): void
+    {
+        $model->balance = $amount;
+        $this->clientRepository->save($model);
+    }
 }

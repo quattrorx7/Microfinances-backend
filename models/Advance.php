@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\helpers\DateHelper;
+
 /**
  * Class Advance
  * @package app\models
@@ -55,5 +57,7 @@ class Advance extends \app\models\base\Advance
         $this->payment_status = self::PAYMENT_STATUS_STARTED;
         $this->summa_left_to_pay = $this->summa_with_percent;
         $this->payment_left = $this->limitation;
+
+        $this->issue_date = DateHelper::formatDate($this->issue_date, 'Y-m-d') . ' ' . DateHelper::formatDate(DateHelper::now(), 'H:i:s');
     }
 }

@@ -31,4 +31,13 @@ class PaymentController extends Controller
         $this->paymentService
             ->generatePaymentData($models);
     }
+
+    /** попытка оплатить долги через резерв */
+    public function actionDebts()
+    {
+        $models = $this->advanceService
+            ->getDebtPayments(DateHelper::getModifyDate(DateHelper::nowWithoutHours(), '-1 day'));
+
+        $this->paymentService->payDebtsFromClientBalance($models);
+    }
 }

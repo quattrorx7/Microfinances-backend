@@ -63,6 +63,14 @@ class PaymentRepository extends BaseRepository
             ->all();
     }
 
+    public function getPaysWithClientAndDate(int $clientId, string $date)
+    {
+        return Payment::find()
+            ->where(['client_id' => $clientId])
+            ->andWhere(['created_at' => $date])
+            ->all();
+    }
+
     public function savePayment(Payment $model)
     {
         $transaction = \Yii::$app->db->beginTransaction();

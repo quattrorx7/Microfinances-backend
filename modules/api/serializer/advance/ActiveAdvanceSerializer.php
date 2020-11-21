@@ -4,7 +4,7 @@ namespace app\modules\api\serializer\advance;
 
 use app\models\Advance;
 use app\components\serializers\AbstractProperties;
-use app\modules\advance\formatters\AdvanceStatusFormatter;
+use app\modules\advance\formatters\AdvanceIssueDateFormatter;
 use app\modules\api\serializer\files\FilesSerializer;
 
 class ActiveAdvanceSerializer extends AbstractProperties
@@ -14,7 +14,9 @@ class ActiveAdvanceSerializer extends AbstractProperties
     {
         return [
             Advance::class => [
-                'issue_date',
+                'issue_date' => function(Advance $advance) {
+                    return AdvanceIssueDateFormatter::formatter($advance);
+                },
                 'amount',
                 'limitation',
                 'payment_left',

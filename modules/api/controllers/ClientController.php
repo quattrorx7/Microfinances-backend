@@ -3,6 +3,7 @@
 namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
+use app\modules\advance\components\AdvanceCalculator;
 use app\modules\advance\components\AdvanceService;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
@@ -79,6 +80,12 @@ class ClientController extends AuthedApiController
 
         if ($this->isSuperadmin($this->currentUser)) {
             $advanceForm = AdvanceCreateForm::loadAndValidate(Yii::$app->request->bodyParams);
+
+            $calculateDto = (new AdvanceCalculator())->calculate(
+                $advanceForm->amount,
+                $advanceForm->limitation,
+                $advanceForm->daily_payment
+            );
 
             $client = $this->clientService->createByForm($form, $this->currentUser);
             $user = $this->userService->getUser($advanceForm->user_id);

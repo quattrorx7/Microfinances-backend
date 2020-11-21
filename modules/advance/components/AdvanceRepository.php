@@ -89,8 +89,18 @@ class AdvanceRepository extends BaseRepository
             ->andWhere(['IS', 'deleted_at', null])
             ->andWhere(['payment_status' => Advance::PAYMENT_STATUS_STARTED])
             ->andWhere(['>', 'summa_left_to_pay', 0])
-            ->andWhere(['<>', 'issue_date', $date])
+            ->andWhere(['<', 'issue_date', $date . ' 06:00:00'])
             ->andWhere(['>', 'payment_left', 0])
+            ->all();
+    }
+
+    public function getDebtAdvances(string $date)
+    {
+        return Advance::find()
+            ->andWhere(['IS', 'deleted_at', null])
+            ->andWhere(['payment_status' => Advance::PAYMENT_STATUS_STARTED])
+            ->andWhere(['>', 'summa_left_to_pay', 0])
+            ->andWhere(['<', 'issue_date', $date . ' 06:00:00'])
             ->all();
     }
 

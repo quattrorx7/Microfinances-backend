@@ -5,8 +5,11 @@ namespace app\modules\api\controllers;
 use app\components\controllers\AuthedApiController;
 use app\components\JSendResponse;
 use app\helpers\DateHelper;
+use app\modules\api\serializer\payment\PaymentHistorySerializer;
 use app\modules\api\serializer\payment\PaymentSerializer;
+use app\modules\client\forms\ClientPayForm;
 use app\modules\payment\components\CreatePayService;
+use app\modules\payment\components\PaymentHistoryService;
 use app\modules\payment\components\PaymentService;
 use app\modules\payment\exceptions\ValidatePaymentCreateException;
 use app\modules\payment\exceptions\ValidatePaymentUpdateException;
@@ -21,12 +24,20 @@ class PaymentController extends AuthedApiController
 
     protected PaymentService $paymentService;
 
+    protected PaymentHistoryService $paymentHistoryService;
+
     protected CreatePayService $createPayService;
 
     protected PaymentProvider $paymentProvider;
 
-    public function injectDependencies(PaymentService $paymentService, PaymentProvider $paymentProvider, CreatePayService $createPayService): void
+    public function injectDependencies(
+        PaymentHistoryService $paymentHistoryService,
+        PaymentService $paymentService,
+        PaymentProvider $paymentProvider,
+        CreatePayService $createPayService
+    ): void
     {
+        $this->paymentHistoryService = $paymentHistoryService;
         $this->paymentService = $paymentService;
         $this->createPayService = $createPayService;
         $this->paymentProvider = $paymentProvider;
@@ -39,7 +50,8 @@ class PaymentController extends AuthedApiController
             'create' => ['POST'],
             'view' => ['GET'],
             'update' => ['POST'],
-            'pay' => ['POST']
+            'pay' => ['POST'],
+            'history' => ['GET']
         ];
     }
 
@@ -100,11 +112,17 @@ class PaymentController extends AuthedApiController
         return PaymentSerializer::serialize($model);
     }
 
-    public function actionPay(int $clientId)
+    public function actionPay(int $clientId): JSendResponse
     {
-        $this->createPayService->execute($this->currentUser, $clientId);
-
-        return JSendResponse::success('либо оплачено либо погашено');
+        $form = ClientPayForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $this->createPayService->execute($this->currentUser, $clientId, $form);
+        return JSendResponse::success('Оплата принята');
     }
 
+    public function actionHistory(int $clientId)
+    {
+        $history = $this->paymentHistoryService->getHistoryByClientId($clientId);
+
+        return PaymentHistorySerializer::serialize($history);
+    }
 }

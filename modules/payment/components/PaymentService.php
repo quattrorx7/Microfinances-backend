@@ -8,6 +8,12 @@ use app\helpers\DateHelper;
 use app\models\Advance;
 use app\models\Payment;
 use app\models\User;
+use app\modules\advance\components\AdvanceService;
+use app\modules\client\dto\PayDto;
+use app\modules\client\forms\ClientPayForm;
+use app\modules\client\handlers\BalanceUpdateHandler;
+use app\modules\client\handlers\DebtHandler;
+use app\modules\client\handlers\StartHandler;
 use app\modules\payment\dto\PaymentCollection;
 use app\modules\payment\exceptions\PaymentNotFoundException;
 use app\modules\payment\forms\PaymentCreateForm;
@@ -23,11 +29,19 @@ class PaymentService extends BaseService
 
     protected PaymentPopulator $paymentPopulator;
 
-    public function injectDependencies(PaymentFactory $paymentFactory, PaymentRepository $paymentRepository, PaymentPopulator $paymentPopulator): void
+    protected AdvanceService $advanceService;
+
+    public function injectDependencies(
+        PaymentFactory $paymentFactory,
+        PaymentRepository $paymentRepository,
+        PaymentPopulator $paymentPopulator,
+        AdvanceService $advanceService
+    ): void
     {
         $this->paymentFactory = $paymentFactory;
         $this->paymentRepository = $paymentRepository;
         $this->paymentPopulator = $paymentPopulator;
+        $this->advanceService = $advanceService;
     }
 
     /**
@@ -107,5 +121,37 @@ class PaymentService extends BaseService
             ->getPayd($date, $user->isSuperadmin ? null : $user->id);
 
         return new PaymentCollection($payments);
+    }
+
+    public function payByPayment(Payment $paymentModel, int $amount)
+    {
+        $paymentModel->amount -= $amount;
+        $this->paymentRepository->save($paymentModel);
+
+        $this->advanceService->calculatePayLeftSumm($paymentModel->advance, $amount);
+    }
+
+    public function payDebtsFromClientBalance(array $advances): void
+    {
+        foreach ($advances as $advance) {
+            if ($advance->client->getAllDebts()) {
+                $form = ClientPayForm::loadAndValidate([
+                    'advance_ids' => array_column($advance->client->lastDebtPayments, 'advance_id'),
+                    'amount' => $advance->client->balance,
+                    'in_cart' => false
+                ]);
+                $payDto = new PayDto($advance->user, $advance->client, $form);
+
+                $startHandler = new StartHandler();
+                $debtHandler = new DebtHandler();
+                $balanceHandler = new BalanceUpdateHandler();
+
+                $startHandler
+                    ->setNext($debtHandler)
+                    ->setNext($balanceHandler);
+
+                $startHandler->handle(true, $payDto);
+            }
+        }
     }
 }

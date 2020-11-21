@@ -236,4 +236,21 @@ class AdvanceService extends BaseService
     {
         return $this->advanceRepository->getActiveAdvances($date);
     }
+
+    public function getDebtPayments(string $date)
+    {
+        return $this->advanceRepository->getDebtAdvances($date);
+    }
+
+    public function calculatePayLeftSumm(Advance $advance, int $amount)
+    {
+        $advance->summa_left_to_pay -= $amount;
+
+        if ($advance->summa_left_to_pay === 0) {
+            $advance->payment_status = Advance::PAYMENT_STATUS_CLOSED;
+        }
+
+        $this->advanceRepository->save($advance);
+        /** @todo return events */
+    }
 }
