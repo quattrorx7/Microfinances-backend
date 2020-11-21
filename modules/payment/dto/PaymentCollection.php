@@ -3,6 +3,7 @@
 namespace app\modules\payment\dto;
 
 use app\models\Payment;
+use app\modules\api\serializer\payment\PaymentSerializer;
 
 class PaymentCollection
 {
@@ -18,6 +19,6 @@ class PaymentCollection
     public function add(Payment $payment): void
     {
         $this->payments[$payment->district_id]['title'] = $payment->district->title;
-        $this->payments[$payment->district_id]['payments'][] = PaymentDto::createFromPayment($payment);
+        $this->payments[$payment->district_id]['payments'][] = PaymentSerializer::serialize($payment);
     }
 }
