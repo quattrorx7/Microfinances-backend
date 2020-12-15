@@ -14,6 +14,7 @@ class ActiveAdvanceSerializer extends AbstractProperties
     {
         return [
             Advance::class => [
+                'id',
                 'issue_date' => function(Advance $advance) {
                     return AdvanceIssueDateFormatter::formatter($advance);
                 },
