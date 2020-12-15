@@ -30,7 +30,10 @@ class ClientSerializer extends AbstractProperties
                 'activity',
                 'profit',
                 'comment',
-                'activeAdvances',
+                'activeAdvances' => static function(Client $client){
+                    $activeAdvances = $client->activeAdvances;
+                    return ActiveAdvanceSerializer::serialize($activeAdvances);
+                },
                 'debt' => static function(Client $client) {
                     return $client->getAllDebts();
                 },
@@ -39,7 +42,6 @@ class ClientSerializer extends AbstractProperties
             DistrictSerializer::class,
             FilesSerializer::class,
             OwnerSerializer::class,
-            ActiveAdvanceSerializer::class
         ];
     }
 
