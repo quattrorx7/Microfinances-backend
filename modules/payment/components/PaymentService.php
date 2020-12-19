@@ -9,6 +9,7 @@ use app\models\Advance;
 use app\models\Payment;
 use app\models\User;
 use app\modules\advance\components\AdvanceService;
+use app\modules\api\serializer\payment\PaymentSerializerWithShortClient;
 use app\modules\client\dto\PayDto;
 use app\modules\client\forms\ClientPayForm;
 use app\modules\client\handlers\BalanceUpdateHandler;
@@ -153,5 +154,16 @@ class PaymentService extends BaseService
                 $startHandler->handle(true, $payDto);
             }
         }
+    }
+
+    /* 
+     * получить все платежи кроме сегодняшнего на которых есть долги
+    */
+    public function getLastDebtPayments(User $user)
+    {
+        $payments = $this->paymentRepository
+            ->getLastDebtPayments($user->isSuperadmin ? null : $user->id);
+
+        return PaymentSerializerWithShortClient::serialize($payments);
     }
 }

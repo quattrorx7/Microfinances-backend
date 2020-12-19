@@ -3,6 +3,7 @@
 namespace app\modules\payment\components;
 
 use app\components\BaseRepository;
+use app\helpers\DateHelper;
 use app\models\Payment;
 use app\modules\payment\exceptions\PaymentNotFoundException;
 
@@ -100,5 +101,30 @@ class PaymentRepository extends BaseRepository
             $transaction->rollBack();
             throw $exception;
         }
+    }
+
+    /**
+     * Получение списка долгов, с меткой что часть долга был оплачен сегодня
+     */
+    public function getLastDebtPayments(int $userId = null)
+    {
+        $query = Payment::find();
+
+        if (!$userId) {
+            $query->andWhere(['user_id' => $userId]);
+        }
+
+        $query
+            ->where(['>', 'payment.amount', 0])
+            ->andWhere(['<>', 'payment.created_at', DateHelper::nowWithoutHours()])
+            ->joinWith(['paymentHistories'=>function($query){
+                $query->onCondition(['DATE(payment_history.created_at)'=>DateHelper::nowWithoutHours()]);
+            }])
+            ->select('payment.*')
+            ->addSelect(['IFNULL(payment_history.id, 0) as todayPayed'])
+            ->groupBy('payment.id')
+            ->orderBy('payment.id DESC');
+
+        return $query->all();
     }
 }

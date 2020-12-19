@@ -73,6 +73,12 @@ class PaymentController extends AuthedApiController
         return array_values($collection->payments);
     }
 
+    public function actionDebt()
+    {
+        $collection = $this->paymentService->getLastDebtPayments($this->currentUser);
+        return array_values($collection);
+    }
+
     /**
      * @return array
      * @throws ValidatePaymentCreateException
