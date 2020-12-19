@@ -44,8 +44,10 @@ class PaymentRepository extends BaseRepository
         }
 
         return $query
+            ->addSelect('*, SUM(amount) as amount')
             ->andWhere(['created_at' => $date])
             ->andWhere(['>', 'amount', 0])
+            ->groupBy('client_id')
             ->all();
     }
 
