@@ -124,11 +124,11 @@ class ClientController extends AuthedApiController
         $form = ClientUpdateForm::loadAndValidate(Yii::$app->request->bodyParams);
         $model = $this->clientService->getClient($id);
 
-        if ($this->isSuperadmin($this->currentUser)) {
-            //@todo тут редактирует руководитель
+        // if ($this->isSuperadmin($this->currentUser)) {
+        //     //@todo тут редактирует руководитель
 
-            return ClientSerializer::serialize($model);
-        }
+        //     return ClientSerializer::serialize($model);
+        // }
 
         $model = $this->clientService->updateByForm($model, $form);
 
