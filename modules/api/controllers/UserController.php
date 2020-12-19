@@ -6,6 +6,7 @@ use app\components\controllers\AuthedApiController;
 use app\components\exceptions\UnSuccessModelException;
 use app\modules\api\serializer\user\UserProfileSerializer;
 use app\modules\api\serializer\user\UserSerializer;
+use app\modules\user\forms\UserSearchForm;
 use app\modules\user\components\UserManager;
 use app\modules\user\components\UserService;
 use app\modules\user\exceptions\UserNotFoundException;
@@ -82,7 +83,9 @@ class UserController extends AuthedApiController
      */
     public function actionIndex(): array
     {
-        $users = $this->userManager->getAllUsers();
+        $form = UserSearchForm::loadAndValidate(Yii::$app->request->queryParams);
+        $users = $this->userManager->getUsers($form);
+
         return UserSerializer::serialize($users);
     }
 

@@ -4,6 +4,7 @@ namespace app\modules\user\components;
 
 use app\components\BaseService;
 use app\models\User;
+use app\modules\user\forms\UserSearchForm;
 use app\modules\user\exceptions\UserNotFoundException;
 
 /**
@@ -23,6 +24,10 @@ class UserManager extends BaseService
     public function getAllUsers()
     {
         return $this->userRepository->getAll();
+    }
+
+    public function getUsers(UserSearchForm $form){
+        return $this->userRepository->getBySearch($form->search);
     }
 
     /**

@@ -62,6 +62,16 @@ class UserRepository extends BaseRepository
             ->all();
     }
 
+    public function getBySearch($search): array 
+    {
+        $query = User::find();
+        if ($search) {
+            $query->andWhere(['LIKE', "fullname", $search]);
+        }
+
+        return $query->all();
+    }
+
     public function getActiveUserByUsername(string $username)
     {
         $model = User::find()
