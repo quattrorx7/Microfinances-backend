@@ -47,5 +47,7 @@ class CreatePayService extends BaseService
         $payDto = new PayDto($user, $client, $form);
 
         $this->clientPayService->pay($payDto);
+
+        return $payDto->getMessage();
     }
 }

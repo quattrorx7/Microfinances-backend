@@ -24,8 +24,10 @@ class PaymentHandler extends AbstractPayHandler
             $sortPayments = [];
 
             foreach ($dto->advanceIds as $advanceId) {
-                $sortPayments[$advanceId] = $activePayments[$advanceId];
-                unset($activePayments[$advanceId]);
+                if(isset($activePayments[$advanceId])){
+                    $sortPayments[$advanceId] = $activePayments[$advanceId];
+                    unset($activePayments[$advanceId]);
+                }
             }
 
             $sortPayments = array_merge($sortPayments, $activePayments);

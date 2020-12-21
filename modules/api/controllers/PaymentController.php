@@ -121,8 +121,8 @@ class PaymentController extends AuthedApiController
     public function actionPay(int $clientId): JSendResponse
     {
         $form = ClientPayForm::loadAndValidate(Yii::$app->request->bodyParams);
-        $this->createPayService->execute($this->currentUser, $clientId, $form);
-        return JSendResponse::success('Оплата принята');
+        $mes = $this->createPayService->execute($this->currentUser, $clientId, $form);
+        return JSendResponse::success($mes);
     }
 
     public function actionHistory(int $clientId)

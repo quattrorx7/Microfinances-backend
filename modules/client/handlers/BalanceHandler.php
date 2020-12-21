@@ -2,6 +2,7 @@
 
 namespace app\modules\client\handlers;
 
+use app\helpers\PriceHelper;
 use app\modules\client\components\ClientService;
 use app\modules\client\dto\PayDto;
 
@@ -18,6 +19,8 @@ class BalanceHandler extends AbstractPayHandler
     {
         if ($next) {
             $this->clientService->updateBalance($dto->client, $dto->amount);
+            if($dto->amount>0)
+                $dto->addMessage('Резерв начислен: '.PriceHelper::priceFormat($dto->amount));
         }
 
         return parent::handle($next, $dto);

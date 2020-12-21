@@ -23,6 +23,7 @@ class ClientPayService extends BaseService
             ->setNext($paymentHandler)
             ->setNext($balanceHandler);
 
+        $dto->addMessage('Оплата принята');
         $startHandler->handle(true, $dto);
     }
 

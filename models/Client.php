@@ -63,4 +63,23 @@ class Client extends \app\models\base\Client
         $payments = $this->lastDebtPayments;
         return array_sum(array_column($payments, 'amount'));
     }
+
+    /**
+     * получить все платежи, которые нужно заплатить(долги + активные платежи)
+     */
+    public function getActiveandAndDebtPayments(): ActiveQuery
+    {
+        return $this
+            ->hasMany(Payment::class, ['client_id' => 'id'])
+            ->andOnCondition(['>', 'amount', 0]);
+    }
+
+    /**
+     * Общая сумма всех платежей, которые нужно заплатить(долги + активные платежи)
+     */
+    public function getActiveandAndDebtPaymentsSum():int
+    {
+        return (int)$this->getActiveandAndDebtPayments()
+            ->sum('amount');
+    }
 }

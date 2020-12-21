@@ -18,6 +18,8 @@ class PayDto
 
     public $inCart;
 
+    public $message;
+
     /**
      * PayDto constructor.
      * @param User $user
@@ -31,5 +33,21 @@ class PayDto
         $this->amount = $form->amount;
         $this->advanceIds = $form->advance_ids;
         $this->inCart = $form->in_cart;
+    }
+
+    /**
+     * Добавление сообщения
+     */
+    public function addMessage($str)
+    {
+        $this->message .= ($this->message?"\n":'').$str;
+    }
+
+    /**
+     * Получение сообщения
+     */
+    public function getMessage()
+    {
+        return $this->message;
     }
 }
