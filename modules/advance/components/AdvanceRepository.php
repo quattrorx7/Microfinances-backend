@@ -114,14 +114,12 @@ class AdvanceRepository extends BaseRepository
     public function createDebtQuery(): ActiveQuery
     {
         return Advance::find()
-            ->joinWith(['payments' => static function(ActiveQuery $activeQuery) {
-                $activeQuery->andOnCondition(['payment.created_at' => DateHelper::nowWithoutHours()]);
-            }])
+            ->select(['advance.*'])
             ->andWhere(['IS', 'deleted_at', null])
             ->andWhere(['payment_status' => Advance::PAYMENT_STATUS_STARTED])
             ->andWhere(['payment_left' => 0])
             ->andWhere(['>', 'summa_left_to_pay', 0])
-            ->andWhere(['IS', 'payment.id', null]);
+            ->andWhere(['<', 'end_date', DateHelper::nowWithoutHours()]);
     }
 
 }

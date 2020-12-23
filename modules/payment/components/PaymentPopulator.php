@@ -31,9 +31,13 @@ class PaymentPopulator extends AbstractPopulator
 
     public function populateFromAdvance(Payment $model, Advance $advance): self
     {
-        $this->populateAttributes($model, ['amount' => $advance->daily_payment], [
-            'amount'
-        ]);
+        $this->populateAttributes($model, 
+            [
+                'amount' => $advance->daily_payment,
+                'full_amount' => $advance->daily_payment], 
+            [
+                'amount', 'full_amount'
+            ]);
 
         $model->populateRelation('client', $advance->client);
         $model->populateRelation('advance', $advance);

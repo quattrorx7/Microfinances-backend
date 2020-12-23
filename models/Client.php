@@ -46,6 +46,11 @@ class Client extends \app\models\base\Client
             ->andOnCondition(['<>', 'amount', 0]);
     }
 
+    public function getActivePaymentsSum(): int
+    {
+        return (int)$this->getActivePayments()->sum('amount');
+    }
+
     /**
      * получить все платежи кроме сегодняшнего на которых есть долги
      */

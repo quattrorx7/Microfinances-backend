@@ -19,6 +19,10 @@ class Advance extends \app\models\base\Advance
     public CONST PAYMENT_STATUS_STARTED = 4;
     public CONST PAYMENT_STATUS_CLOSED = 8;
 
+    public $debt;
+    public $todayPayed;
+
+
     /** одобрено */
     public function isApproved(): bool
     {
@@ -59,5 +63,6 @@ class Advance extends \app\models\base\Advance
         $this->payment_left = $this->limitation;
 
         $this->issue_date = DateHelper::formatDate($this->issue_date, 'Y-m-d') . ' ' . DateHelper::formatDate(DateHelper::now(), 'H:i:s');
+        $this->end_date = DateHelper::formatDate(DateHelper::getModifyDate($this->issue_date, '+'.($this->payment_left-1).' day'), 'Y-m-d');
     }
 }

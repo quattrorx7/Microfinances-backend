@@ -2,6 +2,7 @@
 
 namespace app\modules\advance\components;
 
+use app\helpers\DateHelper;
 use app\models\User;
 use app\modules\client\forms\ClientSearchForm;
 use yii\base\BaseObject;
@@ -42,6 +43,15 @@ class AdvanceManager extends BaseObject
         if (!$user->isSuperadmin) {
             $query->andWhere(['advance.user_id' => $user->id]);
         }
+
+        $query
+            ->joinWith(['paymentHistories'=>function($query){
+                $query->onCondition(['DATE(payment_history.created_at)'=>DateHelper::nowWithoutHours()]);
+            }])
+            ->addSelect(['IFNULL(payment_history.id, 0) as todayPayed'])
+            ->addSelect(['SUM(summa_left_to_pay) as debt'])
+            ->groupBy('advance.client_id')
+            ->orderBy('advance.id DESC');
 
         return $query->all();
     }

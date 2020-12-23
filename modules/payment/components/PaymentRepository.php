@@ -60,14 +60,20 @@ class PaymentRepository extends BaseRepository
             $query->andWhere(['user_id' => $userId]);
         }
 
-        return $query
+        $result = $query
             ->andWhere(['payment.created_at' => $date])
-            ->andWhere(['payment.amount' => 0])
             ->joinWith('paymentHistories')
-            ->groupBy('payment.id')
+            ->groupBy('payment.client_id')
             ->select('payment.*')
             ->addSelect('SUM(payment_history.amount) as amount')
+            ->addSelect('SUM(payment.amount) as debt')
             ->all();
+
+        $result = array_filter($result, function($item){
+            return $item->debt==0;
+        });
+
+        return $result;
     }
 
     public function getPaysWithClientAndDate(int $clientId, string $date)

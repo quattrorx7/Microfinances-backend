@@ -10,5 +10,6 @@ class Payment extends \app\models\base\Payment
 {
     //virtual
     public $todayPayed;
+    public $debt;
 
 }

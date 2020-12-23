@@ -4,7 +4,7 @@ namespace app\modules\api\serializer\advance;
 
 use app\models\Advance;
 use app\components\serializers\AbstractProperties;
-use app\modules\api\serializer\district\DistrictSerializer;
+use app\modules\api\serializer\client\ClientSerializer;
 
 class AdvanceDebtSerializer extends AbstractProperties
 {
@@ -13,15 +13,15 @@ class AdvanceDebtSerializer extends AbstractProperties
     {
         return [
             Advance::class => [
-                'id' => 'client_id',
-                'name' => 'client.name',
-                'surname' => 'client.surname',
-                'district' => 'client.district',
-                'debt' => static function(Advance $advance) {
-                    return $advance->client->getAllDebts();
+                'client',
+                'amount' => function(Advance $model){
+                    return $model->client->getActivePaymentsSum();
+                },
+                'todayPayed' => function(Advance $model){
+                    return $model->todayPayed?true:false;
                 }
             ],
-            DistrictSerializer::class
+            ClientSerializer::class,
         ];
     }
 
