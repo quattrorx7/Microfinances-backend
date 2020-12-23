@@ -54,6 +54,20 @@ class ClientPopulator extends AbstractPopulator
         return $this;
     }
 
+    public function populateFromUpdateFormDop(Client $model, ClientUpdateForm $form): self
+    {
+        $attr = [];
+
+        if(isset($form->attributes['activity'])) $attr[] = 'activity';
+        if(isset($form->attributes['profit'])) $attr[] = 'profit';
+        if(isset($form->attributes['comment'])) $attr[] = 'comment';
+
+        $this->populateAttributes($model, $form->attributes, $attr);
+
+        return $this;
+    }
+    
+
     public function populateFiles(Client $model, $uploadedFiles = []): self
     {
         $fileService = \Yii::createObject(FilesService::class);

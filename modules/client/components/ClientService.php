@@ -95,10 +95,11 @@ class ClientService extends BaseService
      */
     public function updateByForm(Client $model, ClientUpdateForm $form): Client
     {
-        $district = $this->districtService->getDistrict($form->district_id);
+        $district = $form->district_id?$this->districtService->getDistrict($form->district_id):null;
 
         $this->clientPopulator
             ->populateFromUpdateForm($model, $form)
+            ->populateFromUpdateFormDop($model, $form)
             ->populateDistrict($model, $district)
             ->populateFiles($model, UploadedFile::getInstancesByName('files'))
             ->getModel($model);

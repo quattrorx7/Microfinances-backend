@@ -7,6 +7,7 @@ use app\components\exceptions\UnSuccessModelException;
 use app\components\exceptions\UserException;
 use app\models\Advance;
 use app\models\Client;
+use app\models\Payment;
 use app\models\User;
 use app\modules\advance\dto\AdvanceDto;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
@@ -228,6 +229,15 @@ class AdvanceService extends BaseService
         }
 
         $this->advanceRepository->saveAdvance($model);
+
+        if($currentUser->isSuperadmin){
+            if($client->owner_id != $model->user->id){
+                Advance::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+                Payment::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+                $client->owner_id = $user->id;
+                $client->save();
+            }
+        }
 
         return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
     }

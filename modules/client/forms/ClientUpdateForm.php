@@ -19,12 +19,16 @@ class ClientUpdateForm extends Model
     public $work_address;
     public $district_id;
     public $files;
+    public $activity;
+    public $profit;
+    public $comment;
+
 
     public function rules(): array
     {
         return [
-            [['name', 'surname', 'phone', 'district_id'], 'required'],
-            [['name', 'surname', 'patronymic'], 'string'],
+            [['name', 'surname', 'phone'], 'required'],
+            [['name', 'surname', 'patronymic', 'activity', 'profit', 'comment'], 'string'],
             [['phone', 'additional_phone'], PhoneValidator::class],
             [['residence_address', 'work_address'], 'string'],
             [['files'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
@@ -43,7 +47,10 @@ class ClientUpdateForm extends Model
             'residence_address' => 'Адрес проживания',
             'work_address' => 'Адрес работы',
             'district_id' => 'Район',
-            'files' => 'Фотографии'
+            'files' => 'Фотографии',
+            'activity' => 'Вид деятельности',
+            'profit' => 'Выручка в день',
+            'comment' => 'Комментарий',
         ];
     }
 

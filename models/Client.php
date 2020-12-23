@@ -19,6 +19,13 @@ use yii\db\ActiveQuery;
 class Client extends \app\models\base\Client
 {
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        if(isset($changedAttributes['district_id'])){
+            Payment::updateAll(['district_id'=>$this->district_id], ['client_id'=>$this->id]);
+        }
+    }
+
     public function getFiles(): ActiveQuery
     {
         return $this->hasMany(File::class, ['id' => 'file_id'])

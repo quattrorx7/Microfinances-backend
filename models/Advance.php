@@ -22,6 +22,16 @@ class Advance extends \app\models\base\Advance
     public $debt;
     public $todayPayed;
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        if(isset($changedAttributes['user_id'])){
+            self::updateAll(['user_id'=>$this->user_id], ['client_id'=>$this->client_id]);
+            Payment::updateAll(['user_id'=>$this->user_id], ['client_id'=>$this->client_id]);
+        }
+        if(isset($changedAttributes['district_id'])){
+            Payment::updateAll(['district_id'=>$this->district_id], ['client_id'=>$this->id]);
+        }
+    }
 
     /** одобрено */
     public function isApproved(): bool
