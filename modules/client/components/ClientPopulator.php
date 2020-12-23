@@ -46,7 +46,9 @@ class ClientPopulator extends AbstractPopulator
             'surname',
             'patronymic',
             'phone',
-            'additional_phone'
+            'additional_phone',
+            'residence_address',
+            'work_address',
         ]);
 
         return $this;
