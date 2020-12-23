@@ -30,6 +30,10 @@ class UserManager extends BaseService
         return $this->userRepository->getBySearch($form->search);
     }
 
+    public function getUsersWithoutAdmin(UserSearchForm $form){
+        return $this->userRepository->getWithoutAdminBySearch($form->search);
+    }
+
     /**
      * @param int $userId
      * @return User

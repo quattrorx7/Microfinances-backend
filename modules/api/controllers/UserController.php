@@ -84,7 +84,7 @@ class UserController extends AuthedApiController
     public function actionIndex(): array
     {
         $form = UserSearchForm::loadAndValidate(Yii::$app->request->queryParams);
-        $users = $this->userManager->getUsers($form);
+        $users = $this->userManager->getUsersWithoutAdmin($form);
 
         return UserSerializer::serialize($users);
     }

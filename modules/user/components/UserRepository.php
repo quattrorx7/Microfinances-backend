@@ -72,6 +72,17 @@ class UserRepository extends BaseRepository
         return $query->all();
     }
 
+    public function getWithoutAdminBySearch($search): array 
+    {
+        $query = User::find()
+            ->andWhere(['superadmin'=> User::USER]);
+        if ($search) {
+            $query->andWhere(['LIKE', "fullname", $search]);
+        }
+
+        return $query->all();
+    }
+
     public function getActiveUserByUsername(string $username)
     {
         $model = User::find()
