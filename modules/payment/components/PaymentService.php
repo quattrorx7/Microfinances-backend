@@ -14,6 +14,7 @@ use app\modules\client\dto\PayDto;
 use app\modules\client\forms\ClientPayForm;
 use app\modules\client\handlers\BalanceUpdateHandler;
 use app\modules\client\handlers\DebtHandler;
+use app\modules\client\handlers\EmptyHandler;
 use app\modules\client\handlers\StartHandler;
 use app\modules\payment\dto\PaymentCollection;
 use app\modules\payment\exceptions\PaymentNotFoundException;
@@ -147,6 +148,14 @@ class PaymentService extends BaseService
                 $debtHandler = new DebtHandler();
                 $balanceHandler = new BalanceUpdateHandler();
 
+                if($payDto->amount==0){
+                    $emptyHandler = new EmptyHandler();
+                    $startHandler
+                        ->setNext($emptyHandler);
+
+                    $startHandler->handle(true, $payDto);
+                    continue;
+                }
                 $startHandler
                     ->setNext($debtHandler)
                     ->setNext($balanceHandler);

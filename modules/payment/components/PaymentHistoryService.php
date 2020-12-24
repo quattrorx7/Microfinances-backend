@@ -13,7 +13,7 @@ class PaymentHistoryService extends BaseService
 
     public function saveHistory(Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment'): void
     {
-        if ($amount > 0) {
+        if ($amount > 0 || $inCart===null) {
             $model = new PaymentHistory();
 
             $model->payment_id = $payment->id;
