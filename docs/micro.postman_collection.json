@@ -66,7 +66,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"33333333\",\n    \"password\": \"3\",\n    \"device_id\": \"sdfsdfsdfsdfrer5tgtgr\"\n}",
+							"raw": "{\n    \"id\": \"70000000\",\n    \"password\": \"12345\",\n    \"device_id\": \"sdfsdfsdfsdfrer5tgtgr\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -329,12 +329,12 @@
 								},
 								{
 									"key": "phone",
-									"value": "86665456564",
+									"value": "79503196189",
 									"type": "text"
 								},
 								{
 									"key": "additional_phone",
-									"value": "86665456564",
+									"value": "79503196189",
 									"type": "text"
 								},
 								{
@@ -345,7 +345,9 @@
 								{
 									"key": "district_id",
 									"value": "2",
-									"type": "text"
+									"description": "Не обязательный",
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "files[0]",
@@ -360,6 +362,24 @@
 								{
 									"key": "work_address",
 									"value": "dfdgdgdfgdfgdf",
+									"type": "text"
+								},
+								{
+									"key": "activity",
+									"value": "Продажа запчасте",
+									"description": "Не обязательный",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "комммент",
+									"description": "Не обязательный",
+									"type": "text"
+								},
+								{
+									"key": "profit",
+									"value": "10 тыс.",
+									"description": "Не обязательный",
 									"type": "text"
 								}
 							]
@@ -383,13 +403,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/client/22",
+							"raw": "{{microApiUrl}}/client/31",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"client",
-								"22"
+								"31"
 							]
 						}
 					},
@@ -580,13 +600,13 @@
 										},
 										{
 											"key": "user_id",
-											"value": "2",
+											"value": "3",
 											"description": "Владелец (сотрудник на кого назначается займ)",
 											"type": "text"
 										},
 										{
 											"key": "client_id",
-											"value": "22",
+											"value": "31",
 											"type": "text"
 										},
 										{
@@ -650,7 +670,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"issue_date\": \"2020-11-02\",\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"user_id\": 2,\n    \"daily_payment\": 40000\n}",
+									"raw": "{\n    \"issue_date\": \"2020-11-02\",\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"user_id\":3,\n    \"daily_payment\": 40000\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -658,13 +678,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/15/approved",
+									"raw": "{{microApiUrl}}/advance/4/approved",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"15",
+										"4",
 										"approved"
 									]
 								},
@@ -781,13 +801,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/advance/12",
+							"raw": "{{microApiUrl}}/advance/5",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"advance",
-								"12"
+								"5"
 							]
 						},
 						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
@@ -900,23 +920,22 @@
 					"response": []
 				},
 				{
-					"name": "Список архивных платежей (Главная)",
+					"name": "Список архивных платежей (Главная) (список клиентов)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/advance/archive?search=",
+							"raw": "{{microApiUrl}}/client?search=иван",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
-								"advance",
-								"archive"
+								"client"
 							],
 							"query": [
 								{
 									"key": "search",
-									"value": ""
+									"value": "иван"
 								}
 							]
 						}
@@ -924,26 +943,7 @@
 					"response": []
 				},
 				{
-					"name": "Список долгов (Главная) (массив платежей)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{microApiUrl}}/payment/debt",
-							"host": [
-								"{{microApiUrl}}"
-							],
-							"path": [
-								"payment",
-								"debt"
-							]
-						},
-						"description": "Массив просроченных платежей"
-					},
-					"response": []
-				},
-				{
-					"name": "Список долгов (Главная) (массив клиентов)",
+					"name": "Список долгов (Главная)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -973,7 +973,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"advance_ids\": [8],\n    \"amount\": 80000,\n    \"in_cart\": true\n}",
+							"raw": "{\n    \"advance_ids\": [12],\n    \"amount\": 3400,\n    \"in_cart\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -981,13 +981,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{microApiUrl}}/payment/22/pay",
+							"raw": "{{microApiUrl}}/payment/1/pay",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"payment",
-								"22",
+								"1",
 								"pay"
 							]
 						}
@@ -1012,7 +1012,7 @@
 							"variable": [
 								{
 									"key": "clientId",
-									"value": "22",
+									"value": "31",
 									"description": "id клиента"
 								}
 							]
