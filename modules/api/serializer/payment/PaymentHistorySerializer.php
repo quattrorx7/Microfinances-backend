@@ -14,6 +14,7 @@ class PaymentHistorySerializer extends AbstractProperties
                 'created_at',
                 'message',
                 'amount',
+                'debt',
             ]
         ];
     }

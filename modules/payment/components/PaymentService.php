@@ -139,7 +139,7 @@ class PaymentService extends BaseService
                 $form = ClientPayForm::loadAndValidate([
                     'advance_ids' => array_column($advance->client->lastDebtPayments, 'advance_id'),
                     'amount' => $advance->client->balance,
-                    'in_cart' => false
+                    'in_cart' => null
                 ]);
                 $payDto = new PayDto($advance->user, $advance->client, $form);
 

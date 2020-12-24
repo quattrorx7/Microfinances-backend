@@ -29,7 +29,7 @@ class DebtHandler extends AbstractPayHandler
                 $this->paymentService->payByPayment($debtModel, $payAmount);
                 $dto->amount -= $payAmount;
 
-                (new PaymentHistoryService())->saveHistory($debtModel, $payAmount, $dto->inCart);
+                (new PaymentHistoryService())->saveHistory($dto->client, $debtModel, $payAmount, $dto->inCart);
             }
 
             if ($dto->amount <= 0) {
