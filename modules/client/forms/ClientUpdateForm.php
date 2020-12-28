@@ -3,6 +3,7 @@
 namespace app\modules\client\forms;
 
 use app\models\District;
+use app\models\User;
 use app\modules\api\validators\PhoneValidator;
 use app\modules\client\exceptions\ValidateClientUpdateException;
 use yii\base\Model;
@@ -22,6 +23,7 @@ class ClientUpdateForm extends Model
     public $activity;
     public $profit;
     public $comment;
+    public $owner_id;
 
 
     public function rules(): array
@@ -33,6 +35,7 @@ class ClientUpdateForm extends Model
             [['residence_address', 'work_address'], 'string'],
             [['files'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => District::class, 'targetAttribute' => ['district_id' => 'id']],
+            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['owner_id' => 'id']],
         ];
     }
 
@@ -51,6 +54,7 @@ class ClientUpdateForm extends Model
             'activity' => 'Вид деятельности',
             'profit' => 'Выручка в день',
             'comment' => 'Комментарий',
+            'owner_id' => 'Сотрудник'
         ];
     }
 

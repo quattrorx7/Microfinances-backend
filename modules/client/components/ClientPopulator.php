@@ -5,6 +5,7 @@ namespace app\modules\client\components;
 use app\components\populator\AbstractPopulator;
 use app\models\Client;
 use app\models\District;
+use app\models\User;
 use app\modules\client\forms\ClientCreateForm;
 use app\modules\client\forms\ClientUpdateForm;
 use app\modules\files\services\FilesService;
@@ -25,7 +26,8 @@ class ClientPopulator extends AbstractPopulator
             'work_address',
             'activity',
             'profit',
-            'comment'
+            'comment',
+            'owner_id',
         ]);
 
         return $this;
@@ -35,6 +37,14 @@ class ClientPopulator extends AbstractPopulator
     {
         if ($district instanceof District) {
             $model->populateRelation('district', $district);
+        }
+        return $this;
+    }
+
+    public function populateOwner(Client $model, User $owner = null): self
+    {
+        if ($owner instanceof User) {
+            $model->populateRelation('owner', $owner);
         }
         return $this;
     }

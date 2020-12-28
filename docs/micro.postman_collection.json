@@ -329,12 +329,12 @@
 								},
 								{
 									"key": "phone",
-									"value": "79503196189",
+									"value": "79503196182",
 									"type": "text"
 								},
 								{
 									"key": "additional_phone",
-									"value": "79503196189",
+									"value": "79503196182",
 									"type": "text"
 								},
 								{
@@ -381,17 +381,23 @@
 									"value": "10 тыс.",
 									"description": "Не обязательный",
 									"type": "text"
+								},
+								{
+									"key": "owner_id",
+									"value": "2",
+									"description": "Не обязательный",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{microApiUrl}}/client/1",
+							"raw": "{{microApiUrl}}/client/28",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"client",
-								"1"
+								"28"
 							]
 						}
 					},
@@ -813,6 +819,31 @@
 						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
 					},
 					"response": []
+				},
+				{
+					"name": "История займов",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/advance/:clientId/history",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"advance",
+								":clientId",
+								"history"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "31"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -876,6 +907,96 @@
 							]
 						},
 						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+					},
+					"response": []
+				},
+				{
+					"name": "История Платежей (Последнии 3)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/profile/paymentlast",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"profile",
+								"paymentlast"
+							]
+						},
+						"description": "Массив клиентов с долгами."
+					},
+					"response": []
+				},
+				{
+					"name": "История Платежей по Id (Последнии 3)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/profile/:userId/paymentlastbyid",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"profile",
+								":userId",
+								"paymentlastbyid"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Массив клиентов с долгами."
+					},
+					"response": []
+				},
+				{
+					"name": "История Заявок",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/profile/advancedhistory",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"profile",
+								"advancedhistory"
+							]
+						},
+						"description": "Массив клиентов с долгами."
+					},
+					"response": []
+				},
+				{
+					"name": "История Заявок по Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{microApiUrl}}/profile/:clientId/advancedhistory",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"profile",
+								":clientId",
+								"advancedhistory"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Массив клиентов с долгами."
 					},
 					"response": []
 				}

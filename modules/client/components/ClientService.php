@@ -14,6 +14,7 @@ use app\modules\client\forms\ClientUpdateForm;
 use app\modules\client\validators\ClientPhoneValidator;
 use app\modules\district\components\DistrictService;
 use app\modules\district\exceptions\DistrictNotFoundException;
+use app\modules\user\components\UserService;
 use Exception;
 use yii\db\StaleObjectException;
 use yii\web\UploadedFile;
@@ -29,17 +30,21 @@ class ClientService extends BaseService
 
     protected DistrictService $districtService;
 
+    protected UserService $userService;
+
     public function injectDependencies(
         ClientFactory $clientFactory,
         ClientRepository $clientRepository,
         ClientPopulator $clientPopulator,
-        DistrictService $districtService
+        DistrictService $districtService,
+        UserService $userService
     ): void
     {
         $this->clientFactory = $clientFactory;
         $this->clientRepository = $clientRepository;
         $this->clientPopulator = $clientPopulator;
         $this->districtService = $districtService;
+        $this->userService = $userService;
     }
 
     /**
@@ -97,10 +102,13 @@ class ClientService extends BaseService
     {
         $district = $form->district_id?$this->districtService->getDistrict($form->district_id):null;
 
+        $owner = $form->owner_id?$this->userService->getUser($form->owner_id):null;
+
         $this->clientPopulator
             ->populateFromUpdateForm($model, $form)
             ->populateFromUpdateFormDop($model, $form)
             ->populateDistrict($model, $district)
+            ->populateOwner($model, $owner)
             ->populateFiles($model, UploadedFile::getInstancesByName('files'))
             ->getModel($model);
 

@@ -24,6 +24,11 @@ class Client extends \app\models\base\Client
         if(isset($changedAttributes['district_id'])){
             Payment::updateAll(['district_id'=>$this->district_id], ['client_id'=>$this->id]);
         }
+
+        if(isset($changedAttributes['owner_id'])){
+            Advance::updateAll(['user_id'=>$this->owner_id], ['client_id'=>$this->id]);
+            Payment::updateAll(['user_id'=>$this->owner_id], ['client_id'=>$this->id]);
+        }
     }
 
     public function getFiles(): ActiveQuery
