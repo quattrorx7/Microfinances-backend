@@ -130,4 +130,13 @@ class AdvanceRepository extends BaseRepository
                 ->andwhere(['not in','status', array(Advance::STATE_SENT, Advance::STATE_APPROVED)])
                 ->all();
     }
+
+    public function getHistoryAppByUserId(int $userId)
+    {
+        return Advance::find()
+                ->where(['user_id' => $userId])
+                ->orderBy(['id' => SORT_DESC])
+                ->andwhere(['>=','created_at', DateHelper::getModifyDate(DateHelper::now(), '-7 day')])
+                ->all();
+    }
 }

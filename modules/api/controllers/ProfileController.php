@@ -3,6 +3,9 @@
 namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
+use app\modules\advance\components\AdvanceService;
+use app\modules\api\serializer\advance\AdvanceHistorySerializer;
+use app\modules\api\serializer\advance\AdvanceShortWithStatusSerializer;
 use app\modules\api\serializer\payment\PaymentHistorySerializer;
 use app\modules\api\serializer\user\UserProfileSerializer;
 use app\modules\payment\components\PaymentHistoryService;
@@ -13,12 +16,16 @@ class ProfileController extends AuthedApiController
 
     protected PaymentHistoryService $paymentHistoryService;
 
+    protected AdvanceService $advanceService;
+
 
     public function injectDependencies(
-        PaymentHistoryService $paymentHistoryService
+        PaymentHistoryService $paymentHistoryService,
+        AdvanceService $advanceService
     ): void
     {
         $this->paymentHistoryService = $paymentHistoryService;
+        $this->advanceService = $advanceService;
     }
 
     protected function verbs(): array
@@ -50,5 +57,20 @@ class ProfileController extends AuthedApiController
         $list = $this->paymentHistoryService->getHistoryLast3ByUserId($userId);
 
         return PaymentHistorySerializer::serialize($list);
+    }
+
+    public function actionAdvancedhistory()
+    {
+        $user = $this->currentUser;
+        $history = $this->advanceService->getHistoryAppByUserId($user->id);
+
+        return AdvanceShortWithStatusSerializer::serialize($history);
+    }
+
+    public function actionAdvancedhistorybyid(int $userId)
+    {
+        $history = $this->advanceService->getHistoryAppByUserId($userId);
+
+        return AdvanceShortWithStatusSerializer::serialize($history);
     }
 }

@@ -280,4 +280,11 @@ class AdvanceService extends BaseService
 
         return $list;
     }
+
+    public function getHistoryAppByUserId(int $userId)
+    {
+        $list = $this->advanceRepository->getHistoryAppByUserId($userId);
+
+        return $list;
+    }
 }
