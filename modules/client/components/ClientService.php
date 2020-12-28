@@ -102,7 +102,7 @@ class ClientService extends BaseService
     {
         $district = $form->district_id?$this->districtService->getDistrict($form->district_id):null;
 
-        $owner = $form->owner_id?$this->userService->getUser($form->owner_id):null;
+        $owner = $form->user_id?$this->userService->getUser($form->user_id):null;
 
         $this->clientPopulator
             ->populateFromUpdateForm($model, $form)

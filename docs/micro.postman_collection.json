@@ -383,11 +383,10 @@
 									"type": "text"
 								},
 								{
-									"key": "owner_id",
+									"key": "user_id",
 									"value": "2",
 									"description": "Не обязательный",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								}
 							]
 						},
@@ -981,19 +980,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/profile/:clientId/advancedhistory",
+							"raw": "{{microApiUrl}}/profile/:userId/advancedhistory",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"profile",
-								":clientId",
+								":userId",
 								"advancedhistory"
 							],
 							"variable": [
 								{
-									"key": "clientId",
-									"value": "2"
+									"key": "userId",
+									"value": ""
 								}
 							]
 						},
