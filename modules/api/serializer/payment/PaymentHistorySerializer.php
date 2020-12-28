@@ -11,6 +11,7 @@ class PaymentHistorySerializer extends AbstractProperties
     {
         return [
             PaymentHistory::class => [
+                'id',
                 'created_at',
                 'message',
                 'amount',

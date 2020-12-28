@@ -39,4 +39,7 @@ return [
 
     #история займов
     'GET api/advance/<clientId:\d+>/history' => 'api/advance/history',
+
+    'GET api/profile/<userId:\d+>/paymentlastbyid' => 'api/profile/paymentlastbyid',
+    
 ];
