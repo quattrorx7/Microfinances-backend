@@ -59,6 +59,21 @@ class ProfileController extends AuthedApiController
         return PaymentHistorySerializer::serialize($list);
     }
 
+    public function actionPayments()
+    {
+        $user = $this->currentUser;
+        $list = $this->paymentHistoryService->getHistoryByUserId($user->id);
+
+        return PaymentHistorySerializer::serialize($list);
+    }
+
+    public function actionPaymentsbyid(int $userId)
+    {
+        $list = $this->paymentHistoryService->getHistoryByUserId($userId);
+
+        return PaymentHistorySerializer::serialize($list);
+    }
+
     public function actionAdvancedhistory()
     {
         $user = $this->currentUser;
