@@ -263,4 +263,21 @@ class AdvanceService extends BaseService
         $this->advanceRepository->save($advance);
         /** @todo return events */
     }
+
+    /**
+     * История займов
+     */
+    public function getHistoryByClientId(int $clientId): array
+    {
+        $list = $this->advanceRepository->getHistoryByClientId($clientId);
+
+        $list = array_filter($list, function($item){
+            if($item->status == Advance::STATE_ISSUED && $item->payment_status == Advance::PAYMENT_STATUS_NULL){
+                return false;
+            }
+            return true;
+        });
+
+        return $list;
+    }
 }

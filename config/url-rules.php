@@ -36,4 +36,7 @@ return [
 
     #проценты
     'POST api/advance/<advanceId:\d+>/percent' => 'api/advance/percent',
+
+    #история займов
+    'GET api/advance/<clientId:\d+>/history' => 'api/advance/history',
 ];

@@ -22,6 +22,7 @@ use app\modules\api\serializer\advance\AdvanceFullSerializer;
 use app\modules\api\serializer\advance\AdvanceListSerializer;
 use app\modules\advance\components\AdvanceService;
 use app\modules\advance\providers\AdvanceProvider;
+use app\modules\api\serializer\advance\AdvanceHistorySerializer;
 use app\modules\api\serializer\advance\AdvanceShortSerializer;
 use app\modules\client\components\ClientService;
 use app\modules\client\forms\ClientFileForm;
@@ -221,5 +222,15 @@ class AdvanceController extends AuthedApiController
         $result = $this->advanceService->createByClientForm($form, $this->currentUser);
 
         return JSendResponse::success($result);
+    }
+
+    /**
+     * История займов
+     */
+    public function actionHistory(int $clientId)
+    {
+        $history = $this->advanceService->getHistoryByClientId($clientId);
+
+        return AdvanceHistorySerializer::serialize($history);
     }
 }

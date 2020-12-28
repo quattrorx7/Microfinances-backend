@@ -122,4 +122,12 @@ class AdvanceRepository extends BaseRepository
             ->andWhere(['<', 'end_date', DateHelper::nowWithoutHours()]);
     }
 
+    public function getHistoryByClientId(int $clientId): array
+    {
+        return Advance::find()
+                ->where(['client_id' => $clientId])
+                ->orderBy(['id' => SORT_DESC])
+                ->andwhere(['not in','status', array(Advance::STATE_SENT, Advance::STATE_APPROVED)])
+                ->all();
+    }
 }
