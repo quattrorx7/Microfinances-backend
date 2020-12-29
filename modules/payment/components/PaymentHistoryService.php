@@ -44,28 +44,34 @@ class PaymentHistoryService extends BaseService
     /**
      * История платежей, профиль сотрудника последнии 3 штуки
      */
-    public function getHistoryLast3ByUserId(int $userId): array
+    public function getHistoryLast3ByUserId(?int $userId): array
     {
-        return PaymentHistory::find()
+        $query = PaymentHistory::find()
             ->joinWith('payment')
-            ->where(['payment.user_id' => $userId])
             ->andWhere(['!=', 'payment_history.message', '-'])
             ->orderBy(['payment_history.id' => SORT_DESC])
-            ->limit(3)
-            ->all();
+            ->limit(3);
+
+        if($userId)
+            $query->andWhere(['payment.user_id' => $userId]);
+
+        return $query->all();
     }
 
     /**
      * История платежей, профиль сотрудника
      */
-    public function getHistoryByUserId(int $userId): array
+    public function getHistoryByUserId(?int $userId): array
     {
-        return PaymentHistory::find()
+        $query = PaymentHistory::find()
             ->joinWith('payment')
-            ->where(['payment.user_id' => $userId])
             ->andWhere(['!=', 'payment_history.message', '-'])
-            ->orderBy(['payment_history.id' => SORT_DESC])
-            ->all();
+            ->orderBy(['payment_history.id' => SORT_DESC]);
+
+        if($userId)
+            $query->andWhere(['payment.user_id' => $userId]);
+
+        return $query->all();
     }
 
 }

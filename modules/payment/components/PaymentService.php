@@ -177,7 +177,7 @@ class PaymentService extends BaseService
         return PaymentSerializerWithShortClient::serialize($payments);
     }
 
-    public function getPayments(string $date, int $userId)
+    public function getPayments(string $date, ?int $userId)
     {
         $payments = $this->paymentRepository
             ->getNeedPays($date, $userId);

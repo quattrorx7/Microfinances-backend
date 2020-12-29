@@ -54,7 +54,7 @@ class ProfileController extends AuthedApiController
     public function actionPaymentlast()
     {
         $user = $this->currentUser;
-        $list = $this->paymentHistoryService->getHistoryLast3ByUserId($user->id);
+        $list = $this->paymentHistoryService->getHistoryLast3ByUserId($user->isSuperadmin?null:$user->id);
 
         return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
@@ -69,7 +69,7 @@ class ProfileController extends AuthedApiController
     public function actionPayments()
     {
         $user = $this->currentUser;
-        $list = $this->paymentHistoryService->getHistoryByUserId($user->id);
+        $list = $this->paymentHistoryService->getHistoryByUserId($user->isSuperadmin?null:$user->id);
 
         return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
@@ -87,7 +87,8 @@ class ProfileController extends AuthedApiController
     public function actionPaymentscurrent()
     {
         $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
-        return $this->paymentService->getPayments($date, $this->currentUser->id);
+        $user = $this->currentUser;
+        return $this->paymentService->getPayments($date, $user->isSuperadmin?null:$user->id);
     }
 
     /**
