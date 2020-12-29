@@ -9,6 +9,7 @@ use app\models\Advance;
 use app\models\Payment;
 use app\models\User;
 use app\modules\advance\components\AdvanceService;
+use app\modules\api\serializer\payment\PaymentSerializer;
 use app\modules\api\serializer\payment\PaymentSerializerWithShortClient;
 use app\modules\client\dto\PayDto;
 use app\modules\client\forms\ClientPayForm;
@@ -175,4 +176,13 @@ class PaymentService extends BaseService
 
         return PaymentSerializerWithShortClient::serialize($payments);
     }
+
+    public function getPayments(string $date, int $userId)
+    {
+        $payments = $this->paymentRepository
+            ->getNeedPays($date, $userId);
+
+        return PaymentSerializer::serialize($payments);
+    }
+    
 }

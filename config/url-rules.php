@@ -46,6 +46,10 @@ return [
     #История платежей
     'GET api/profile/<userId:\d+>/payments' => 'api/profile/paymentsbyid',
 
+    #История платежей текущии
+    'GET api/profile/<userId:\d+>/paymentscurrentbyid' => 'api/profile/paymentscurrentbyid',
+    
+
     #История заявок
     'GET api/profile/<userId:\d+>/advancedhistory' => 'api/profile/advancedhistorybyid',
     

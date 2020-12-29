@@ -3,6 +3,7 @@
 namespace app\modules\api\controllers;
 
 use app\components\controllers\AuthedApiController;
+use app\helpers\DateHelper;
 use app\modules\advance\components\AdvanceService;
 use app\modules\api\serializer\advance\AdvanceHistorySerializer;
 use app\modules\api\serializer\advance\AdvanceShortWithStatusSerializer;
@@ -10,10 +11,13 @@ use app\modules\api\serializer\payment\PaymentHistorySerializer;
 use app\modules\api\serializer\payment\PaymentHistoryWithShortClientSerializer;
 use app\modules\api\serializer\user\UserProfileSerializer;
 use app\modules\payment\components\PaymentHistoryService;
+use app\modules\payment\components\PaymentService;
 use yii\base\Exception;
 
 class ProfileController extends AuthedApiController
 {
+
+    protected PaymentService $paymentService;
 
     protected PaymentHistoryService $paymentHistoryService;
 
@@ -21,10 +25,12 @@ class ProfileController extends AuthedApiController
 
 
     public function injectDependencies(
+        PaymentService $paymentService,
         PaymentHistoryService $paymentHistoryService,
         AdvanceService $advanceService
     ): void
     {
+        $this->paymentService = $paymentService;
         $this->paymentHistoryService = $paymentHistoryService;
         $this->advanceService = $advanceService;
     }
@@ -73,6 +79,24 @@ class ProfileController extends AuthedApiController
         $list = $this->paymentHistoryService->getHistoryByUserId($userId);
 
         return PaymentHistoryWithShortClientSerializer::serialize($list);
+    }
+
+    /**
+     * Профиль - История платежей текущии
+     */
+    public function actionPaymentscurrent()
+    {
+        $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
+        return $this->paymentService->getPayments($date, $this->currentUser->id);
+    }
+
+    /**
+     * Профиль - История платежей текущии по id
+     */
+    public function actionPaymentscurrentbyid(int $userId)
+    {
+        $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
+        return $this->paymentService->getPayments($date, $userId);
     }
 
     public function actionAdvancedhistory()
