@@ -7,6 +7,7 @@ use app\modules\advance\components\AdvanceService;
 use app\modules\api\serializer\advance\AdvanceHistorySerializer;
 use app\modules\api\serializer\advance\AdvanceShortWithStatusSerializer;
 use app\modules\api\serializer\payment\PaymentHistorySerializer;
+use app\modules\api\serializer\payment\PaymentHistoryWithShortClientSerializer;
 use app\modules\api\serializer\user\UserProfileSerializer;
 use app\modules\payment\components\PaymentHistoryService;
 use yii\base\Exception;
@@ -49,14 +50,14 @@ class ProfileController extends AuthedApiController
         $user = $this->currentUser;
         $list = $this->paymentHistoryService->getHistoryLast3ByUserId($user->id);
 
-        return PaymentHistorySerializer::serialize($list);
+        return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
 
     public function actionPaymentlastbyid(int $userId)
     {
         $list = $this->paymentHistoryService->getHistoryLast3ByUserId($userId);
 
-        return PaymentHistorySerializer::serialize($list);
+        return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
 
     public function actionPayments()
@@ -64,14 +65,14 @@ class ProfileController extends AuthedApiController
         $user = $this->currentUser;
         $list = $this->paymentHistoryService->getHistoryByUserId($user->id);
 
-        return PaymentHistorySerializer::serialize($list);
+        return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
 
     public function actionPaymentsbyid(int $userId)
     {
         $list = $this->paymentHistoryService->getHistoryByUserId($userId);
 
-        return PaymentHistorySerializer::serialize($list);
+        return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
 
     public function actionAdvancedhistory()
