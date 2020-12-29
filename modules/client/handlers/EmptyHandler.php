@@ -3,6 +3,7 @@
 namespace app\modules\client\handlers;
 
 use app\helpers\PriceHelper;
+use app\models\PaymentHistory;
 use app\modules\client\dto\PayDto;
 use app\modules\client\helpers\ClientPayHelper;
 use app\modules\payment\components\PaymentHistoryService;
@@ -23,7 +24,7 @@ class EmptyHandler extends AbstractPayHandler
         if ($next) {
             $debtModel = $dto->client->lastDebtPayments[0];
            
-            (new PaymentHistoryService())->saveHistory($dto->client, $debtModel, 0, $dto->inCart);
+            (new PaymentHistoryService())->saveHistory($dto->client, $debtModel, 0, $dto->inCart, 'payment', PaymentHistory::PAYMENT_TYPE_AUTO);
 
         }
 

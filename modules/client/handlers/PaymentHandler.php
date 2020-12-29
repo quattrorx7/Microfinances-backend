@@ -2,6 +2,7 @@
 
 namespace app\modules\client\handlers;
 
+use app\models\PaymentHistory;
 use app\modules\client\dto\PayDto;
 use app\modules\client\helpers\ClientPayHelper;
 use app\modules\payment\components\PaymentHistoryService;
@@ -38,7 +39,13 @@ class PaymentHandler extends AbstractPayHandler
                 $this->paymentService->payByPayment($currentPayment, $payAmount);
                 $dto->amount -= $payAmount;
 
-                (new PaymentHistoryService())->saveHistory($dto->client, $currentPayment, $payAmount, $dto->inCart, 'payment');
+                if($dto->inCart===null){
+                    $type = PaymentHistory::PAYMENT_TYPE_AUTO;
+                }else{
+                    $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CART : PaymentHistory::PAYMENT_TYPE_CASH;
+                }
+
+                (new PaymentHistoryService())->saveHistory($dto->client, $currentPayment, $payAmount, $dto->inCart, 'payment', $type);
             }
 
             if ($dto->amount <= 0) {

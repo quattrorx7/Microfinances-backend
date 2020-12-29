@@ -11,7 +11,7 @@ use app\models\PaymentHistory;
 class PaymentHistoryService extends BaseService
 {
 
-    public function saveHistory(Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment'): void
+    public function saveHistory(Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment', $type=0): void
     {
         if ($amount > 0 || $inCart===null) {
             $model = new PaymentHistory();
@@ -25,6 +25,7 @@ class PaymentHistoryService extends BaseService
             }else{
                 $model->message = $inCart ? 'Перевод на карту' : 'Наличные';
             }
+            $model->type = $type;
             $model->created_at = DateHelper::now();
             $model->actor = $actor;
             $model->debt = $client->getAllDebts();
