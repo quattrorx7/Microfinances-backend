@@ -47,6 +47,7 @@ class AdvanceManager extends BaseObject
         $query
             ->joinWith(['paymentHistories'=>function($query){
                 $query->onCondition(['DATE(payment_history.created_at)'=>DateHelper::nowWithoutHours()]);
+                $query->andOnCondition(['!=', 'payment_history.amount', 0]);
             }])
             ->addSelect(['IFNULL(payment_history.id, 0) as todayPayed'])
             ->addSelect(['SUM(summa_left_to_pay) as debt'])
