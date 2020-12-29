@@ -33,7 +33,7 @@ class DebtHandler extends AbstractPayHandler
                 if($dto->inCart===null){
                     $type = PaymentHistory::PAYMENT_TYPE_AUTO;
                 }else{
-                    $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CART : PaymentHistory::PAYMENT_TYPE_CASH;
+                    $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
                 }
 
                 (new PaymentHistoryService())->saveHistory($dto->client, $debtModel, $payAmount, $dto->inCart, 'payment', $type);

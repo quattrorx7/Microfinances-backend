@@ -122,6 +122,17 @@ class AdvanceRepository extends BaseRepository
             ->andWhere(['<', 'end_date', DateHelper::nowWithoutHours()]);
     }
 
+    public function getNewQuery(string $date, $userId=null): ActiveQuery
+    {
+        $query = Advance::find()
+            ->andWhere(['created_at' => $date]);
+
+        if($userId)
+            $query->andWhere(['user_id' => $userId]);
+
+        return $query;
+    }
+
     public function getHistoryByClientId(int $clientId): array
     {
         return Advance::find()

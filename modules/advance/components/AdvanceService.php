@@ -287,4 +287,18 @@ class AdvanceService extends BaseService
 
         return $list;
     }
+
+    public function getToday(string $date, int $userId = null)
+    {
+        $query = $this->advanceRepository->getNewQuery($date, $userId);
+
+        return $query->all();
+    }
+
+    public function getTodayCount(string $date, int $userId = null)
+    {
+        $query = $this->advanceRepository->getNewQuery($date, $userId);
+
+        return $query->count();
+    }
 }

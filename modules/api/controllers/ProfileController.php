@@ -114,4 +114,23 @@ class ProfileController extends AuthedApiController
 
         return AdvanceShortWithStatusSerializer::serialize($history);
     }
+
+    public function actionStatistics(){
+        $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
+        $user = $this->currentUser;
+        $count = $this->advanceService->getTodayCount($date, $user->isSuperadmin?null:$user->id);
+
+        $payments = $this->paymentService->getTodayPaymentCount($date, $user->isSuperadmin?null:$user->id);
+
+        return ['advance_count'=>$count, 'payment'=>$payments];
+    }
+
+    public function actionStatisticsbyid(int $userId){
+        $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
+        $count = $this->advanceService->getTodayCount($date, $userId);
+
+        $payments = $this->paymentService->getTodayPaymentCount($date, $userId);
+
+        return ['advance_count'=>$count, 'payment'=>$payments];
+    }
 }

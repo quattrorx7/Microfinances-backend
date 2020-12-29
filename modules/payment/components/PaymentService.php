@@ -7,6 +7,7 @@ use app\components\exceptions\UnSuccessModelException;
 use app\helpers\DateHelper;
 use app\models\Advance;
 use app\models\Payment;
+use app\models\PaymentHistory;
 use app\models\User;
 use app\modules\advance\components\AdvanceService;
 use app\modules\api\serializer\payment\PaymentSerializer;
@@ -183,6 +184,25 @@ class PaymentService extends BaseService
             ->getNeedPays($date, $userId);
 
         return PaymentSerializer::serialize($payments);
+    }
+
+    public function getTodayPaymentCount(string $date, ?int $userId)
+    {
+        $payments = $this->paymentRepository
+            ->getTodayPaymentCount($date, $userId);
+
+        $arr = ['cash'=>0, 'card'=>0];
+        
+        foreach($payments as $value){
+            if($value['type']==PaymentHistory::PAYMENT_TYPE_CASH){
+                $arr['cash'] = $value['amount'];
+            }
+            if($value['type']==PaymentHistory::PAYMENT_TYPE_CARD){
+                $arr['card'] = $value['amount'];
+            }
+        }
+
+        return $arr;
     }
     
 }

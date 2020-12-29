@@ -5,6 +5,7 @@ namespace app\modules\payment\components;
 use app\components\BaseRepository;
 use app\helpers\DateHelper;
 use app\models\Payment;
+use app\models\PaymentHistory;
 use app\modules\payment\exceptions\PaymentNotFoundException;
 
 class PaymentRepository extends BaseRepository
@@ -136,5 +137,22 @@ class PaymentRepository extends BaseRepository
             ->orderBy('payment.id DESC');
 
         return $query->all();
+    }
+
+    public function getTodayPaymentCount(string $date, int $userId = null)
+    {
+        $query = PaymentHistory::find();
+
+        if ($userId) {
+            $query->joinWith(['payment']);
+            $query->andWhere(['user_id' => $userId]);
+        }
+
+        return $query
+            ->andWhere(['DATE(payment_history.created_at)' => $date])
+            ->andWhere(['in', 'type', [PaymentHistory::PAYMENT_TYPE_CASH, PaymentHistory::PAYMENT_TYPE_CARD]])
+            ->groupBy('type')
+            ->select('type, SUM(payment_history.amount) as amount')
+            ->all();
     }
 }
