@@ -893,6 +893,146 @@
 			"name": "Профиль",
 			"item": [
 				{
+					"name": "История платежей",
+					"item": [
+						{
+							"name": "История Платежей (Последнии 3)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{microApiUrl}}/profile/paymentlast",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"profile",
+										"paymentlast"
+									]
+								},
+								"description": "Массив клиентов с долгами."
+							},
+							"response": []
+						},
+						{
+							"name": "История Платежей по Id (Последнии 3)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{microApiUrl}}/profile/:userId/paymentlastbyid",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"profile",
+										":userId",
+										"paymentlastbyid"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "2"
+										}
+									]
+								},
+								"description": "Массив клиентов с долгами."
+							},
+							"response": []
+						},
+						{
+							"name": "История Платежей",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{microApiUrl}}/profile/payments",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"profile",
+										"payments"
+									]
+								},
+								"description": "Массив клиентов с долгами."
+							},
+							"response": []
+						},
+						{
+							"name": "История Платежей по Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{microApiUrl}}/profile/:userId/payments",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"profile",
+										":userId",
+										"payments"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "2"
+										}
+									]
+								},
+								"description": "Массив клиентов с долгами."
+							},
+							"response": []
+						},
+						{
+							"name": "История Платежей Текущие",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{microApiUrl}}/profile/paymentscurrent",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"profile",
+										"paymentscurrent"
+									]
+								},
+								"description": "Массив клиентов с долгами."
+							},
+							"response": []
+						},
+						{
+							"name": "История Платежей Текущие по Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{microApiUrl}}/profile/:userId/paymentscurrentbyid",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"profile",
+										":userId",
+										"paymentscurrentbyid"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "2"
+										}
+									]
+								},
+								"description": "Массив клиентов с долгами."
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Свой профиль",
 					"request": {
 						"method": "GET",
@@ -907,51 +1047,6 @@
 							]
 						},
 						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
-					},
-					"response": []
-				},
-				{
-					"name": "История Платежей (Последнии 3)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{microApiUrl}}/profile/paymentlast",
-							"host": [
-								"{{microApiUrl}}"
-							],
-							"path": [
-								"profile",
-								"paymentlast"
-							]
-						},
-						"description": "Массив клиентов с долгами."
-					},
-					"response": []
-				},
-				{
-					"name": "История Платежей по Id (Последнии 3)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{microApiUrl}}/profile/:userId/paymentlastbyid",
-							"host": [
-								"{{microApiUrl}}"
-							],
-							"path": [
-								"profile",
-								":userId",
-								"paymentlastbyid"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "2"
-								}
-							]
-						},
-						"description": "Массив клиентов с долгами."
 					},
 					"response": []
 				},
@@ -1001,18 +1096,18 @@
 					"response": []
 				},
 				{
-					"name": "История Платежей",
+					"name": "Статистика",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/profile/payments",
+							"raw": "{{microApiUrl}}/profile/statistics",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"profile",
-								"payments"
+								"statistics"
 							]
 						},
 						"description": "Массив клиентов с долгами."
@@ -1020,24 +1115,24 @@
 					"response": []
 				},
 				{
-					"name": "История Платежей по Id",
+					"name": "Статистика по Id",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/profile/:userId/payments",
+							"raw": "{{microApiUrl}}/profile/:userId/statisticsbyid",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"profile",
 								":userId",
-								"payments"
+								"statisticsbyid"
 							],
 							"variable": [
 								{
 									"key": "userId",
-									"value": "3"
+									"value": "2"
 								}
 							]
 						},
@@ -1139,7 +1234,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"advance_ids\": [12],\n    \"amount\": 3400,\n    \"in_cart\": true\n}",
+							"raw": "{\n    \"advance_ids\": [22],\n    \"amount\": 3400,\n    \"in_cart\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1147,13 +1242,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{microApiUrl}}/payment/1/pay",
+							"raw": "{{microApiUrl}}/payment/31/pay",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"payment",
-								"1",
+								"31",
 								"pay"
 							]
 						}
