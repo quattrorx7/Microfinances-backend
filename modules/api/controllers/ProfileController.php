@@ -54,7 +54,7 @@ class ProfileController extends AuthedApiController
     public function actionPaymentlast()
     {
         $user = $this->currentUser;
-        $list = $this->paymentHistoryService->getHistoryLast3ByUserId($user->isSuperadmin?null:$user->id);
+        $list = $this->paymentHistoryService->getHistoryLast3ByUserId($user->id);
 
         return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
@@ -69,7 +69,7 @@ class ProfileController extends AuthedApiController
     public function actionPayments()
     {
         $user = $this->currentUser;
-        $list = $this->paymentHistoryService->getHistoryByUserId($user->isSuperadmin?null:$user->id);
+        $list = $this->paymentHistoryService->getHistoryByUserId($user->id);
 
         return PaymentHistoryWithShortClientSerializer::serialize($list);
     }
@@ -88,7 +88,7 @@ class ProfileController extends AuthedApiController
     {
         $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
         $user = $this->currentUser;
-        return $this->paymentService->getPayments($date, $user->isSuperadmin?null:$user->id);
+        return $this->paymentService->getPayments($date, $user->id);
     }
 
     /**
@@ -118,9 +118,9 @@ class ProfileController extends AuthedApiController
     public function actionStatistics(){
         $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
         $user = $this->currentUser;
-        $count = $this->advanceService->getTodayCount($date, $user->isSuperadmin?null:$user->id);
+        $count = $this->advanceService->getTodayCount($date, $user->id);
 
-        $payments = $this->paymentService->getTodayPaymentCount($date, $user->isSuperadmin?null:$user->id);
+        $payments = $this->paymentService->getTodayPaymentCount($date, $user->id);
 
         return ['advance_count'=>$count, 'payment'=>$payments];
     }
