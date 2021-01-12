@@ -73,6 +73,12 @@ class PaymentController extends AuthedApiController
         return array_values($collection->payments);
     }
 
+    public function actionReturn(int $paymentId)
+    {
+        $mes = $this->paymentService->returnPayment($paymentId);
+        return JSendResponse::success($mes);
+    }
+
     public function actionDebt()
     {
         $collection = $this->paymentService->getLastDebtPayments($this->currentUser);

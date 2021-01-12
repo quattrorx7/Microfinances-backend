@@ -13,6 +13,7 @@ class PaymentSerializer extends AbstractProperties
     {
         return [
             Payment::class => [
+                'id',
                 'client',
                 'amount',
             ],

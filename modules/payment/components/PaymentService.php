@@ -204,5 +204,31 @@ class PaymentService extends BaseService
 
         return $arr;
     }
+
+    public function returnPayment(int $paymentId)
+    {
+        $payment = $this->paymentRepository->getPaymentById($paymentId);
+
+        $pays = $payment->paymentHistories;
+        $summa = 0;
+        $balance = 0;
+        foreach($pays as $pay){
+            if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH){
+                $summa += $pay->amount;
+                $pay->delete();
+            }else if($pay->type == PaymentHistory::PAYMENT_TYPE_BALANCE){
+                $balance += $pay->amount;
+                $pay->delete();
+            }
+        }
+
+        $advance = $payment->advance;
+
+        $advance->updateCounters(['summa_left_to_pay' => $summa + $balance]);
+        $client = $payment->client;
+        $client->updateCounters(['balance' => $balance]);
+
+        return 'Успешный возврат платежа';
+    }
     
 }

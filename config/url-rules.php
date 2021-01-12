@@ -28,6 +28,9 @@ return [
     #принять оплату
     'POST api/payment/<clientId:\d+>/pay' => 'api/payment/pay',
 
+    #Возврат платежа
+    'POST api/payment/<paymentId:\d+>/return' => 'api/payment/return',
+
     #история оплат
     'GET api/payment/<clientId:\d+>/history' => 'api/payment/history',
 
