@@ -3,8 +3,10 @@
 namespace app\modules\client\handlers;
 
 use app\helpers\PriceHelper;
+use app\models\PaymentHistory;
 use app\modules\client\components\ClientService;
 use app\modules\client\dto\PayDto;
+use app\modules\payment\components\PaymentHistoryService;
 
 class BalanceHandler extends AbstractPayHandler
 {
@@ -19,8 +21,11 @@ class BalanceHandler extends AbstractPayHandler
     {
         if ($next) {
             $this->clientService->updateBalance($dto->client, $dto->amount);
-            if($dto->amount>0)
+            if($dto->amount>0){
+                (new PaymentHistoryService())->saveHistoryBalance($dto->client, $dto->amount, 'payment', PaymentHistory::PAYMENT_TYPE_BALANCE);
+
                 $dto->addMessage('Резерв начислен: '.PriceHelper::priceFormat($dto->amount));
+            }
         }
 
         return parent::handle($next, $dto);

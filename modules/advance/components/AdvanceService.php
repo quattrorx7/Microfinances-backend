@@ -301,4 +301,11 @@ class AdvanceService extends BaseService
 
         return $query->count();
     }
+
+    public function statisticIssuedAdvance($from, $to)
+    {
+        $query = $this->advanceRepository->getStatistic($from, $to);
+
+        return (int)$query->sum('summa_with_percent')??0;
+    }
 }

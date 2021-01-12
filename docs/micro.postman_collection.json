@@ -1234,7 +1234,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"advance_ids\": [22],\n    \"amount\": 3400,\n    \"in_cart\": true\n}",
+							"raw": "{\n    \"advance_ids\": [22],\n    \"amount\": 5000,\n    \"in_cart\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1276,6 +1276,75 @@
 									"value": "31",
 									"description": "id клиента"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Возврат платежа",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/payment/:payment_id/return",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"payment",
+								":payment_id",
+								"return"
+							],
+							"variable": [
+								{
+									"key": "payment_id",
+									"value": "32"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Общая статистика",
+			"item": [
+				{
+					"name": "Статистика",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"from\": \"20.12.2020\",\r\n    \"to\": \"12.01.2021\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/statistics/",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"statistics",
+								""
 							]
 						}
 					},

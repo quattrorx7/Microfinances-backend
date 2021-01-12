@@ -150,4 +150,19 @@ class AdvanceRepository extends BaseRepository
                 ->andwhere(['>=','created_at', DateHelper::getModifyDate(DateHelper::now(), '-7 day')])
                 ->all();
     }
+
+    public function getStatistic($from, $to): ActiveQuery
+    {
+        $query = Advance::find()
+            ->andWhere(['status' => Advance::STATE_ISSUED]);
+
+        if($from){
+            $query->andWhere(['>=', 'DATE(issue_date)', $from]);
+        }
+        if($to){
+            $query->andWhere(['<=', 'DATE(issue_date)', $to]);
+        }
+
+        return $query;
+    }
 }
