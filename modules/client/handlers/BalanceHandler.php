@@ -22,7 +22,9 @@ class BalanceHandler extends AbstractPayHandler
         if ($next) {
             $this->clientService->updateBalance($dto->client, $dto->amount);
             if($dto->amount>0){
-                (new PaymentHistoryService())->saveHistoryBalance($dto->client, $dto->amount, 'payment', PaymentHistory::PAYMENT_TYPE_BALANCE);
+                $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CARD_BALANCE : PaymentHistory::PAYMENT_TYPE_CASH_BALANCE;
+
+                (new PaymentHistoryService())->saveHistoryBalance($dto->client, $dto->amount, $dto->inCart, 'payment', $type);
 
                 $dto->addMessage('Резерв начислен: '.PriceHelper::priceFormat($dto->amount));
             }

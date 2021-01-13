@@ -34,7 +34,7 @@ class PaymentHistoryService extends BaseService
         }
     }
 
-    public function saveHistoryBalance(Client $client, int $amount, string $actor = 'payment', $type=0): void
+    public function saveHistoryBalance(Client $client, int $amount, $inCart, string $actor = 'payment', $type=0): void
     {
         $model = new PaymentHistory();
 
@@ -42,7 +42,11 @@ class PaymentHistoryService extends BaseService
         $model->advance_id = null;
         $model->client_id = $client->id;
         $model->amount = $amount;
-        $model->message = 'Резерв';
+        if($inCart===null){
+            $model->message = '-';
+        }else{
+            $model->message = $inCart ? 'Перевод на карту' : 'Наличные';
+        }
 
         $model->type = $type;
         $model->created_at = DateHelper::now();
@@ -102,7 +106,8 @@ class PaymentHistoryService extends BaseService
             ->where(['in', 'type', [
                 PaymentHistory::PAYMENT_TYPE_CARD,
                 PaymentHistory::PAYMENT_TYPE_CASH,
-                PaymentHistory::PAYMENT_TYPE_BALANCE
+                PaymentHistory::PAYMENT_TYPE_CARD_BALANCE,
+                PaymentHistory::PAYMENT_TYPE_CASH_BALANCE,
             ]]);
 
         if($from){

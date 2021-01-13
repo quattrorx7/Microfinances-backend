@@ -216,7 +216,7 @@ class PaymentService extends BaseService
             if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH){
                 $summa += $pay->amount;
                 $pay->delete();
-            }else if($pay->type == PaymentHistory::PAYMENT_TYPE_BALANCE){
+            }else if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD_BALANCE || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH_BALANCE){
                 $balance += $pay->amount;
                 $pay->delete();
             }
