@@ -36,7 +36,7 @@ class DebtHandler extends AbstractPayHandler
                     $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
                 }
 
-                (new PaymentHistoryService())->saveHistory($dto->client, $debtModel, $payAmount, $dto->inCart, 'payment', $type);
+                (new PaymentHistoryService())->saveHistory($dto->user, $dto->client, $debtModel, $payAmount, $dto->inCart, 'payment', $type);
             }
 
             if ($dto->amount <= 0) {

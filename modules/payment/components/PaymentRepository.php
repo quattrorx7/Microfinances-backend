@@ -58,12 +58,13 @@ class PaymentRepository extends BaseRepository
         $query = Payment::find();
 
         if ($userId) {
-            $query->andWhere(['user_id' => $userId]);
+            $query->andWhere(['payment.user_id' => $userId]);
         }
 
         $result = $query
             ->andWhere(['payment.created_at' => $date])
             ->joinWith('paymentHistories')
+            ->andWhere(['in', 'payment_history.type', PaymentHistory::getTypePayments()])
             ->groupBy('payment.client_id')
             ->select('payment.*')
             ->addSelect('SUM(payment_history.amount) as amount')
@@ -122,7 +123,7 @@ class PaymentRepository extends BaseRepository
         $query = Payment::find();
 
         if (!$userId) {
-            $query->andWhere(['user_id' => $userId]);
+            $query->andWhere(['payment.user_id' => $userId]);
         }
 
         $query
@@ -144,13 +145,12 @@ class PaymentRepository extends BaseRepository
         $query = PaymentHistory::find();
 
         if ($userId) {
-            $query->joinWith(['payment']);
-            $query->andWhere(['user_id' => $userId]);
+            $query->andWhere(['payment_history.user_id' => $userId]);
         }
 
         return $query
             ->andWhere(['DATE(payment_history.created_at)' => $date])
-            ->andWhere(['in', 'type', [PaymentHistory::PAYMENT_TYPE_CASH, PaymentHistory::PAYMENT_TYPE_CARD]])
+            ->andWhere(['in', 'type', PaymentHistory::getTypePaymentsWithBalance()])
             ->groupBy('type')
             ->select('type, SUM(payment_history.amount) as amount')
             ->all();

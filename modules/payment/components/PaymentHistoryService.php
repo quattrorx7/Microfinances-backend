@@ -7,11 +7,12 @@ use app\helpers\DateHelper;
 use app\models\Client;
 use app\models\Payment;
 use app\models\PaymentHistory;
+use app\models\User;
 
 class PaymentHistoryService extends BaseService
 {
 
-    public function saveHistory(Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment', $type=0): void
+    public function saveHistory(User $user, Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment', $type=0): void
     {
         if ($amount > 0 || $inCart===null) {
             $model = new PaymentHistory();
@@ -19,6 +20,7 @@ class PaymentHistoryService extends BaseService
             $model->payment_id = $payment->id;
             $model->advance_id = $payment->advance_id;
             $model->client_id = $payment->client_id;
+            $model->user_id =  $user->id;
             $model->amount = $amount;
             if($inCart===null){
                 $model->message = '-';
@@ -32,28 +34,6 @@ class PaymentHistoryService extends BaseService
 
             $model->save();
         }
-    }
-
-    public function saveHistoryBalance(Client $client, int $amount, $inCart, string $actor = 'payment', $type=0): void
-    {
-        $model = new PaymentHistory();
-
-        $model->payment_id = null;
-        $model->advance_id = null;
-        $model->client_id = $client->id;
-        $model->amount = $amount;
-        if($inCart===null){
-            $model->message = '-';
-        }else{
-            $model->message = $inCart ? 'Перевод на карту' : 'Наличные';
-        }
-
-        $model->type = $type;
-        $model->created_at = DateHelper::now();
-        $model->actor = $actor;
-        $model->debt = $client->getAllDebts();
-
-        $model->save();
     }
 
     public function getHistoryByClientId(int $clientId): array
@@ -72,11 +52,12 @@ class PaymentHistoryService extends BaseService
         $query = PaymentHistory::find()
             ->joinWith('payment')
             ->andWhere(['!=', 'payment_history.message', '-'])
+            ->andWhere(['in', 'payment_history.type', PaymentHistory::getTypePaymentsWithBalance()])
             ->orderBy(['payment_history.id' => SORT_DESC])
             ->limit(3);
 
         if($userId)
-            $query->andWhere(['payment.user_id' => $userId]);
+            $query->andWhere(['payment_history.user_id' => $userId]);
 
         return $query->all();
     }
@@ -87,12 +68,12 @@ class PaymentHistoryService extends BaseService
     public function getHistoryByUserId(?int $userId): array
     {
         $query = PaymentHistory::find()
-            ->joinWith('payment')
             ->andWhere(['!=', 'payment_history.message', '-'])
+            ->andWhere(['in', 'payment_history.type', PaymentHistory::getTypePaymentsWithBalance()])
             ->orderBy(['payment_history.id' => SORT_DESC]);
 
         if($userId)
-            $query->andWhere(['payment.user_id' => $userId]);
+            $query->andWhere(['payment_history.user_id' => $userId]);
 
         return $query->all();
     }
@@ -103,12 +84,9 @@ class PaymentHistoryService extends BaseService
     public function getStatisticPayment($from, $to)
     {
         $query = PaymentHistory::find()
-            ->where(['in', 'type', [
-                PaymentHistory::PAYMENT_TYPE_CARD,
-                PaymentHistory::PAYMENT_TYPE_CASH,
-                PaymentHistory::PAYMENT_TYPE_CARD_BALANCE,
-                PaymentHistory::PAYMENT_TYPE_CASH_BALANCE,
-            ]]);
+            ->where(['in', 'type', 
+                PaymentHistory::getTypePaymentsWithBalance()
+            ]);
 
         if($from){
             $query->andWhere(['>=', 'DATE(created_at)', $from]);

@@ -32,6 +32,7 @@ class PaymentHandler extends AbstractPayHandler
             }
 
             $sortPayments = array_merge($sortPayments, $activePayments);
+            $dto->first_advance = $sortPayments[0];
 
             foreach ($sortPayments as $currentPayment) {
                 $payAmount = ClientPayHelper::differenceResult($dto->amount, $currentPayment->amount);
@@ -45,7 +46,7 @@ class PaymentHandler extends AbstractPayHandler
                     $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
                 }
 
-                (new PaymentHistoryService())->saveHistory($dto->client, $currentPayment, $payAmount, $dto->inCart, 'payment', $type);
+                (new PaymentHistoryService())->saveHistory($dto->user, $dto->client, $currentPayment, $payAmount, $dto->inCart, 'payment', $type);
             }
 
             if ($dto->amount <= 0) {

@@ -24,7 +24,7 @@ class EmptyHandler extends AbstractPayHandler
         if ($next) {
             $debtModel = $dto->client->lastDebtPayments[0];
            
-            (new PaymentHistoryService())->saveHistory($dto->client, $debtModel, 0, $dto->inCart, 'payment', PaymentHistory::PAYMENT_TYPE_AUTO);
+            (new PaymentHistoryService())->saveHistory($dto->user, $dto->client, $debtModel, 0, $dto->inCart, 'payment', PaymentHistory::PAYMENT_TYPE_AUTO);
 
         }
 
