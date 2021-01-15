@@ -44,6 +44,15 @@ class PaymentHistoryService extends BaseService
             ->all();
     }
 
+    public function getHistoryByClientIdAndDate(int $clientId, string $date): array
+    {
+        return PaymentHistory::find()
+            ->where(['client_id' => $clientId])
+            ->andWhere(['DATE(created_at)' => $date])
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
+    }
+
     /**
      * История платежей, профиль сотрудника последнии 3 штуки
      */

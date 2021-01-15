@@ -75,8 +75,8 @@ class PaymentController extends AuthedApiController
 
     public function actionReturn(int $paymentId)
     {
-        $mes = $this->paymentService->returnPayment($paymentId);
-        return JSendResponse::success($mes);
+        $data = $this->paymentService->returnPayment($paymentId);
+        return JSendResponse::success($data['mes'], (array)$data['data']);
     }
 
     public function actionDebt()

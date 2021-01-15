@@ -33,18 +33,22 @@ class PaymentService extends BaseService
 
     protected PaymentPopulator $paymentPopulator;
 
+    protected PaymentHistoryService $paymentHistoryService;
+
     protected AdvanceService $advanceService;
 
     public function injectDependencies(
         PaymentFactory $paymentFactory,
         PaymentRepository $paymentRepository,
         PaymentPopulator $paymentPopulator,
+        PaymentHistoryService $paymentHistoryService,
         AdvanceService $advanceService
     ): void
     {
         $this->paymentFactory = $paymentFactory;
         $this->paymentRepository = $paymentRepository;
         $this->paymentPopulator = $paymentPopulator;
+        $this->paymentHistoryService = $paymentHistoryService;
         $this->advanceService = $advanceService;
     }
 
@@ -194,10 +198,10 @@ class PaymentService extends BaseService
         $arr = ['cash'=>0, 'card'=>0];
         
         foreach($payments as $value){
-            if($value['type']==PaymentHistory::PAYMENT_TYPE_CASH){
+            if($value['type']==PaymentHistory::PAYMENT_TYPE_CASH || $value['type']==PaymentHistory::PAYMENT_TYPE_CASH_BALANCE){
                 $arr['cash'] = $value['amount'];
             }
-            if($value['type']==PaymentHistory::PAYMENT_TYPE_CARD){
+            if($value['type']==PaymentHistory::PAYMENT_TYPE_CARD || $value['type']==PaymentHistory::PAYMENT_TYPE_CARD_BALANCE){
                 $arr['card'] = $value['amount'];
             }
         }
@@ -209,12 +213,15 @@ class PaymentService extends BaseService
     {
         $payment = $this->paymentRepository->getPaymentById($paymentId);
 
-        $pays = $payment->paymentHistories;
+        $pays = $this->paymentHistoryService->getHistoryByClientIdAndDate($payment->client_id, DateHelper::nowWithoutHours());
+
         $summa = 0;
         $balance = 0;
         foreach($pays as $pay){
             if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH){
                 $summa += $pay->amount;
+                $pay->advance->updateCounters(['summa_left_to_pay' => $pay->amount]);
+                $pay->payment->updateCounters(['amount' => $pay->amount]);
                 $pay->delete();
             }else if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD_BALANCE || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH_BALANCE){
                 $balance += $pay->amount;
@@ -222,13 +229,16 @@ class PaymentService extends BaseService
             }
         }
 
-        $advance = $payment->advance;
-
-        $advance->updateCounters(['summa_left_to_pay' => $summa + $balance]);
         $client = $payment->client;
-        $client->updateCounters(['balance' => $balance]);
+        $client->updateCounters(['balance' => -1*$balance]);
 
-        return 'Успешный возврат платежа';
+        return [
+            'mes'=>'Успешный возврат платежа',
+            'data'=>[
+                'payments'=>$summa,
+                'balance'=>$balance,
+            ]
+        ];
     }
     
 }
