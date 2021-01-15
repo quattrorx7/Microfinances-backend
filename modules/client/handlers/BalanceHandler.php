@@ -20,13 +20,18 @@ class BalanceHandler extends AbstractPayHandler
     public function handle(bool $next, PayDto $dto): ?string
     {
         if ($next) {
-            $this->clientService->updateBalance($dto->client, $dto->amount);
-            if($dto->amount>0){
-                $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CARD_BALANCE : PaymentHistory::PAYMENT_TYPE_CASH_BALANCE;
+            if($dto->fromBalance){
+            //Оплата с баланса
+                $this->clientService->updateBalance($dto->client, -1*($dto->startAmount - $dto->amount));
+            }else{
+                $this->clientService->updateBalance($dto->client, $dto->amount);
+                if($dto->amount>0){
+                    $type = $dto->inCart ? PaymentHistory::PAYMENT_TYPE_CARD_BALANCE : PaymentHistory::PAYMENT_TYPE_CASH_BALANCE;
 
-                (new PaymentHistoryService())->saveHistory($dto->user, $dto->client, $dto->first_advance, $dto->amount, $dto->inCart, 'payment', $type);
+                    (new PaymentHistoryService())->saveHistory($dto->user, $dto->client, $dto->first_advance, $dto->amount, $dto->inCart, 'payment', $type);
 
-                $dto->addMessage('Резерв начислен: '.PriceHelper::priceFormat($dto->amount));
+                    $dto->addMessage('Резерв начислен: '.PriceHelper::priceFormat($dto->amount));
+                }
             }
         }
 

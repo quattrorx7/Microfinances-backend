@@ -10,6 +10,7 @@ use app\modules\client\components\ClientPayService;
 use app\modules\client\dto\PayDto;
 use app\modules\client\forms\ClientPayForm;
 use app\modules\client\validators\rules\HasClientPaymentsForDate;
+use Exception;
 
 class CreatePayService extends BaseService
 {
@@ -45,6 +46,10 @@ class CreatePayService extends BaseService
         (new HasClientPaymentsForDate())->validate($client, DateHelper::nowWithoutHours());
 
         $payDto = new PayDto($user, $client, $form);
+
+        if($payDto->fromBalance && $payDto->amount>$client->balance){
+            throw new  Exception("«Сумма» должна быть не больше баланса клиента");
+        }
 
         $this->clientPayService->pay($payDto);
 

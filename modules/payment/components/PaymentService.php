@@ -226,6 +226,11 @@ class PaymentService extends BaseService
             }else if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD_BALANCE || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH_BALANCE){
                 $balance += $pay->amount;
                 $pay->delete();
+            }else if($pay->type == PaymentHistory::PAYMENT_TYPE_BALANCE){
+                $balance -= $pay->amount;
+                $pay->advance->updateCounters(['summa_left_to_pay' => $pay->amount]);
+                $pay->payment->updateCounters(['amount' => $pay->amount]);
+                $pay->delete();
             }
         }
 

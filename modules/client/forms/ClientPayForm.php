@@ -14,6 +14,8 @@ class ClientPayForm extends Model
 
     public $in_cart = false;
 
+    public $from_balance = false;
+
     public function rules(): array
     {
         return [
@@ -23,7 +25,8 @@ class ClientPayForm extends Model
                 'exist', 'targetClass' => Advance::class, 'targetAttribute' => ['advance_ids' => 'id'], 'filter' => 'payment_status <> 8']
             ],
             [['amount'], 'integer'],
-            [['in_cart'], 'boolean']
+            [['in_cart'], 'boolean'],
+            [['from_balance'], 'boolean']
         ];
     }
 
@@ -33,6 +36,7 @@ class ClientPayForm extends Model
             'advance_ids' => 'Займы',
             'amount' => 'Сумма',
             'in_cart' => 'На карту',
+            'from_balance' => 'С баланса'
         ];
     }
 

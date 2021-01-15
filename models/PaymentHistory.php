@@ -13,8 +13,9 @@ class PaymentHistory extends \app\models\base\PaymentHistory
     public CONST PAYMENT_TYPE_CASH = 2;
     public CONST PAYMENT_TYPE_CARD_BALANCE = 4;
     public CONST PAYMENT_TYPE_CASH_BALANCE = 5;
-    public CONST PAYMENT_TYPE_RETURN = 6;
-    public CONST PAYMENT_TYPE_RETURNBALANCE = 7;
+    public CONST PAYMENT_TYPE_BALANCE = 6;
+    public CONST PAYMENT_TYPE_RETURN = 7;
+    public CONST PAYMENT_TYPE_RETURNBALANCE = 8;
 
     public static function getTypePayments()
     {

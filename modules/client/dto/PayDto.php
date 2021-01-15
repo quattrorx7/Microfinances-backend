@@ -18,6 +18,9 @@ class PayDto
 
     public $inCart;
 
+    public $fromBalance;
+    public $startAmount;
+
     public $message;
 
     /**
@@ -33,6 +36,8 @@ class PayDto
         $this->amount = $form->amount;
         $this->advanceIds = $form->advance_ids;
         $this->inCart = $form->in_cart;
+        $this->fromBalance = $form->from_balance;
+        $this->startAmount = $form->amount;
     }
 
     /**

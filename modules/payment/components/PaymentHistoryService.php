@@ -25,7 +25,11 @@ class PaymentHistoryService extends BaseService
             if($inCart===null){
                 $model->message = '-';
             }else{
-                $model->message = $inCart ? 'Перевод на карту' : 'Наличные';
+                if($type==PaymentHistory::PAYMENT_TYPE_BALANCE){
+                    $model->message = 'Резерв';
+                }else{
+                    $model->message = $inCart ? 'Перевод на карту' : 'Наличные';
+                }
             }
             $model->type = $type;
             $model->created_at = DateHelper::now();
