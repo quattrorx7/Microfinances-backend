@@ -1234,7 +1234,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"advance_ids\": [22],\n    \"amount\": 5000,\n    \"in_cart\": true\n}",
+							"raw": "{\n    \"advance_ids\": [17,19],\n    \"amount\": 2000,\n    \"in_cart\": true,\n    \"from_balance\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1242,13 +1242,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{microApiUrl}}/payment/31/pay",
+							"raw": "{{microApiUrl}}/payment/26/pay",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"payment",
-								"31",
+								"26",
 								"pay"
 							]
 						}
@@ -1273,7 +1273,7 @@
 							"variable": [
 								{
 									"key": "clientId",
-									"value": "31",
+									"value": "26",
 									"description": "id клиента"
 								}
 							]
@@ -1311,7 +1311,7 @@
 							"variable": [
 								{
 									"key": "payment_id",
-									"value": "32"
+									"value": "115"
 								}
 							]
 						}
