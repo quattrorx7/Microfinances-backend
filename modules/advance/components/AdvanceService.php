@@ -17,6 +17,7 @@ use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
+use app\modules\advance\forms\RefinancingForm;
 use app\modules\client\components\ClientRepository;
 use app\modules\user\components\UserManager;
 use Exception;
@@ -240,6 +241,86 @@ class AdvanceService extends BaseService
         }
 
         return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
+    }
+
+    public function createRefinancingByClientForm(RefinancingForm $form, array $advances, Client $client, User $currentUser): string
+    {
+        $model = $currentUser->isSuperadmin ? $this->advanceFactory->createWithAdmin() : $this->advanceFactory->create();
+        $user = $currentUser->isSuperadmin ? $advances[0]->user : $currentUser;
+        $form->daily_payment = $currentUser->isSuperadmin ? $form->daily_payment : null;
+
+        $model->refinancing = 1;
+        
+        $this->advancePopulator
+            ->populateFromRefinancingForm($model, $form)
+            ->populateClient($model, $client)
+            ->populateUser($model, $user);
+
+        if ($currentUser->isSuperadmin) {
+            $calculateDto = $this->calculate($form->amount, $form->limitation, $form->daily_payment);
+
+            $this->advancePopulator
+            ->populateFromApprovedRefinancingForm($model, $form)
+                ->populateFromCalculateDto($model, $calculateDto)
+                ->changeStatus($model, Advance::STATE_ISSUED);
+
+            $model->activatePaymentProcess();
+        
+            $ids = $model->refinancingIds();
+    
+            $refs = $this->advanceRepository->getRefinancingById($ids);
+    
+            foreach($refs as $ref){
+                $ref->payment_status = Advance::PAYMENT_STATUS_CLOSED;
+                $ref->payment_left = 0;
+                $ref->save();
+            }
+        }
+
+        $this->advanceRepository->saveAdvance($model);
+
+        return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
+    }
+
+    /**
+     * @param int $advanceId
+     * @param AdvanceApprovedForm $form
+     * @throws AdvanceNotFoundException
+     * @throws AdvanceStatusException
+     * @throws UnSuccessModelException|UserException
+     */
+    public function approvedRefinancing(int $advanceId, RefinancingForm $form): void
+    {
+        $model = $this->advanceRepository->getAdvanceById($advanceId);
+
+        if (!$model->isSent()) {
+            throw new AdvanceStatusException('Одобрить заявку можно только в статусе "Отправлено"');
+        }
+
+        $calculateDto = (new AdvanceCalculator())->calculate(
+            $form->amount,
+            $form->limitation,
+            $form->daily_payment
+        );
+
+        $this->advancePopulator
+            ->populateFromApprovedRefinancingForm($model, $form)
+            ->populateFromCalculateDto($model, $calculateDto)
+            ->changeStatus($model, Advance::STATE_ISSUED);
+
+        $model->activatePaymentProcess();
+
+        $this->advanceRepository->save($model);
+
+        $ids = $model->refinancingIds();
+
+        $refs = $this->advanceRepository->getRefinancingById($ids);
+
+        foreach($refs as $ref){
+            $ref->payment_status = Advance::PAYMENT_STATUS_CLOSED;
+            $ref->payment_left = 0;
+            $ref->save();
+        }
     }
 
     public function getActiveAdvancesByDate(string $date)

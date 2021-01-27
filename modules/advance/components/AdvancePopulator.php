@@ -13,6 +13,7 @@ use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
+use app\modules\advance\forms\RefinancingForm;
 use app\modules\files\services\FilesService;
 use yii\web\UploadedFile;
 
@@ -43,6 +44,11 @@ class AdvancePopulator extends AbstractPopulator
         return $this;
     }
 
+    public function populateRefinancing(Advance $model, Advance $ref): self
+    {
+        $model->populateRelation('refinancing', $ref);
+        return $this;
+    }
 
     public function populateFromCreateForm(Advance $model, AdvanceCreateForm $form): self
     {
@@ -52,6 +58,18 @@ class AdvancePopulator extends AbstractPopulator
             'limitation',
             'daily_payment'
         ]);
+
+        return $this;
+    }
+
+    public function populateFromRefinancingForm(Advance $model, RefinancingForm $form): self
+    {
+        $this->populateAttributes($model, $form->attributes, [
+            'amount',
+            'limitation',
+        ]);
+
+        $model->refinancing_ids = json_encode($form->advance_ids);
 
         return $this;
     }
@@ -77,6 +95,21 @@ class AdvancePopulator extends AbstractPopulator
             'user_id',
             'daily_payment'
         ]);
+
+        return $this;
+    }
+
+    public function populateFromApprovedRefinancingForm(Advance $model, RefinancingForm $form): self
+    {
+        $this->populateAttributes($model, $form->attributes, [
+            'amount',
+            'limitation',
+            'daily_payment'
+        ]);
+
+
+        $issue_date = DateHelper::getModifyDate(DateHelper::now(), '+1 day');
+        $model->issue_date = DateHelper::formatDate($issue_date, 'Y-m-d H:i:s');
 
         return $this;
     }

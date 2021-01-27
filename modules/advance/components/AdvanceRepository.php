@@ -40,6 +40,16 @@ class AdvanceRepository extends BaseRepository
             ->all();
     }
 
+    /**
+     * Займы для рефинансирования
+     */
+    public function getRefinancingById(array $ids)
+    {
+        return Advance::find()
+            ->where(['in', 'id', $ids])
+            ->all();
+    }
+
     public function saveAdvance(Advance $advance)
     {
         $transaction = \Yii::$app->db->beginTransaction();

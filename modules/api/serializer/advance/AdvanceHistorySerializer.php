@@ -25,7 +25,7 @@ class AdvanceHistorySerializer extends AbstractProperties
                 'amount',
                 'limitation',
                 'status' => function(Advance $model){
-                    return AdvanceHelper::getShortStatusById($model->status, $model->payment_status);
+                    return AdvanceHelper::getShortStatusById($model->status, $model->payment_status, $model);
                 }
             ]
         ];

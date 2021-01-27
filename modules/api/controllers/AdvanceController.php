@@ -7,7 +7,9 @@ use app\components\exceptions\UnSuccessModelException;
 use app\components\exceptions\UserException;
 use app\components\exceptions\ValidateException;
 use app\components\JSendResponse;
+use app\models\Advance;
 use app\modules\advance\components\AdvanceManager;
+use app\modules\advance\components\AdvanceRepository;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
 use app\modules\advance\exceptions\AdvanceStatusException;
 use app\modules\advance\exceptions\ValidateAdvanceCreateException;
@@ -21,6 +23,7 @@ use app\modules\api\serializer\advance\AdvanceDebtSerializer;
 use app\modules\api\serializer\advance\AdvanceFullSerializer;
 use app\modules\api\serializer\advance\AdvanceListSerializer;
 use app\modules\advance\components\AdvanceService;
+use app\modules\advance\forms\RefinancingForm;
 use app\modules\advance\providers\AdvanceProvider;
 use app\modules\api\serializer\advance\AdvanceHistorySerializer;
 use app\modules\api\serializer\advance\AdvanceShortSerializer;
@@ -62,7 +65,7 @@ class AdvanceController extends AuthedApiController
 
         $behaviors['access'] = [
             'class' => AccessControl::class,
-            'only' => ['issue-loan', 'denied', 'approved', 'percent'],
+            'only' => ['issue-loan', 'denied', 'approved', 'percent', 'refinancingapproved'],
             'rules' => [
                 [
                     'allow' => true,
@@ -73,7 +76,7 @@ class AdvanceController extends AuthedApiController
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['denied', 'approved', 'percent'],
+                    'actions' => ['denied', 'approved', 'percent', 'refinancingapproved'],
                     'matchCallback' => function($rule, $action){
                         return $this->currentUser->isSuperadmin;
                     }
@@ -232,5 +235,42 @@ class AdvanceController extends AuthedApiController
         $history = $this->advanceService->getHistoryByClientId($clientId);
 
         return AdvanceHistorySerializer::serialize($history);
+    }
+
+    /**
+     * Рефенансирование
+     */
+    public function actionRefinancing()
+    {
+        $form = RefinancingForm::loadAndValidate(Yii::$app->request->bodyParams, '', $this->currentUser->isSuperadmin);
+
+        $advances = [];
+        $advanceRepository = new AdvanceRepository();
+        $client = null;
+        foreach($form->advance_ids as $id){
+            $advance = $advanceRepository->getAdvanceById($id);
+            if($client===null){
+                $client = $advance->client;
+            }else if($client->id != $advance->client_id){
+                throw new Exception("У займов разные клиенты");
+            }
+            $advances[] = $advance;
+        }
+
+        $result = $this->advanceService->createRefinancingByClientForm($form, $advances, $client, $this->currentUser);
+
+        return JSendResponse::success($result);
+    }
+
+    /**
+     * Одобрить рефенансирование
+     */
+    public function actionRefinancingapproved(int $advanceId)
+    {
+        $form = RefinancingForm::loadAndValidate(Yii::$app->request->bodyParams, '', $this->currentUser->isSuperadmin);
+
+        $this->advanceService->approvedRefinancing($advanceId, $form);
+
+        return JSendResponse::success('Одобрено');
     }
 }

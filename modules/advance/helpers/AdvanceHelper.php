@@ -22,11 +22,17 @@ class AdvanceHelper
         ];
     }
 
-    public static function getShortStatusById($statusId, $paymentId): string
+    public static function getShortStatusById($statusId, $paymentId, Advance $model): string
     {
         if($statusId==Advance::STATE_ISSUED){
+            if($paymentId == Advance::PAYMENT_STATUS_STARTED && $model->isRefinancing()) {
+                return "Реф";
+            }
             return (self::getShortPaymentStatuses())[$paymentId];
         }else{
+            if($paymentId == Advance::STATE_SENT && $model->isRefinancing()) {
+                return "Реф";
+            }
             return (self::getShortStatuses())[$statusId];
         }
     }

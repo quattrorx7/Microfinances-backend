@@ -57,6 +57,21 @@ class Advance extends \app\models\base\Advance
         return $this->payment_status === self::PAYMENT_STATUS_CLOSED;
     }
 
+    /** Рефинансирование */
+    public function isRefinancing(): bool
+    {
+        return $this->refinancing;
+    }
+
+    public function refinancingIds(): array
+    {
+        if($this->isRefinancing()){
+            return json_decode($this->refinancing_ids);
+        }else{
+            return [];
+        }
+    }
+
     public function isOwner(User $user): bool
     {
         return $this->user_id === $user->id;
