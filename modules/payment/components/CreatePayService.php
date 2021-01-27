@@ -8,6 +8,7 @@ use app\models\User;
 use app\modules\client\components\ClientManager;
 use app\modules\client\components\ClientPayService;
 use app\modules\client\dto\PayDto;
+use app\modules\client\exceptions\ClientNotFoundPaymentsException;
 use app\modules\client\forms\ClientPayForm;
 use app\modules\client\validators\rules\HasClientPaymentsForDate;
 use Exception;
@@ -43,16 +44,28 @@ class CreatePayService extends BaseService
     public function execute(User $user, int $clientId, ClientPayForm $form)
     {
         $client = $this->clientManager->getClientById($clientId);
-        (new HasClientPaymentsForDate())->validate($client, DateHelper::nowWithoutHours());
+        try{
+            (new HasClientPaymentsForDate())->validate($client, DateHelper::nowWithoutHours());
+            
+            $payDto = new PayDto($user, $client, $form);
 
-        $payDto = new PayDto($user, $client, $form);
+            if($payDto->fromBalance && $payDto->amount>$client->balance){
+                throw new  Exception("«Сумма» должна быть не больше баланса клиента");
+            }
 
-        if($payDto->fromBalance && $payDto->amount>$client->balance){
-            throw new  Exception("«Сумма» должна быть не больше баланса клиента");
+            $this->clientPayService->pay($payDto);
+
+            return $payDto->getMessage();
+        }catch(ClientNotFoundPaymentsException $ex){
+            $payDto = new PayDto($user, $client, $form);
+
+            if(!$payDto->fromBalance){
+                $this->clientPayService->addBalance($payDto);
+
+                return $payDto->getMessage();
+            }else{
+                throw $ex;
+            }
         }
-
-        $this->clientPayService->pay($payDto);
-
-        return $payDto->getMessage();
     }
 }

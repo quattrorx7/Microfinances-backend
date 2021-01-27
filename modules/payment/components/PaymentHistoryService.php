@@ -40,6 +40,27 @@ class PaymentHistoryService extends BaseService
         }
     }
 
+    
+    public function saveHistoryBalance(User $user, Client $client, int $amount, $inCart, string $actor = 'payment', $type=0): void
+    {
+        $model = new PaymentHistory();
+
+        $model->payment_id = null;
+        $model->advance_id = null;
+        $model->client_id = $client->id;
+        $model->user_id =  $user->id;
+        $model->amount = $amount;
+        
+        $model->message = $inCart ? 'Перевод на карту' : 'Наличные';
+
+        $model->type = $type;
+        $model->created_at = DateHelper::now();
+        $model->actor = $actor;
+        $model->debt = $client->getAllDebts();
+
+        $model->save();
+    }
+
     public function getHistoryByClientId(int $clientId): array
     {
         return PaymentHistory::find()
