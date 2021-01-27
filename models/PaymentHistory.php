@@ -35,4 +35,16 @@ class PaymentHistory extends \app\models\base\PaymentHistory
         ];
     }
 
+    /**
+     * Все способы оплаты
+     */
+    public static function getTypePaymentsAll()
+    {
+        return [
+            self::PAYMENT_TYPE_CARD,
+            self::PAYMENT_TYPE_CASH,
+            self::PAYMENT_TYPE_BALANCE,
+        ];
+    }
+
 }

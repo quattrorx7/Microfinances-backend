@@ -64,7 +64,7 @@ class PaymentRepository extends BaseRepository
         $result = $query
             ->andWhere(['payment.created_at' => $date])
             ->joinWith('paymentHistories')
-            ->andWhere(['in', 'payment_history.type', PaymentHistory::getTypePayments()])
+            ->andWhere(['in', 'payment_history.type', PaymentHistory::getTypePaymentsAll()])
             ->groupBy('payment.client_id')
             ->select('payment.*')
             ->addSelect('SUM(payment_history.amount) as amount')
