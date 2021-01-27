@@ -220,6 +220,10 @@ class PaymentService extends BaseService
         foreach($pays as $pay){
             if($pay->type == PaymentHistory::PAYMENT_TYPE_CARD || $pay->type == PaymentHistory::PAYMENT_TYPE_CASH){
                 $summa += $pay->amount;
+                if($pay->advance->isClosed()){
+                    $pay->advance->payment_status = Advance::PAYMENT_STATUS_STARTED;
+                    $pay->advance->save();
+                }
                 $pay->advance->updateCounters(['summa_left_to_pay' => $pay->amount]);
                 $pay->payment->updateCounters(['amount' => $pay->amount]);
                 $pay->delete();
@@ -228,6 +232,10 @@ class PaymentService extends BaseService
                 $pay->delete();
             }else if($pay->type == PaymentHistory::PAYMENT_TYPE_BALANCE){
                 $balance -= $pay->amount;
+                if($pay->advance->isClosed()){
+                    $pay->advance->payment_status = Advance::PAYMENT_STATUS_STARTED;
+                    $pay->advance->save();
+                }
                 $pay->advance->updateCounters(['summa_left_to_pay' => $pay->amount]);
                 $pay->payment->updateCounters(['amount' => $pay->amount]);
                 $pay->delete();

@@ -55,7 +55,7 @@ class PaymentHandler extends AbstractPayHandler
                 (new PaymentHistoryService())->saveHistory($dto->user, $dto->client, $currentPayment, $payAmount, $dto->inCart, 'payment', $type);
             }
 
-            if ($dto->amount <= 0) {
+            if ($dto->amount <= 0 && !$dto->fromBalance) {
                 $next = false;
             }
         }

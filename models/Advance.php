@@ -51,6 +51,12 @@ class Advance extends \app\models\base\Advance
         return $this->status === self::STATE_DENIED;
     }
 
+    /** Закрыто */
+    public function isClosed(): bool
+    {
+        return $this->payment_status === self::PAYMENT_STATUS_CLOSED;
+    }
+
     public function isOwner(User $user): bool
     {
         return $this->user_id === $user->id;
