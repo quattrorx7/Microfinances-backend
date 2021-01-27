@@ -10,6 +10,7 @@ class RefinancingForm extends Model
 {
     public const SCENARIO_ADMIN = 'admin';
     public const SCENARIO_USER = 'user';
+    public const SCENARIO_ADMIN_CREATE = "admin_create";
 
     public $advance_ids;
 
@@ -23,6 +24,7 @@ class RefinancingForm extends Model
     {
         return [
             self::SCENARIO_ADMIN => ['amount', 'limitation', 'daily_payment'],
+            self::SCENARIO_ADMIN_CREATE => ['advance_ids', 'amount', 'limitation', 'daily_payment'],
             self::SCENARIO_USER => ['advance_ids', 'amount', 'limitation'],
         ];
     }
@@ -31,14 +33,16 @@ class RefinancingForm extends Model
     {
         return [
             [['amount'], 'required'],
+            [['daily_payment'], 'required', 'on' => self::SCENARIO_ADMIN],
+            [['advance_ids'], 'required', 'on' => self::SCENARIO_ADMIN_CREATE],
+            [['advance_ids'], 'required', 'on' => self::SCENARIO_USER],
             [['advance_ids'], 'each', 'rule' => ['integer']],
             [['advance_ids'], 'each', 'rule' => [
                 'exist', 'targetClass' => Advance::class, 'targetAttribute' => ['advance_ids' => 'id'], 'filter' => 'payment_status <> 8']
             ],
             [['amount'], 'integer'],
             [['limitation'], 'integer'],
-            [['daily_payment'], 'required', 'on' => self::SCENARIO_ADMIN],
-            [['advance_ids'], 'required', 'on' => self::SCENARIO_USER],
+           
             ['daily_payment', 'integer'],
         ];
     }
@@ -59,10 +63,14 @@ class RefinancingForm extends Model
     * @return static
     * @throws ValidateException
      */
-    public static function loadAndValidate($bodyParams, $formName = '', $isAdmin = false): self
+    public static function loadAndValidate($bodyParams, $formName = '', $isAdmin = false, $create=false): self
     {
         $self = new self();
-        $self->scenario = $isAdmin ? $self::SCENARIO_ADMIN : self::SCENARIO_USER;
+        if($isAdmin && $create){
+            $self->scenario = $self::SCENARIO_ADMIN_CREATE;
+        }else{
+            $self->scenario = $isAdmin ? $self::SCENARIO_ADMIN : self::SCENARIO_USER;
+        }
         $self->load($bodyParams, $formName);
 
         if ($self->validate()) {

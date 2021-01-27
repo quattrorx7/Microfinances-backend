@@ -242,11 +242,12 @@ class AdvanceController extends AuthedApiController
      */
     public function actionRefinancing()
     {
-        $form = RefinancingForm::loadAndValidate(Yii::$app->request->bodyParams, '', $this->currentUser->isSuperadmin);
+        $form = RefinancingForm::loadAndValidate(Yii::$app->request->bodyParams, '', $this->currentUser->isSuperadmin, true);
 
         $advances = [];
         $advanceRepository = new AdvanceRepository();
         $client = null;
+        
         foreach($form->advance_ids as $id){
             $advance = $advanceRepository->getAdvanceById($id);
             if($client===null){
