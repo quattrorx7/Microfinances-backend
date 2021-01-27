@@ -32,7 +32,9 @@ class PaymentHandler extends AbstractPayHandler
             }
 
             $sortPayments = array_merge($sortPayments, $activePayments);
-            $dto->first_advance = $sortPayments[0];
+            if(isset($sortPayments[0])){
+                $dto->first_advance = $sortPayments[0];
+            }
 
             foreach ($sortPayments as $currentPayment) {
                 $payAmount = ClientPayHelper::differenceResult($dto->amount, $currentPayment->amount);

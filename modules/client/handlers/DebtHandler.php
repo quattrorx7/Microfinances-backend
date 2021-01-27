@@ -23,7 +23,13 @@ class DebtHandler extends AbstractPayHandler
     {
         if ($next) {
             $isDebt = false;
+            $first = true;
+
             foreach ($dto->client->lastDebtPayments as $debtModel) {
+                if($first) {
+                    $dto->first_advance = $debtModel;
+                    $first = false;
+                }
                 $isDebt = true;
                 $payAmount = ClientPayHelper::differenceResult($dto->amount, $debtModel->amount);
 
