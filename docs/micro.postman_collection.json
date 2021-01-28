@@ -66,7 +66,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": \"20000000\",\n    \"password\": \"12345\",\n    \"device_id\": \"sdfsdfsdfsdfrer5tgtgr\"\n}",
+							"raw": "{\n    \"id\": \"70000000\",\n    \"password\": \"12345\",\n    \"device_id\": \"sdfsdfsdfsdfrer5tgtgr\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -765,6 +765,96 @@
 					]
 				},
 				{
+					"name": "Рефенансирование",
+					"item": [
+						{
+							"name": "Одобрить рефенансирование",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"issue_date\": \"2021-01-29\",\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"user_id\":3,\n    \"daily_payment\": 40000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{microApiUrl}}/advance/31/refinancingapproved",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"advance",
+										"31",
+										"refinancingapproved"
+									]
+								},
+								"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+							},
+							"response": []
+						},
+						{
+							"name": "Создание заявки на рефенансирование",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"issue_date\": \"2021-01-28\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{microApiUrl}}/advance/refinancing",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"advance",
+										"refinancing"
+									]
+								},
+								"description": "дубль для Клиенты\\Добавить нового"
+							},
+							"response": []
+						},
+						{
+							"name": "[Руковод] Создание рефенансирование",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"issue_date\": \"2021-01-29\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20,\r\n    \"daily_payment\":40000,\r\n    \"user_id\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{microApiUrl}}/advance/refinancing",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"advance",
+										"refinancing"
+									]
+								},
+								"description": "дубль для Клиенты\\Добавить нового"
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Список заявок",
 					"request": {
 						"method": "GET",
@@ -1330,7 +1420,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"from\": \"20.12.2020\",\r\n    \"to\": \"12.01.2021\"\r\n}",
+							"raw": "{\r\n    \"from\": \"20.12.2020\",\r\n    \"to\": \"29.01.2021\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
