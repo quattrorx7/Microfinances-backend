@@ -411,4 +411,11 @@ class AdvanceService extends BaseService
 
         return (int)$query->sum('summa_with_percent')??0;
     }
+
+    public function statisticRefinancingdAdvance($from, $to)
+    {
+        $query = $this->advanceRepository->getStatisticRefinancing($from, $to);
+
+        return (int)$query->sum('summa_with_percent')??0;
+    }
 }

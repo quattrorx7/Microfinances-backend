@@ -52,7 +52,7 @@ class StatisticsController extends AuthedApiController
         $debts = $this->paymentHistoryService->getStatisticDebt($from, $to);
 
         $issuedAdvance = $this->advanceService->statisticIssuedAdvance($from, $to);
-        $updateAdvance = 0;
+        $updateAdvance = $this->advanceService->statisticRefinancingdAdvance($from, $to);;
 
         return [
             'debts'=>$debts,

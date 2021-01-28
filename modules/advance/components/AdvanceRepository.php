@@ -164,7 +164,8 @@ class AdvanceRepository extends BaseRepository
     public function getStatistic($from, $to): ActiveQuery
     {
         $query = Advance::find()
-            ->andWhere(['status' => Advance::STATE_ISSUED]);
+            ->andWhere(['status' => Advance::STATE_ISSUED])
+            ->andWhere(['refinancing' => 0]);
 
         if($from){
             $query->andWhere(['>=', 'DATE(issue_date)', $from]);
@@ -175,4 +176,23 @@ class AdvanceRepository extends BaseRepository
 
         return $query;
     }
+
+
+    public function getStatisticRefinancing($from, $to): ActiveQuery
+    {
+        $query = Advance::find()
+            ->andWhere(['status' => Advance::STATE_ISSUED])
+            ->andWhere(['refinancing' => 1]);
+
+
+        if($from){
+            $query->andWhere(['>=', 'DATE(issue_date)', $from]);
+        }
+        if($to){
+            $query->andWhere(['<=', 'DATE(issue_date)', $to]);
+        }
+
+        return $query;
+    }
+    
 }
