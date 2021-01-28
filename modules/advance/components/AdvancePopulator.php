@@ -104,12 +104,12 @@ class AdvancePopulator extends AbstractPopulator
         $this->populateAttributes($model, $form->attributes, [
             'amount',
             'limitation',
-            'daily_payment'
+            'daily_payment',
+            'issue_date'
         ]);
 
-
-        $issue_date = DateHelper::getModifyDate(DateHelper::now(), '+1 day');
-        $model->issue_date = DateHelper::formatDate($issue_date, 'Y-m-d H:i:s');
+        // $issue_date = DateHelper::getModifyDate(DateHelper::now(), '+1 day');
+        // $model->issue_date = DateHelper::formatDate($issue_date, 'Y-m-d H:i:s');
 
         return $this;
     }

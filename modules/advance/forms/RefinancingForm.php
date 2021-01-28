@@ -4,6 +4,7 @@ namespace app\modules\advance\forms;
 
 use app\components\exceptions\ValidateException;
 use app\models\Advance;
+use app\models\User;
 use yii\base\Model;
 
 class RefinancingForm extends Model
@@ -16,25 +17,32 @@ class RefinancingForm extends Model
 
     public $amount;
 
+    public $issue_date;
+
     public $limitation;
 
     public $daily_payment;
 
+    public $comment;
+
+    public $user_id;
+
     public function scenarios()
     {
         return [
-            self::SCENARIO_ADMIN => ['amount', 'limitation', 'daily_payment'],
-            self::SCENARIO_ADMIN_CREATE => ['advance_ids', 'amount', 'limitation', 'daily_payment'],
-            self::SCENARIO_USER => ['advance_ids', 'amount', 'limitation'],
+            self::SCENARIO_ADMIN => ['issue_date', 'amount', 'limitation', 'daily_payment', 'user_id'],
+            self::SCENARIO_ADMIN_CREATE => ['issue_date', 'advance_ids', 'amount', 'limitation', 'daily_payment', 'user_id'],
+            self::SCENARIO_USER => ['issue_date', 'advance_ids', 'amount', 'limitation'],
         ];
     }
 
     public function rules(): array
     {
         return [
-            [['amount'], 'required'],
-            [['daily_payment'], 'required', 'on' => self::SCENARIO_ADMIN],
-            [['advance_ids'], 'required', 'on' => self::SCENARIO_ADMIN_CREATE],
+            [['amount', 'issue_date'], 'required'],
+            ['issue_date', 'date', 'format' => 'php:Y-m-d'],
+            [['daily_payment', 'user_id'], 'required', 'on' => self::SCENARIO_ADMIN],
+            [['advance_ids', 'user_id'], 'required', 'on' => self::SCENARIO_ADMIN_CREATE],
             [['advance_ids'], 'required', 'on' => self::SCENARIO_USER],
             [['advance_ids'], 'each', 'rule' => ['integer']],
             [['advance_ids'], 'each', 'rule' => [
@@ -42,8 +50,8 @@ class RefinancingForm extends Model
             ],
             [['amount'], 'integer'],
             [['limitation'], 'integer'],
-           
             ['daily_payment', 'integer'],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -51,9 +59,11 @@ class RefinancingForm extends Model
     {
         return [
             'advance_ids' => 'Займы',
+            'issue_date' => 'Дата выдачи',
             'amount' => 'Сумма',
             'limitation' => 'Срок займа',
             'daily_payment' => 'Ежедневный платеж',
+            'user_id' => 'Сотрудник',
         ];
     }
 

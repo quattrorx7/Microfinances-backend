@@ -246,7 +246,7 @@ class AdvanceService extends BaseService
     public function createRefinancingByClientForm(RefinancingForm $form, array $advances, Client $client, User $currentUser): string
     {
         $model = $currentUser->isSuperadmin ? $this->advanceFactory->createWithAdmin() : $this->advanceFactory->create();
-        $user = $currentUser->isSuperadmin ? $advances[0]->user : $currentUser;
+        $user = $currentUser->isSuperadmin ? $this->userManager->getUserById($form->user_id) : $currentUser;
         $form->daily_payment = $currentUser->isSuperadmin ? $form->daily_payment : null;
 
         $model->refinancing = 1;
@@ -281,6 +281,15 @@ class AdvanceService extends BaseService
 
         $this->advanceRepository->saveAdvance($model);
 
+        if($currentUser->isSuperadmin){
+            if($client->owner_id != $model->user->id){
+                Advance::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+                Payment::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+                $client->owner_id = $user->id;
+                $client->save();
+            }
+        }
+
         return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
     }
 
@@ -294,7 +303,8 @@ class AdvanceService extends BaseService
     public function approvedRefinancing(int $advanceId, RefinancingForm $form): void
     {
         $model = $this->advanceRepository->getAdvanceById($advanceId);
-
+        $user = $this->userManager->getUserById($form->user_id);
+        $client = $model->client;
         if (!$model->isSent()) {
             throw new AdvanceStatusException('Одобрить заявку можно только в статусе "Отправлено"');
         }
@@ -308,7 +318,8 @@ class AdvanceService extends BaseService
         $this->advancePopulator
             ->populateFromApprovedRefinancingForm($model, $form)
             ->populateFromCalculateDto($model, $calculateDto)
-            ->changeStatus($model, Advance::STATE_ISSUED);
+            ->changeStatus($model, Advance::STATE_ISSUED)
+            ->populateUser($model, $user);
 
         $model->activatePaymentProcess();
 
@@ -322,6 +333,13 @@ class AdvanceService extends BaseService
             $ref->payment_status = Advance::PAYMENT_STATUS_CLOSED;
             $ref->payment_left = 0;
             $ref->save();
+        }
+
+        if($client->owner_id != $user->id){
+            Advance::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+            Payment::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+            $client->owner_id = $user->id;
+            $client->save();
         }
 
         Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
