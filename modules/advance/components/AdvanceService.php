@@ -275,6 +275,8 @@ class AdvanceService extends BaseService
                 $ref->payment_left = 0;
                 $ref->save();
             }
+
+            Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
         }
 
         $this->advanceRepository->saveAdvance($model);
@@ -321,6 +323,8 @@ class AdvanceService extends BaseService
             $ref->payment_left = 0;
             $ref->save();
         }
+
+        Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
     }
 
     public function getActiveAdvancesByDate(string $date)
