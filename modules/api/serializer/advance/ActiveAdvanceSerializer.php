@@ -21,6 +21,7 @@ class ActiveAdvanceSerializer extends AbstractProperties
                 'amount',
                 'limitation',
                 'payment_left',
+                'summa_left_to_pay',
                 'daily_payment',
                 'note'
             ],
