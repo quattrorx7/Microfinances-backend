@@ -67,6 +67,7 @@ class AdvancePopulator extends AbstractPopulator
         $this->populateAttributes($model, $form->attributes, [
             'amount',
             'limitation',
+            'issue_date'
         ]);
 
         $model->refinancing_ids = json_encode($form->advance_ids);
