@@ -768,42 +768,13 @@
 					"name": "Рефенансирование",
 					"item": [
 						{
-							"name": "Одобрить рефенансирование",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"issue_date\": \"2021-01-29\",\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"user_id\":3,\n    \"daily_payment\": 40000\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{microApiUrl}}/advance/31/refinancingapproved",
-									"host": [
-										"{{microApiUrl}}"
-									],
-									"path": [
-										"advance",
-										"31",
-										"refinancingapproved"
-									]
-								},
-								"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
-							},
-							"response": []
-						},
-						{
 							"name": "Создание заявки на рефенансирование",
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"issue_date\": \"2021-01-28\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20\r\n}",
+									"raw": "{\r\n    \"advance_ids\": [18],\r\n    \"issue_date\": \"2021-02-02\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -811,13 +782,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/refinancing",
+									"raw": "{{microApiUrl}}/advance/refinancing/",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"advance",
-										"refinancing"
+										"refinancing",
+										""
 									]
 								},
 								"description": "дубль для Клиенты\\Добавить нового"
@@ -839,16 +811,75 @@
 									}
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/advance/refinancing",
+									"raw": "{{microApiUrl}}/refinancing/",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
-										"advance",
-										"refinancing"
+										"refinancing",
+										""
 									]
 								},
 								"description": "дубль для Клиенты\\Добавить нового"
+							},
+							"response": []
+						},
+						{
+							"name": "[Руковод] Одобрить рефенансирование",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"issue_date\": \"2021-02-02\",\n    \"amount\": 75000,\n    \"limitation\": 2,\n    \"user_id\":3,\n    \"daily_payment\": 40000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{microApiUrl}}/refinancing/32/approved",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"refinancing",
+										"32",
+										"approved"
+									]
+								},
+								"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
+							},
+							"response": []
+						},
+						{
+							"name": "загрузка расписки и выдача рефенансирование",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "note",
+											"type": "file",
+											"src": "/G:/OpenServer/domains/passport/img/pass/1.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{microApiUrl}}/refinancing/32/issue-loan",
+									"host": [
+										"{{microApiUrl}}"
+									],
+									"path": [
+										"refinancing",
+										"32",
+										"issue-loan"
+									]
+								},
+								"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
 							},
 							"response": []
 						}

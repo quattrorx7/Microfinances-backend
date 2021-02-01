@@ -274,4 +274,19 @@ class AdvanceController extends AuthedApiController
 
         return JSendResponse::success('Одобрено');
     }
+
+    /**
+     * @param int $advanceId
+     * @return JSendResponse
+     * @throws AdvanceNotFoundException
+     * @throws AdvanceStatusException
+     * @throws ValidateException
+     */
+    public function actionRefinancingissueLoan(int $advanceId): JSendResponse
+    {
+        $form = AdvanceNoteForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $this->advanceService->issueRefinancing($advanceId);
+
+        return JSendResponse::success('Рефенансирование выдано');
+    }
 }

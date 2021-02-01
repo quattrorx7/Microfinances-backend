@@ -37,8 +37,14 @@ return [
     #одобрить заявку
     'POST api/advance/<advanceId:\d+>/approved' => 'api/advance/approved',
 
+    #Создание рефенансирование
+    'POST api/advance/refinancing' => 'api/advance/refinancing',
+
     #одобрить рефенансирование
-    'POST api/advance/<advanceId:\d+>/refinancingapproved' => 'api/advance/refinancingapproved',
+    'POST api/refinancing/<advanceId:\d+>/approved' => 'api/advance/refinancingapproved',
+
+    #выдача займа
+    'POST api/refinancing/<advanceId:\d+>/issue-loan' => 'api/advance/refinancingissue-loan',
 
     #проценты
     'POST api/advance/<advanceId:\d+>/percent' => 'api/advance/percent',

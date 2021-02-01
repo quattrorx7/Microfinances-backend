@@ -318,12 +318,43 @@ class AdvanceService extends BaseService
         $this->advancePopulator
             ->populateFromApprovedRefinancingForm($model, $form)
             ->populateFromCalculateDto($model, $calculateDto)
-            ->changeStatus($model, Advance::STATE_ISSUED)
+            ->changeStatus($model, Advance::STATE_APPROVED)
             ->populateUser($model, $user);
+
+
+        $this->advanceRepository->save($model);
+
+        if($client->owner_id != $user->id){
+            Advance::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+            Payment::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+            $client->owner_id = $user->id;
+            $client->save();
+        }
+
+    }
+
+    /**
+     * Выдача рефинансирования c загрузкой расписки
+     * @param int $advanceId
+     * @throws AdvanceNotFoundException
+     * @throws AdvanceStatusException
+     * @throws Exception
+     */
+    public function issueRefinancing(int $advanceId): void
+    {
+        $model = $this->advanceRepository->getAdvanceById($advanceId);
+
+        if(!$model->isApproved()) {
+            throw new AdvanceStatusException('Разрешена выдача только одобренных займов');
+        }
+
+        $this->advancePopulator
+            ->populateNote($model, UploadedFile::getInstanceByName('note'))
+            ->changeStatus($model, Advance::STATE_ISSUED);
 
         $model->activatePaymentProcess();
 
-        $this->advanceRepository->save($model);
+        $this->advanceRepository->saveAdvanceNote($model);
 
         $ids = $model->refinancingIds();
 
@@ -335,14 +366,8 @@ class AdvanceService extends BaseService
             $ref->save();
         }
 
-        if($client->owner_id != $user->id){
-            Advance::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
-            Payment::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
-            $client->owner_id = $user->id;
-            $client->save();
-        }
-
         Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
+
     }
 
     public function getActiveAdvancesByDate(string $date)
