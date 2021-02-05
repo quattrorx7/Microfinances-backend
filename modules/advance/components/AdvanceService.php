@@ -5,10 +5,13 @@ namespace app\modules\advance\components;
 use app\components\BaseService;
 use app\components\exceptions\UnSuccessModelException;
 use app\components\exceptions\UserException;
+use app\helpers\DateHelper;
 use app\models\Advance;
 use app\models\Client;
 use app\models\Payment;
+use app\models\PaymentHistory;
 use app\models\User;
+use app\modules\advance\dto\AdvanceCloseDto;
 use app\modules\advance\dto\AdvanceDto;
 use app\modules\advance\exceptions\AdvanceNotFoundException;
 use app\modules\advance\exceptions\AdvanceStatusException;
@@ -17,8 +20,11 @@ use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\forms\AdvanceCreateForm;
 use app\modules\advance\forms\AdvanceCreateWithClientForm;
 use app\modules\advance\forms\AdvanceUpdateForm;
+use app\modules\advance\forms\CloseForm;
 use app\modules\advance\forms\RefinancingForm;
 use app\modules\client\components\ClientRepository;
+use app\modules\payment\components\PaymentHistoryService;
+use app\modules\payment\components\PaymentRepository;
 use app\modules\user\components\UserManager;
 use Exception;
 use yii\web\UploadedFile;
@@ -36,12 +42,15 @@ class AdvanceService extends BaseService
 
     protected UserManager $userManager;
 
+    protected PaymentRepository $paymentRepository;
+
     public function injectDependencies(
         AdvanceFactory $advanceFactory,
         AdvanceRepository $advanceRepository,
         AdvancePopulator $advancePopulator,
         UserManager $userManager,
-        ClientRepository $clientRepository
+        ClientRepository $clientRepository,
+        PaymentRepository $paymentRepository
     ): void
     {
         $this->advanceFactory = $advanceFactory;
@@ -49,6 +58,7 @@ class AdvanceService extends BaseService
         $this->clientRepository = $clientRepository;
         $this->advancePopulator = $advancePopulator;
         $this->userManager = $userManager;
+        $this->paymentRepository = $paymentRepository;
     }
 
     /**
@@ -262,21 +272,8 @@ class AdvanceService extends BaseService
             $this->advancePopulator
             ->populateFromApprovedRefinancingForm($model, $form)
                 ->populateFromCalculateDto($model, $calculateDto)
-                ->changeStatus($model, Advance::STATE_ISSUED);
+                ->changeStatus($model, Advance::STATE_APPROVED);
 
-            $model->activatePaymentProcess();
-        
-            $ids = $model->refinancingIds();
-    
-            $refs = $this->advanceRepository->getRefinancingById($ids);
-    
-            foreach($refs as $ref){
-                $ref->payment_status = Advance::PAYMENT_STATUS_CLOSED;
-                $ref->payment_left = 0;
-                $ref->save();
-            }
-
-            Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
         }
 
         $this->advanceRepository->saveAdvance($model);
@@ -368,6 +365,43 @@ class AdvanceService extends BaseService
 
         Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
 
+    }
+
+    /**
+     * Досрочное закрытие Расчет процентов
+     */
+    public function closePercent(CloseForm $form, $advances, $client, $user)
+    {
+        $dto = new AdvanceCloseDto($advances);
+        return $dto->getAttributes();
+    }
+
+    /**
+     * Досрочное закрытие займов
+     */
+    public function close(CloseForm $form, $advances, $client, $user)
+    {
+        $dto = new AdvanceCloseDto($advances);
+        $date = DateHelper::formatDate(DateHelper::now(), 'Y-m-d');
+
+        $paymentArr = $dto->getPayment();
+        $ids = [];
+        foreach($advances as $key=>$advance){
+            $advance->payment_status = Advance::PAYMENT_STATUS_CLOSED;
+            $advance->payment_left = 0;
+            $advance->summa_left_to_pay = 0;
+            $advance->save();
+
+            $payment = $this->paymentRepository->getPaymentByDateAndAdvance($date, $advance->id);
+            $type = $form->in_cart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
+
+            (new PaymentHistoryService())->saveHistory($user, $client, $payment, $paymentArr[$key], $form->in_cart, 'closed', $type);
+            $ids[] = $advance->id;
+        }
+
+        Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
+
+        return "Займы погашены";
     }
 
     public function getActiveAdvancesByDate(string $date)

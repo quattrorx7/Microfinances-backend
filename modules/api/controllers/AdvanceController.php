@@ -23,6 +23,7 @@ use app\modules\api\serializer\advance\AdvanceDebtSerializer;
 use app\modules\api\serializer\advance\AdvanceFullSerializer;
 use app\modules\api\serializer\advance\AdvanceListSerializer;
 use app\modules\advance\components\AdvanceService;
+use app\modules\advance\forms\CloseForm;
 use app\modules\advance\forms\RefinancingForm;
 use app\modules\advance\providers\AdvanceProvider;
 use app\modules\api\serializer\advance\AdvanceHistorySerializer;
@@ -288,5 +289,57 @@ class AdvanceController extends AuthedApiController
         $this->advanceService->issueRefinancing($advanceId);
 
         return JSendResponse::success('Рефенансирование выдано');
+    }
+
+     /**
+     * Досрочное погашение расчет
+     */
+    public function actionClosepercent()
+    {
+        $form = CloseForm::loadAndValidate(Yii::$app->request->bodyParams, '');
+
+        $advances = [];
+        $advanceRepository = new AdvanceRepository();
+        $client = null;
+        
+        foreach($form->advance_ids as $id){
+            $advance = $advanceRepository->getAdvanceById($id);
+            if($client===null){
+                $client = $advance->client;
+            }else if($client->id != $advance->client_id){
+                throw new Exception("У займов разные клиенты");
+            }
+            $advances[] = $advance;
+        }
+
+        $result = $this->advanceService->closePercent($form, $advances, $client, $this->currentUser);
+        
+        return $result;
+    }
+
+     /**
+     * Досрочное погашение
+     */
+    public function actionClose()
+    {
+        $form = CloseForm::loadAndValidate(Yii::$app->request->bodyParams, '');
+
+        $advances = [];
+        $advanceRepository = new AdvanceRepository();
+        $client = null;
+        
+        foreach($form->advance_ids as $id){
+            $advance = $advanceRepository->getAdvanceById($id);
+            if($client===null){
+                $client = $advance->client;
+            }else if($client->id != $advance->client_id){
+                throw new Exception("У займов разные клиенты");
+            }
+            $advances[] = $advance;
+        }
+
+        $result = $this->advanceService->close($form, $advances, $client, $this->currentUser);
+        
+        return JSendResponse::success($result);
     }
 }

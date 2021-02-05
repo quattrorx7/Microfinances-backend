@@ -67,5 +67,6 @@ return [
     #История заявок
     'GET api/profile/<userId:\d+>/advancedhistory' => 'api/profile/advancedhistorybyid',
     
-    
+    #Досрочное погашение расчет
+    'POST api/advance/closepercent' => 'api/advance/closepercent',
 ];

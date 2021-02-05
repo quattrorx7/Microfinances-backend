@@ -774,7 +774,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"advance_ids\": [18],\r\n    \"issue_date\": \"2021-02-02\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20\r\n}",
+									"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"issue_date\": \"2021-02-02\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -803,7 +803,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"issue_date\": \"2021-01-29\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20,\r\n    \"daily_payment\":40000,\r\n    \"user_id\": 2\r\n}",
+									"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"issue_date\": \"2021-01-29\",\r\n    \"amount\": 20000,\r\n    \"limitation\": 20,\r\n    \"daily_payment\":40000,\r\n    \"user_id\": 3\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -870,13 +870,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{microApiUrl}}/refinancing/32/issue-loan",
+									"raw": "{{microApiUrl}}/refinancing/38/issue-loan",
 									"host": [
 										"{{microApiUrl}}"
 									],
 									"path": [
 										"refinancing",
-										"32",
+										"38",
 										"issue-loan"
 									]
 								},
@@ -929,13 +929,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{microApiUrl}}/advance/5",
+							"raw": "{{microApiUrl}}/advance/32",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"advance",
-								"5"
+								"32"
 							]
 						},
 						"description": "если сотрудник, то видит только свои\n\nесли рук.то все"
@@ -960,7 +960,8 @@
 							"variable": [
 								{
 									"key": "clientId",
-									"value": "31"
+									"value": "31",
+									"type": "string"
 								}
 							]
 						}
@@ -1054,7 +1055,8 @@
 									"variable": [
 										{
 											"key": "userId",
-											"value": "2"
+											"value": "2",
+											"type": "string"
 										}
 									]
 								},
@@ -1099,7 +1101,8 @@
 									"variable": [
 										{
 											"key": "userId",
-											"value": "2"
+											"value": "2",
+											"type": "string"
 										}
 									]
 								},
@@ -1144,7 +1147,8 @@
 									"variable": [
 										{
 											"key": "userId",
-											"value": "2"
+											"value": "2",
+											"type": "string"
 										}
 									]
 								},
@@ -1209,7 +1213,8 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": ""
+									"value": "",
+									"type": "string"
 								}
 							]
 						},
@@ -1254,7 +1259,8 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": "2"
+									"value": "2",
+									"type": "string"
 								}
 							]
 						},
@@ -1396,6 +1402,7 @@
 								{
 									"key": "clientId",
 									"value": "26",
+									"type": "string",
 									"description": "id клиента"
 								}
 							]
@@ -1433,7 +1440,8 @@
 							"variable": [
 								{
 									"key": "payment_id",
-									"value": "115"
+									"value": "115",
+									"type": "string"
 								}
 							]
 						}
@@ -1484,7 +1492,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"advance_ids\": [15,32]\r\n}",
+							"raw": "{\r\n    \"advance_ids\": [15],\r\n    \"in_cart\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1513,7 +1521,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"advance_ids\": [18]\r\n}",
+							"raw": "{\r\n    \"advance_ids\": [15]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1521,14 +1529,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{microApiUrl}}/advance/close/percent/",
+							"raw": "{{microApiUrl}}/advance/closepercent/",
 							"host": [
 								"{{microApiUrl}}"
 							],
 							"path": [
 								"advance",
-								"close",
-								"percent",
+								"closepercent",
 								""
 							]
 						},
