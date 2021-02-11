@@ -393,6 +393,10 @@ class AdvanceService extends BaseService
             $advance->save();
 
             $payment = $this->paymentRepository->getPaymentByDateAndAdvance($date, $advance->id);
+            if($payment==null){
+                $payment = $this->paymentRepository->getPaymentLastAndAdvance($advance->id);
+            }
+       
             $type = $form->in_cart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
 
             (new PaymentHistoryService())->saveHistory($user, $client, $payment, $paymentArr[$key], $form->in_cart, 'closed', $type);
