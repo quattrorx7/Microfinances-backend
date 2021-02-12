@@ -15,6 +15,7 @@ class UserProfileSerializer extends AbstractProperties
                 'id',
                 'fullname',
                 'username',
+                'notification',
                 'todayAdvanceCount' => static function(User $user) {
                     return 0;
                 },
