@@ -16,6 +16,7 @@ class UserSerializer extends AbstractProperties
                 'fullname',
                 'username',
                 'status',
+                'notification',
                 'accessToken' => static function(User $user) {
                     return $user->_currentApiAuthToken->auth_key ?? '';
                 },
