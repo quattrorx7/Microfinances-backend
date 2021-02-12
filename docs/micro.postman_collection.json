@@ -1544,6 +1544,69 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Уведомления",
+			"item": [
+				{
+					"name": "Добавление токена",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "23432sdfsd",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/user/notification/add",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"user",
+								"notification",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Включение уведомлений",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "on",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{microApiUrl}}/user/notification/on",
+							"host": [
+								"{{microApiUrl}}"
+							],
+							"path": [
+								"user",
+								"notification",
+								"on"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
