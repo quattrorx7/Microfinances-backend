@@ -96,7 +96,7 @@ class AdvanceService extends BaseService
 
         $this->advanceRepository->saveAdvance($model);
 
-        $this->notificationService->sendToAdmin('Новая заявка с клиентов', 'Новая заявка с клиентов', ['advanceId'=>$model->id]);
+        $this->notificationService->sendToUser($user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
 
         return $model;
     }
@@ -111,7 +111,7 @@ class AdvanceService extends BaseService
 
         $this->advanceRepository->saveAdvance($model);
 
-        $this->notificationService->sendToUser($model->user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
+        $this->notificationService->sendToAdmin('Новая заявка с клиентом', 'Новая заявка с клиентом', ['advanceId'=>$model->id]);
 
         return $model;
     }
