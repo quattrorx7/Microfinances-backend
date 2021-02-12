@@ -51,7 +51,7 @@ class NotificationService
 
     public function send(array $userIds, string $body, string $title='', array $data = null){
         // Build the notification data
-        $notification = ['body' => $body, 'title'=>$title];
+        $notification = ['body' => $body, 'title'=>$title, 'sound'=>'default'];
 
         if($data) 
             $notification['data'] = json_encode($data);
