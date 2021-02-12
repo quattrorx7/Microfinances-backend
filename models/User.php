@@ -38,4 +38,9 @@ class User extends \app\models\base\User implements \yii\web\IdentityInterface
     {
         return $this->superadmin === self::SUPERADMIN;
     }
+
+    public function isNotification(): bool
+    {
+        return $this->token != null && $this->token!='' && $this->notification;
+    }
 }

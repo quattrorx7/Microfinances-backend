@@ -11,6 +11,8 @@ use app\modules\user\components\UserManager;
 use app\modules\user\components\UserService;
 use app\modules\user\exceptions\UserNotFoundException;
 use app\modules\user\exceptions\ValidateUserUpdateException;
+use app\modules\user\forms\UserAddTokenForm;
+use app\modules\user\forms\UserNotificationOnForm;
 use app\modules\user\forms\UserUpdateForm;
 use Yii;
 use yii\base\Exception;
@@ -101,6 +103,30 @@ class UserController extends AuthedApiController
 
         $model = $this->userService->updateByForm($this->currentUser, $form);
         return UserSerializer::serialize($model);
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function actionTokenAdd(): array
+    {
+        $form = UserAddTokenForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $this->userService->addToken($this->currentUser, $form->token);
+
+        return ['message'=>'Токен успешно изменен'];
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function actionNotificationOn(): array
+    {
+        $form = UserNotificationOnForm::loadAndValidate(Yii::$app->request->bodyParams);
+        $this->userService->notificationOn($this->currentUser, $form->on);
+
+        return ['message'=>$form->on?'Уведомления включены':'Уведомления выключены'];
     }
 
 }

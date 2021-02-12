@@ -20,11 +20,14 @@ class UserService extends BaseService
 
     protected UserPopulator $userPopulator;
 
-    public function injectDependencies(UserFactory $userFactory, UserRepository $userRepository, UserPopulator $userPopulator): void
+    protected NotificationService $notificationService;
+
+    public function injectDependencies(UserFactory $userFactory, UserRepository $userRepository, UserPopulator $userPopulator, NotificationService $notificationService): void
     {
         $this->userFactory = $userFactory;
         $this->userRepository = $userRepository;
         $this->userPopulator = $userPopulator;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -84,5 +87,21 @@ class UserService extends BaseService
     public function mapAllByIdAndUsername()
     {
 
+    }
+
+    public function addToken(User $user, $token) {
+        $user->token = $token==''?null:$token;
+
+        if($user->token)
+            $this->notificationService->subscribe($user->id, $token);
+        else
+            $this->notificationService->unsubscribe($user->id, $token);
+
+        $user->update();
+    }
+
+    public function notificationOn(User $user, $on) {
+        $user->notification = $on;
+        $user->update();
     }
 }

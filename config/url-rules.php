@@ -69,4 +69,10 @@ return [
     
     #Досрочное погашение расчет
     'POST api/advance/closepercent' => 'api/advance/closepercent',
+
+    #Изменение токена
+    'POST api/user/notification/add' => 'api/user/token-add',
+
+    #Включение уведомлений
+    'POST api/user/notification/on' => 'api/user/notification-on',
 ];

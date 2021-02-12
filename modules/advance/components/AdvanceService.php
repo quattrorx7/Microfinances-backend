@@ -25,6 +25,7 @@ use app\modules\advance\forms\RefinancingForm;
 use app\modules\client\components\ClientRepository;
 use app\modules\payment\components\PaymentHistoryService;
 use app\modules\payment\components\PaymentRepository;
+use app\modules\user\components\NotificationService;
 use app\modules\user\components\UserManager;
 use Exception;
 use yii\web\UploadedFile;
@@ -44,13 +45,16 @@ class AdvanceService extends BaseService
 
     protected PaymentRepository $paymentRepository;
 
+    protected NotificationService $notificationService;
+
     public function injectDependencies(
         AdvanceFactory $advanceFactory,
         AdvanceRepository $advanceRepository,
         AdvancePopulator $advancePopulator,
         UserManager $userManager,
         ClientRepository $clientRepository,
-        PaymentRepository $paymentRepository
+        PaymentRepository $paymentRepository,
+        NotificationService $notificationService
     ): void
     {
         $this->advanceFactory = $advanceFactory;
@@ -59,6 +63,7 @@ class AdvanceService extends BaseService
         $this->advancePopulator = $advancePopulator;
         $this->userManager = $userManager;
         $this->paymentRepository = $paymentRepository;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -91,6 +96,8 @@ class AdvanceService extends BaseService
 
         $this->advanceRepository->saveAdvance($model);
 
+        $this->notificationService->sendToAdmin('Новая заявка с клиентов', 'Новая заявка с клиентов', ['advanceId'=>$model->id]);
+
         return $model;
     }
 
@@ -103,6 +110,8 @@ class AdvanceService extends BaseService
             ->populateUser($model, $currentUser);
 
         $this->advanceRepository->saveAdvance($model);
+
+        $this->notificationService->sendToUser($model->user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
 
         return $model;
     }
@@ -155,6 +164,8 @@ class AdvanceService extends BaseService
 
         $this->advancePopulator->changeStatus($model, Advance::STATE_DENIED);
         $this->advanceRepository->save($model);
+
+        $this->notificationService->sendToUser($model->user, 'Заявка отклонена', 'Заявка отклонена', ['advanceId'=>$model->id]);
     }
 
     /**
@@ -184,6 +195,8 @@ class AdvanceService extends BaseService
             ->changeStatus($model, Advance::STATE_APPROVED);
 
         $this->advanceRepository->save($model);
+
+        $this->notificationService->sendToUser($model->user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
     }
 
     public function calculate(int $amount, int $limitation, int $daily_payment): AdvanceDto
@@ -248,6 +261,10 @@ class AdvanceService extends BaseService
                 $client->owner_id = $user->id;
                 $client->save();
             }
+            
+            $this->notificationService->sendToUser($user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
+        }else{
+            $this->notificationService->sendToAdmin('Новая заявка', 'Новая заявка', ['advanceId'=>$model->id]);
         }
 
         return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
@@ -285,6 +302,9 @@ class AdvanceService extends BaseService
                 $client->owner_id = $user->id;
                 $client->save();
             }
+            $this->notificationService->sendToUser($user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
+        }else{
+            $this->notificationService->sendToAdmin('Новая заявка', 'Новая заявка', ['advanceId'=>$model->id]);
         }
 
         return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
@@ -328,6 +348,7 @@ class AdvanceService extends BaseService
             $client->save();
         }
 
+        $this->notificationService->sendToUser($user, 'Одобренная заявка', 'Одобренная заявка', ['advanceId'=>$model->id]);
     }
 
     /**

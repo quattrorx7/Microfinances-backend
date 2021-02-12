@@ -37,6 +37,14 @@ class PaymentRepository extends BaseRepository
             ->one();
     }
 
+    public function getPaymentLastAndAdvance(int $advanceId)
+    {
+        return Payment::find()
+            ->andWhere(['advance_id' => $advanceId])
+            ->orderBy("id DESC")
+            ->one();
+    }
+
     public function getNeedPays(string $date, int $userId = null)
     {
         $query = Payment::find();

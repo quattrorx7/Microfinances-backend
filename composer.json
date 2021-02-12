@@ -24,7 +24,8 @@
         "ext-zlib": "*",
         "enqueue/amqp-lib": "^0.10.1",
         "samdark/yii2-webshell": "~2.0",
-        "creocoder/yii2-flysystem": "^1.0"
+        "creocoder/yii2-flysystem": "^1.0",
+        "alymosul/exponent-server-sdk-php": "^1.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

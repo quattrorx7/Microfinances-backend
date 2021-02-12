@@ -97,4 +97,13 @@ class UserRepository extends BaseRepository
         return $model;
     }
 
+    public function getAdminForNotification(){
+        $query = User::find()
+            ->andWhere(['superadmin'=> User::SUPERADMIN])
+            ->andWhere(['notification'=> 1])
+            ->andWhere('token is not null');
+
+        return $query->all();
+    }
+
 }
