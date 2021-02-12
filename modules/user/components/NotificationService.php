@@ -86,7 +86,7 @@ class NotificationService
     }
 
     public function getNormalToken($token){
-        return 'ExponentPushToken['.$token.']';
+        return $token;
     }
 
 }
