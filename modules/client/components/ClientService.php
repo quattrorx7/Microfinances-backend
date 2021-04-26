@@ -54,16 +54,22 @@ class ClientService extends BaseService
      * @throws UnSuccessModelException
      * @throws Exception
      */
-    public function createByForm(ClientCreateForm $form, User $owner): Client
+    public function createByForm(ClientCreateForm $form, User $owner, $isApi = true): Client
     {
         $model = $this->clientFactory->create($owner);
         $district = $this->districtService->getDistrict($form->district_id);
 
-        $model = $this->clientPopulator
+        $this->clientPopulator
             ->populateFromCreateForm($model, $form)
-            ->populateDistrict($model, $district)
-            ->populateFiles($model, UploadedFile::getInstancesByName('files'))
-            ->getModel($model);
+            ->populateDistrict($model, $district);
+            
+        
+        if($isApi)
+            $this->clientPopulator->populateFiles($model, UploadedFile::getInstancesByName('files'));
+        else
+            $this->clientPopulator->populateFiles($model, UploadedFile::getInstances($form, 'files'));
+
+        $model = $this->clientPopulator->getModel($model);
 
         if (!(new ClientPhoneValidator())->validate($model, 'phone')) {
             throw new ValidateClientCreateException($model);

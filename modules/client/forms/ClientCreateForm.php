@@ -30,7 +30,7 @@ class ClientCreateForm extends Model
             [['name', 'surname', 'patronymic', 'activity', 'profit', 'comment'], 'string'],
             [['phone', 'additional_phone'], PhoneValidator::class],
             [['residence_address', 'work_address'], 'string'],
-            [['files'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+            [['files'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles'=>0],
             [['district_id'], 'exist', 'skipOnError' => true, 'targetClass' => District::class, 'targetAttribute' => ['district_id' => 'id']],
         ];
     }

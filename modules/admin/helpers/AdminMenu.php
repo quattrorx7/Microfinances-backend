@@ -29,6 +29,12 @@ class AdminMenu
                 'items' => []
             ],
             [
+                'label' => 'Займы',
+                'icon'  => 'users',
+                'url'   => ['/admin/advance/index'],
+                'items' => []
+            ],
+            [
                 'label' => Yii::t('app', 'ApiLogger'),
                 'icon'  => 'history',
                 'url'   => ['/apiLogger/default/index'],
