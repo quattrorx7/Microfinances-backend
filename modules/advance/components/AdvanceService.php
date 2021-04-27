@@ -23,6 +23,7 @@ use app\modules\advance\forms\AdvanceUpdateForm;
 use app\modules\advance\forms\CloseForm;
 use app\modules\advance\forms\RefinancingForm;
 use app\modules\client\components\ClientRepository;
+use app\modules\client\forms\ClientFileNoteForm;
 use app\modules\payment\components\PaymentHistoryService;
 use app\modules\payment\components\PaymentRepository;
 use app\modules\user\components\NotificationService;
@@ -386,6 +387,55 @@ class AdvanceService extends BaseService
 
         Payment::updateAll(['amount'=>0], ['AND', ['in', 'advance_id', $ids], ['>', 'amount', 0]]);
 
+    }
+
+    /**
+     * ОФормление старых займов
+     */
+    public function createOldAdvance(AdvanceCreateByClientForm $form, ClientFileNoteForm $formNote, User $currentUser): string
+    {
+        $client = $this->clientRepository->getClientById($form->client_id);
+
+        $model = $currentUser->isSuperadmin ? $this->advanceFactory->createWithAdmin() : $this->advanceFactory->create();
+        $user = $currentUser->isSuperadmin ? $this->userManager->getUserById($form->user_id) : $currentUser;
+        $form->daily_payment = $currentUser->isSuperadmin ? $form->daily_payment : null;
+
+        $this->advancePopulator
+            ->populateFromCreateByClientForm($model, $form)
+            ->populateClient($model, $client)
+            ->populateUser($model, $user);
+
+        if ($currentUser->isSuperadmin) {
+            $calculateDto = $this->calculate($form->amount, $form->limitation, $form->daily_payment);
+
+            $this->advancePopulator
+                ->populateFromCalculateDto($model, $calculateDto);
+        }
+
+        $this->advanceRepository->saveAdvance($model);
+
+        if($currentUser->isSuperadmin){
+            if($client->owner_id != $model->user->id){
+                Advance::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+                Payment::updateAll(['user_id'=>$model->user_id], ['client_id'=>$model->client_id]);
+                $client->owner_id = $user->id;
+                $client->save();
+            }
+        }
+
+        $note = UploadedFile::getInstance($formNote, 'note');
+        if($note){
+            $this->advancePopulator
+                ->populateNote($model, $note);
+        }
+
+        $this->advancePopulator->changeStatus($model, Advance::STATE_ISSUED);
+
+        $model->activatePaymentProcess();
+
+        $this->advanceRepository->saveAdvanceNote($model);
+
+        return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
     }
 
     /**

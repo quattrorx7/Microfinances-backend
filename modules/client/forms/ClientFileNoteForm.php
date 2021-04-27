@@ -6,21 +6,21 @@ use app\components\exceptions\ValidateException;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
-class ClientFileForm extends Model
+class ClientFileNoteForm extends Model
 {
-    public $files;
+    public $note;
 
     public function rules(): array
     {
         return [
-            [['files'], 'each', 'rule' => ['file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles'=>0]]
+            [['note'], 'each', 'rule' => ['file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles'=>1]]
         ];
     }
 
     public function attributeLabels(): array
     {
         return [
-            'files' => 'Фотографии'
+            'note' => 'Расписка'
         ];
     }
 
@@ -33,7 +33,7 @@ class ClientFileForm extends Model
     public static function loadAndValidate($bodyParams, $formName = ''): self
     {
         $self = new self();
-        $self->files = UploadedFile::getInstancesByName('files');
+        $self->note = UploadedFile::getInstancesByName('note');
 
         $self->load($bodyParams, $formName);
 

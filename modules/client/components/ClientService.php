@@ -97,6 +97,20 @@ class ClientService extends BaseService
         return $model;
     }
 
+    public function loadFilesFromAdminPanel(int $clientId, ClientFileForm $form)
+    {
+        $model = $this->clientRepository->getClientById($clientId);
+
+        $model = $this->clientPopulator
+            ->populateFiles($model, UploadedFile::getInstances($form, 'files'))
+            ->getModel($model);
+
+        $this->clientRepository->saveClient($model);
+
+        return $model;
+    }
+    
+
     /**
      * @param Client $model
      * @param ClientUpdateForm $form
