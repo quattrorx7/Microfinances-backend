@@ -23,6 +23,7 @@ use app\modules\payment\exceptions\PaymentNotFoundException;
 use app\modules\payment\forms\PaymentCreateForm;
 use app\modules\payment\forms\PaymentUpdateForm;
 use yii\db\ActiveRecord;
+use DateTime;
 
 class PaymentService extends BaseService
 {
@@ -113,6 +114,31 @@ class PaymentService extends BaseService
             $this->paymentRepository->savePayment($model);
             $advance->updateCounters(['payment_left' => -1]);
         }
+    }
+
+    public function generatePaymentDataToDay(Advance $advance): void
+    {
+        $start = new DateTime($advance->issue_date);
+        $start->modify('-1 day');
+        $now = (new DateTime(DateHelper::nowWithoutHours()))->format('Y-m-d');
+        
+        $payment_left = $advance->payment_left;
+        for($i = 0; $i< $payment_left; $i++){
+            $date = $start->modify('+1 day');
+           
+            $model = $this->paymentFactory->createByDate($date);
+
+            $this->paymentPopulator
+                ->populateFromAdvance($model, $advance);
+
+            $this->paymentRepository->savePayment($model);
+            $advance->updateCounters(['payment_left' => -1]);
+            
+            if($now == $date->format('Y-m-d')){
+                break;
+            }
+        }
+
     }
 
     public function getGroupedPayments(string $date, User $user): PaymentCollection

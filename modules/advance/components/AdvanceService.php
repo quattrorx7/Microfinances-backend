@@ -392,7 +392,7 @@ class AdvanceService extends BaseService
     /**
      * ОФормление старых займов
      */
-    public function createOldAdvance(AdvanceCreateByClientForm $form, ClientFileNoteForm $formNote, User $currentUser): string
+    public function createOldAdvance(AdvanceCreateByClientForm $form, ClientFileNoteForm $formNote, User $currentUser): Advance
     {
         $client = $this->clientRepository->getClientById($form->client_id);
 
@@ -435,7 +435,7 @@ class AdvanceService extends BaseService
 
         $this->advanceRepository->saveAdvanceNote($model);
 
-        return  $currentUser->isSuperadmin ? 'Заявка одобрена' : 'Заявка отправлена';
+        return  $model;
     }
 
     /**

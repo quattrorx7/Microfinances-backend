@@ -13,6 +13,7 @@ use app\modules\client\components\ClientRepository;
 use app\modules\client\components\ClientService;
 use app\modules\client\forms\ClientFileForm;
 use app\modules\client\forms\ClientFileNoteForm;
+use app\modules\payment\components\PaymentService;
 use app\modules\user\components\UserRepository;
 
 /**
@@ -34,7 +35,11 @@ class AdvanceController extends AuthedAdminController
 
     protected UserRepository $userRepository;
 
-    public function injectDependencies(AdvanceProvider $advanceProvider, AdvanceService $advanceService, ClientProvider $clientProvider, ClientService $clientService, ClientRepository $clientRepository, UserRepository $userRepository): void
+    protected PaymentService $paymentService;
+
+
+    public function injectDependencies(AdvanceProvider $advanceProvider, AdvanceService $advanceService, ClientProvider $clientProvider, ClientService $clientService, ClientRepository $clientRepository, UserRepository $userRepository
+        , PaymentService $paymentService): void
     {
         $this->advanceProvider = $advanceProvider;
         $this->advanceService = $advanceService;
@@ -43,6 +48,7 @@ class AdvanceController extends AuthedAdminController
         $this->clientService = $clientService;
         $this->clientRepository = $clientRepository;
         $this->userRepository = $userRepository;
+        $this->paymentService = $paymentService;
     }
     /**
      * Lists all Client models.
@@ -77,7 +83,9 @@ class AdvanceController extends AuthedAdminController
             
             if($clientFilesForm->validate() && $formNote->validate()) {
                 $this->clientService->loadFilesFromAdminPanel($form->client_id, $clientFilesForm);
-                $result = $this->advanceService->createOldAdvance($form, $formNote, $this->currentUser);
+                $advance = $this->advanceService->createOldAdvance($form, $formNote, $this->currentUser);
+
+                $this->paymentService->generatePaymentDataToDay($advance);
 
                 return $this->redirect(['index']);
             }
