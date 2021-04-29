@@ -12,12 +12,14 @@ use app\models\User;
 use app\modules\advance\components\AdvanceService;
 use app\modules\api\serializer\payment\PaymentSerializer;
 use app\modules\api\serializer\payment\PaymentSerializerWithShortClient;
+use app\modules\client\components\ClientService;
 use app\modules\client\dto\PayDto;
 use app\modules\client\forms\ClientPayForm;
 use app\modules\client\handlers\BalanceUpdateHandler;
 use app\modules\client\handlers\DebtHandler;
 use app\modules\client\handlers\EmptyHandler;
 use app\modules\client\handlers\StartHandler;
+use app\modules\client\helpers\ClientPayHelper;
 use app\modules\payment\dto\PaymentCollection;
 use app\modules\payment\exceptions\PaymentNotFoundException;
 use app\modules\payment\forms\PaymentCreateForm;
@@ -38,12 +40,15 @@ class PaymentService extends BaseService
 
     protected AdvanceService $advanceService;
 
+    protected ClientService $clientService;
+
     public function injectDependencies(
         PaymentFactory $paymentFactory,
         PaymentRepository $paymentRepository,
         PaymentPopulator $paymentPopulator,
         PaymentHistoryService $paymentHistoryService,
-        AdvanceService $advanceService
+        AdvanceService $advanceService,
+        ClientService $clientService
     ): void
     {
         $this->paymentFactory = $paymentFactory;
@@ -51,6 +56,7 @@ class PaymentService extends BaseService
         $this->paymentPopulator = $paymentPopulator;
         $this->paymentHistoryService = $paymentHistoryService;
         $this->advanceService = $advanceService;
+        $this->clientService = $clientService;
     }
 
     /**
@@ -278,6 +284,36 @@ class PaymentService extends BaseService
                 'balance'=>$balance,
             ]
         ];
+    }
+
+
+    /**
+     * Оплата из админ панели
+     */
+    public function payFromAdminPanel(Payment $paymentModel, int $amount, $inCart)
+    {
+        $payAmount = ClientPayHelper::differenceResult($amount, $paymentModel->amount);
+        
+        //Основной платеж
+        if($payAmount>0){
+            $paymentModel->amount -= $payAmount;
+            $this->paymentRepository->save($paymentModel);
+
+            $this->advanceService->calculatePayLeftSumm($paymentModel->advance, $payAmount);
+
+            $type = $inCart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
+
+            (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, $payAmount, $inCart, 'payment', $type);
+        } 
+        //Оставшаяся часть на баланс
+        if($amount>$payAmount) {
+            $amount -= $payAmount;
+            $type = $inCart ? PaymentHistory::PAYMENT_TYPE_CARD_BALANCE : PaymentHistory::PAYMENT_TYPE_CASH_BALANCE;
+            
+            (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, $amount, $inCart, 'payment', $type);
+            $this->clientService->updateBalance($paymentModel->client, $amount);
+        }
+
     }
     
 }

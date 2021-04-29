@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\DateHelper;
+use Yii;
 use yii\db\ActiveQuery;
 
 /**
@@ -19,6 +20,16 @@ use yii\db\ActiveQuery;
 class Client extends \app\models\base\Client
 {
 
+    public function attributeLabels()
+    {
+        $data = parent::attributeLabels();
+        
+        $data['owner_id'] = Yii::t('app', 'Сотрудник');
+        $data['district_id'] = Yii::t('app', 'Район');
+
+        return $data;
+    }
+    
     public function afterSave($insert, $changedAttributes)
     {
         if(isset($changedAttributes['district_id'])){

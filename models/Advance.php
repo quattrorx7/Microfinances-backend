@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\helpers\DateHelper;
+use Yii;
 
 /**
  * Class Advance
@@ -21,6 +22,16 @@ class Advance extends \app\models\base\Advance
 
     public $debt;
     public $todayPayed;
+
+    public function attributeLabels()
+    {
+        $data = parent::attributeLabels();
+        
+        $data['amount'] = Yii::t('app', 'Сумма кредита');
+        $data['daily_payment'] = Yii::t('app', 'Ежедневный платеж');
+
+        return $data;
+    }
 
     public function afterSave($insert, $changedAttributes)
     {

@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Advance;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -21,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'client_id',
             [
+                'label' => 'Клиент',
                 'value' => function ($data) {
                     $client = $data->client;
                     return $client['surname'] . ' ' . $client['name']; // $data['name'] для массивов, например, при использовании SqlDataProvider.
@@ -28,11 +30,57 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'created_at',
             'amount',
-            'limitation',
-            'user_id',
-            'user.fullname',
-            'status',
             'daily_payment',
+            'user_id',
+            [
+                'label' => 'Сотрудник (Пользователь)',
+                'value' => 'user.fullname'
+            ],
+            'status',
+            [
+                'label' => 'Статус',
+                'value' => function ($data) {
+                    if($data['status']==Advance::STATE_SENT) return 'Отправлена';
+                    elseif($data['status']==Advance::STATE_DENIED) return 'Отказано';
+                    elseif($data['status']==Advance::STATE_APPROVED) return 'Одобрено';
+                    elseif($data['status']==Advance::STATE_ISSUED){
+                        if($data['payment_status']==Advance::PAYMENT_STATUS_STARTED) return 'Текущий';
+                        if($data['payment_status']==Advance::PAYMENT_STATUS_CLOSED) return 'Закрыт'; 
+                    } 
+
+
+                },
+            ],
+           
+
+            // [
+            //     'class' => 'yii\grid\ActionColumn',
+            //     'header'=>'Действия', 
+            //     'headerOptions' => ['width' => '80'],
+            //     'template' => '{view} {update} {delete}{link}',
+            //     'buttons' => [
+                
+            //         'link' => function ($url,$model,$key) {
+            //             return Html::a('Оплатить', $url);
+            //         },
+            //     ],
+
+            // ],
+
+            [
+                'label' => 'Платежи',
+                'format' => 'raw',
+                'value' => function($data){
+                    return Html::a(
+                        'Перейти',
+                        'http://micro.local/admin/payment/index?PaymentSearch[advance_id]='.$data->id,
+                        [
+                            'title' => '',
+                            'target' => '_blank'
+                        ]
+                    );
+                }
+            ],
         ],
     ]); ?>
 </div>
