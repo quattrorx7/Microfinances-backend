@@ -12,7 +12,7 @@ use app\models\User;
 class PaymentHistoryService extends BaseService
 {
 
-    public function saveHistory(User $user, Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment', $type=0): void
+    public function saveHistory(User $user, Client $client, Payment $payment, int $amount, $inCart, string $actor = 'payment', $type=0, $date_pay=null): void
     {
         if ($amount > 0 || $inCart===null) {
             $model = new PaymentHistory();
@@ -32,9 +32,9 @@ class PaymentHistoryService extends BaseService
                 }
             }
             $model->type = $type;
-            $model->created_at = DateHelper::now();
+            $model->created_at = $date_pay??DateHelper::now();
             $model->actor = $actor;
-            $model->debt = $client->getAllDebts();
+            $model->debt = $date_pay==null?$client->getAllDebts():$client->getAllDebtsToDate($date_pay);
 
             $model->save();
         }

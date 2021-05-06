@@ -20,6 +20,8 @@ use yii\db\ActiveQuery;
 class Client extends \app\models\base\Client
 {
 
+    private $toDate;
+
     public function attributeLabels()
     {
         $data = parent::attributeLabels();
@@ -85,10 +87,33 @@ class Client extends \app\models\base\Client
             ->andOnCondition(['<>', 'created_at', DateHelper::nowWithoutHours()]);
     }
 
+    /**
+     * получить все платежи до даты на которых есть долги
+     */
+    public function getLastDebtPaymentsToDate(): ActiveQuery
+    {
+        // $this->toDate = DateHelper::getModifyDate($this->toDate, '-1 day');
+        $this->toDate = DateHelper::formatDate($this->toDate, 'Y-m-d');
+
+        return $this
+            ->hasMany(Payment::class, ['client_id' => 'id'])
+            ->andOnCondition(['>', 'amount', 0])
+            ->andOnCondition(['<', 'created_at', $this->toDate]);
+    }
+
     /** общая сумма долга за предыдущие дни */
     public function getAllDebts()
     {
         $payments = $this->lastDebtPayments;
+        return array_sum(array_column($payments, 'amount'));
+    }
+
+    /** общая сумма долга до даты */
+    public function getAllDebtsToDate($date)
+    {
+        $this->toDate = $date;
+        $payments = $this->lastDebtPaymentsToDate;
+       
         return array_sum(array_column($payments, 'amount'));
     }
 

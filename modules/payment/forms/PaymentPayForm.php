@@ -15,11 +15,14 @@ class PaymentPayForm extends Model
 
     public $in_cart = false;
 
+    public $date_pay;
+
 
     public function rules(): array
     {
         return [
-            [['amount'], 'required'],
+            ['date_pay', 'date', 'format' => 'php:Y-m-d'],
+            [['amount', 'date_pay'], 'required'],
             [['amount'], 'integer'],
             [['in_cart'], 'boolean'],
         ];
@@ -30,6 +33,7 @@ class PaymentPayForm extends Model
         return [
             'amount' => 'Сумма',
             'in_cart' => 'На карту',
+            'date_pay' => 'Дата платежа',
         ];
     }
 

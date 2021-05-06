@@ -290,7 +290,7 @@ class PaymentService extends BaseService
     /**
      * Оплата из админ панели
      */
-    public function payFromAdminPanel(Payment $paymentModel, int $amount, $inCart)
+    public function payFromAdminPanel(Payment $paymentModel, int $amount, $date_pay, $inCart)
     {
         $payAmount = ClientPayHelper::differenceResult($amount, $paymentModel->amount);
         
@@ -303,14 +303,14 @@ class PaymentService extends BaseService
 
             $type = $inCart ? PaymentHistory::PAYMENT_TYPE_CARD : PaymentHistory::PAYMENT_TYPE_CASH;
 
-            (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, $payAmount, $inCart, 'payment', $type);
+            (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, $payAmount, $inCart, 'payment', $type, $date_pay);
         } 
         //Оставшаяся часть на баланс
         if($amount>$payAmount) {
             $amount -= $payAmount;
             $type = $inCart ? PaymentHistory::PAYMENT_TYPE_CARD_BALANCE : PaymentHistory::PAYMENT_TYPE_CASH_BALANCE;
             
-            (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, $amount, $inCart, 'payment', $type);
+            (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, $amount, $inCart, 'payment', $type, $date_pay);
             $this->clientService->updateBalance($paymentModel->client, $amount);
         }
 

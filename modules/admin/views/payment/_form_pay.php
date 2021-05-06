@@ -14,6 +14,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'amount')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'date_pay')
+        ->widget(\yii\widgets\MaskedInput::className(), [
+          'mask' => '9999-99-99',
+        ])
+       ?>
+
     <?= $form->field($model, 'in_cart')->checkbox(['maxlength' => true]) ?>
 
     <div class="form-group">

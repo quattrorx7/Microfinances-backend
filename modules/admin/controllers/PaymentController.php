@@ -4,6 +4,7 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use app\components\controllers\AuthedAdminController;
+use app\modules\payment\components\PaymentRepository;
 use app\modules\payment\components\PaymentService;
 use app\modules\payment\forms\PaymentPayForm;
 use app\modules\payment\providers\PaymentProvider;
@@ -17,12 +18,14 @@ class PaymentController extends AuthedAdminController
 
     protected PaymentProvider $paymentProvider;
     protected PaymentService $paymentService;
+    protected PaymentRepository $paymentRepository;
 
 
-    public function injectDependencies(PaymentProvider $paymentProvider, PaymentService $paymentService): void
+    public function injectDependencies(PaymentProvider $paymentProvider, PaymentService $paymentService, PaymentRepository $paymentRepository): void
     {
         $this->paymentProvider = $paymentProvider;
         $this->paymentService = $paymentService;
+        $this->paymentRepository = $paymentRepository;
     }
     /**
      * Lists all Client models.
@@ -51,9 +54,12 @@ class PaymentController extends AuthedAdminController
         if (Yii::$app->request->isPost && $form->validate()){
             $payment = $this->paymentService->getPayment($id);
 
-            $this->paymentService->payFromAdminPanel($payment, $form->amount, $form->in_cart);
+            $this->paymentService->payFromAdminPanel($payment, $form->amount, $form->date_pay." 08:00:00", $form->in_cart);
 
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'PaymentSearch[advance_id]'=>$payment->advance_id]);
+        }else{
+            $payment = $this->paymentRepository->getPaymentById($id);
+            $form->date_pay = $payment->created_at;
         }
         
 
