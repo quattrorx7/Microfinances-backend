@@ -6,6 +6,7 @@ use Yii;
 use app\components\controllers\AuthedAdminController;
 use app\modules\payment\components\PaymentRepository;
 use app\modules\payment\components\PaymentService;
+use app\modules\payment\forms\PaymentDebtForm;
 use app\modules\payment\forms\PaymentPayForm;
 use app\modules\payment\providers\PaymentProvider;
 
@@ -64,6 +65,32 @@ class PaymentController extends AuthedAdminController
         
 
         return $this->render('pay', [
+            'model' => $form,
+        ]);
+    }
+
+    /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionDebt($id)
+    {
+        $form = new PaymentDebtForm();
+        $form->load(Yii::$app->request->post());
+       
+        if (Yii::$app->request->isPost && $form->validate()){
+            $payment = $this->paymentService->getPayment($id);
+
+            $this->paymentService->debtFromAdminPanel($payment, $form->date_pay." 06:00:00");
+
+            return $this->redirect(['index', 'PaymentSearch[advance_id]'=>$payment->advance_id]);
+        }else{
+            $payment = $this->paymentRepository->getPaymentById($id);
+            $form->date_pay = $payment->created_at;
+        }
+
+        return $this->render('debt', [
             'model' => $form,
         ]);
     }

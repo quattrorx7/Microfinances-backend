@@ -315,5 +315,14 @@ class PaymentService extends BaseService
         }
 
     }
+
+    /**
+     * Долг из админ панели
+     */
+    public function debtFromAdminPanel(Payment $paymentModel, $date_pay)
+    {
+        (new PaymentHistoryService())->saveHistory($paymentModel->user, $paymentModel->client, $paymentModel, 0, null, 'payment', PaymentHistory::PAYMENT_TYPE_AUTO, $date_pay);
+
+    }
     
 }

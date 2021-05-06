@@ -48,11 +48,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Действия', 
                 'headerOptions' => ['width' => '80'],
-                'template' => '{pay}',
+                'template' => '{pay} {debt}',
                 'buttons' => [
-                
                     'pay' => function ($url,$model,$key) {
                         return Html::a('Оплатить', $url);
+                    },
+                    'debt' => function ($url,$model,$key) {
+                        if($model->amount == $model->full_amount)
+                            return Html::a('Долг', $url);
+                        else
+                            return '-';
                     },
                 ],
 
