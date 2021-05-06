@@ -7,6 +7,7 @@ use Yii;
 use app\components\controllers\AuthedAdminController;
 use app\models\District;
 use app\modules\advance\components\AdvanceService;
+use app\modules\advance\forms\AdvanceChangeUserForm;
 use app\modules\advance\forms\AdvanceCreateByClientForm;
 use app\modules\advance\providers\AdvanceProvider;
 use app\modules\client\components\ClientRepository;
@@ -100,6 +101,34 @@ class AdvanceController extends AuthedAdminController
             'model3' => $formNote,
 
             'clients' => $clients,
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionChange($id)
+    {
+        $form = new AdvanceChangeUserForm();
+        $form->load(Yii::$app->request->post());
+        $advance = $this->advanceService->getAdvance($id);
+
+        if (Yii::$app->request->isPost && $form->validate()){
+            
+            $this->advanceService->changeUser($advance, $form->user_id);
+
+            return $this->redirect(['index']);
+        }else{
+            $form->user_id = $advance->user_id;
+        }
+
+        $users = $this->userRepository->getWithoutAdminBySearch('');
+
+        return $this->render('change', [
+            'model' => $form,
             'users' => $users,
         ]);
     }

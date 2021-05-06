@@ -155,7 +155,8 @@ class AdvanceRepository extends BaseRepository
     public function getHistoryAppByUserId(int $userId)
     {
         return Advance::find()
-                ->where(['user_id' => $userId])
+                //Если указан старый сотрудник, то ищем по старому
+                ->where(['or', ['and', ['user_id' => $userId], ['user_id_old' => null]], ['user_id_old' => $userId]])
                 ->orderBy(['id' => SORT_DESC])
                 ->andwhere(['>=','created_at', DateHelper::getModifyDate(DateHelper::now(), '-7 day')])
                 ->all();

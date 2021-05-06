@@ -552,4 +552,21 @@ class AdvanceService extends BaseService
 
         return (int)$query->sum('summa_with_percent')??0;
     }
+
+    /**
+     * Изменение сотрудника у займа
+     */
+    public function changeUser(Advance $advance, $userId)
+    {
+        if($advance->user_id_old==null){
+            $advance->user_id_old = $advance->user_id;
+            $advance->save();
+        }
+
+        $user = $this->userManager->getUserById($userId);
+
+        Advance::updateAll(['user_id'=>$userId], ['id'=>$advance->id]);
+
+        Payment::updateAll(['user_id'=>$userId], ['AND', ['in', 'advance_id', $advance->id], ['>', 'amount', 0]]);
+    }
 }

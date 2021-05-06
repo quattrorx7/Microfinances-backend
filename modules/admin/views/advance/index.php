@@ -53,20 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
            
 
-            // [
-            //     'class' => 'yii\grid\ActionColumn',
-            //     'header'=>'Действия', 
-            //     'headerOptions' => ['width' => '80'],
-            //     'template' => '{view} {update} {delete}{link}',
-            //     'buttons' => [
-                
-            //         'link' => function ($url,$model,$key) {
-            //             return Html::a('Оплатить', $url);
-            //         },
-            //     ],
-
-            // ],
-
             [
                 'label' => 'Платежи',
                 'format' => 'raw',
@@ -81,6 +67,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                 }
             ],
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header'=>'Изменить сотрудника', 
+                'headerOptions' => ['width' => '80'],
+                'template' => '{change}',
+                'buttons' => [
+                    'change' => function ($url,$model,$key) {
+                        return Html::a('Изменить', $url);
+                    },
+                ],
+
+            ],
+
+
         ],
     ]); ?>
 </div>
