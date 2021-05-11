@@ -7,6 +7,7 @@ use Yii;
 use app\components\controllers\AuthedAdminController;
 use app\models\District;
 use app\modules\client\components\ClientService;
+use app\modules\client\forms\ClientChangeUserForm;
 use app\modules\client\forms\ClientCreateForm;
 use app\modules\client\forms\ClientOwnerForm;
 use app\modules\user\components\UserRepository;
@@ -70,6 +71,34 @@ class ClientController extends AuthedAdminController
             'model' => $form,
             'model2' => $form2,
             'districts' => $districts,
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionChange($id)
+    {
+        $form = new ClientChangeUserForm();
+        $form->load(Yii::$app->request->post());
+        $client = $this->clientService->getClient($id);
+
+        if (Yii::$app->request->isPost && $form->validate()){
+            
+            $this->clientService->changeUser($client, $form->user_id);
+
+            return $this->redirect(['index']);
+        }else{
+            $form->user_id = $client->owner_id;
+        }
+
+        $users = $this->userRepository->getWithoutAdminBySearch('');
+
+        return $this->render('change', [
+            'model' => $form,
             'users' => $users,
         ]);
     }

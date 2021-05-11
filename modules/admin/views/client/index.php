@@ -27,6 +27,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'district_id',
             'owner_id',
             'created_at',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header'=>'Изменить сотрудника', 
+                'headerOptions' => ['width' => '80'],
+                'template' => '{change}',
+                'buttons' => [
+                    'change' => function ($url,$model,$key) {
+                        return Html::a('Изменить', $url);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 </div>

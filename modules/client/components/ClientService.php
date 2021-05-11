@@ -4,7 +4,9 @@ namespace app\modules\client\components;
 
 use app\components\BaseService;
 use app\components\exceptions\UnSuccessModelException;
+use app\models\Advance;
 use app\models\Client;
+use app\models\Payment;
 use app\models\User;
 use app\modules\client\exceptions\ClientNotFoundException;
 use app\modules\client\exceptions\ValidateClientCreateException;
@@ -16,6 +18,7 @@ use app\modules\district\components\DistrictService;
 use app\modules\district\exceptions\DistrictNotFoundException;
 use app\modules\user\components\UserService;
 use Exception;
+use Yii;
 use yii\db\StaleObjectException;
 use yii\web\UploadedFile;
 
@@ -175,5 +178,24 @@ class ClientService extends BaseService
     {
         $model->balance = $amount;
         $this->clientRepository->save($model);
+    }
+
+    /**
+     * Изменение сотрудника у клиента
+     */
+    public function changeUser(Client $client, $userId)
+    {
+
+        Yii::$app->db->createCommand("UPDATE advance SET `user_id_old` = `user_id` WHERE client_id=:client_id AND user_id_old is null")
+        ->bindValues(array(':client_id' => $client->id))
+        ->execute();
+
+        $client->owner_id = $userId;
+        $client->save();
+
+
+        Advance::updateAll(['user_id'=>$userId], ['client_id'=>$client->id]);
+
+        Payment::updateAll(['user_id'=>$userId], ['AND', ['client_id'=> $client->id], ['>', 'amount', 0]]);
     }
 }
