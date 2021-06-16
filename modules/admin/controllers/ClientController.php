@@ -10,6 +10,7 @@ use app\modules\client\components\ClientService;
 use app\modules\client\forms\ClientChangeUserForm;
 use app\modules\client\forms\ClientCreateForm;
 use app\modules\client\forms\ClientOwnerForm;
+use app\modules\client\forms\ClientSummaForm;
 use app\modules\user\components\UserRepository;
 
 /**
@@ -100,6 +101,31 @@ class ClientController extends AuthedAdminController
         return $this->render('change', [
             'model' => $form,
             'users' => $users,
+        ]);
+    }
+
+    /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionSumma($id)
+    {
+        $form = new ClientSummaForm();
+        $client = $this->clientService->getClient($id);
+
+        $form = ClientSummaForm::loadAndValidate($client->attributes);
+        $form->load(Yii::$app->request->post());
+
+        if (Yii::$app->request->isPost && $form->validate()){
+            $client->balance = $form->balance;
+            $client->update();
+
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('summa', [
+            'model' => $form,
         ]);
     }
 }

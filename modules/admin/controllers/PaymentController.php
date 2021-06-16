@@ -8,6 +8,7 @@ use app\modules\payment\components\PaymentRepository;
 use app\modules\payment\components\PaymentService;
 use app\modules\payment\forms\PaymentDebtForm;
 use app\modules\payment\forms\PaymentPayForm;
+use app\modules\payment\forms\PaymentSummaForm;
 use app\modules\payment\providers\PaymentProvider;
 
 /**
@@ -113,6 +114,31 @@ class PaymentController extends AuthedAdminController
 
 
         return $this->render('create', [
+            'model' => $form,
+        ]);
+    }
+
+    /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionSumma($id)
+    {
+        $form = new PaymentSummaForm();
+        $payment = $this->paymentService->getPayment($id);
+
+        $form = PaymentSummaForm::loadAndValidate($payment->attributes);
+        $form->load(Yii::$app->request->post());
+
+        if (Yii::$app->request->isPost && $form->validate()){
+            $payment->amount = $form->amount;
+            $payment->update();
+
+            return $this->redirect(['index', 'PaymentSearch[advance_id]'=>$payment->advance_id]);
+        }
+
+        return $this->render('summa', [
             'model' => $form,
         ]);
     }

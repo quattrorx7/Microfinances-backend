@@ -13,11 +13,11 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
 
-    <?= $form->field($model, 'date_pay')->textInput(['style' => 'display:none']) ?>
-    <p><?= $model['date_pay']?></p>
+    <?= $form->field($model, 'balance')->textInput(['maxlength' => true]) ?>
+
 
     <div class="form-group">
-        <?= Html::submitButton('Сформировать долг', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

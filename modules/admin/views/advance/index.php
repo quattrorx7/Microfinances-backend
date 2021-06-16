@@ -31,6 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'created_at',
             'amount',
             'daily_payment',
+            [
+                'label' => 'Оставшиеся сумма',
+                'format' => 'raw',
+
+                'value' => function($data){
+                    return $data['summa_left_to_pay'].' <a href="/admin/advance/summa?id='.$data['id'].'" title="Сумма" aria-label="Сумма" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a>';
+                }
+            ],
+            
+
             'user_id',
             [
                 'label' => 'Сотрудник (Пользователь)',
@@ -58,8 +68,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function($data){
                     return Html::a(
-                        'Перейти',
+                        'Платежи',
                         '/admin/payment/index?PaymentSearch[advance_id]='.$data->id,
+                        [
+                            'title' => '',
+                            'target' => '_blank'
+                        ]
+                    );
+                }
+            ],
+
+            [
+                'label' => 'Транзакции',
+                'format' => 'raw',
+                'value' => function($data){
+                    return Html::a(
+                        'Транзакции',
+                        '/admin/paymenthistory/index?PaymentHistorySearch[advance_id]='.$data->id,
                         [
                             'title' => '',
                             'target' => '_blank'

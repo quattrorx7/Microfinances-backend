@@ -9,6 +9,7 @@ use app\models\District;
 use app\modules\advance\components\AdvanceService;
 use app\modules\advance\forms\AdvanceChangeUserForm;
 use app\modules\advance\forms\AdvanceCreateByClientForm;
+use app\modules\advance\forms\AdvanceSummaForm;
 use app\modules\advance\providers\AdvanceProvider;
 use app\modules\client\components\ClientRepository;
 use app\modules\client\components\ClientService;
@@ -16,6 +17,7 @@ use app\modules\client\forms\ClientFileForm;
 use app\modules\client\forms\ClientFileNoteForm;
 use app\modules\payment\components\PaymentService;
 use app\modules\user\components\UserRepository;
+use Exception;
 
 /**
  * Class ClientController
@@ -130,6 +132,33 @@ class AdvanceController extends AuthedAdminController
         return $this->render('change', [
             'model' => $form,
             'users' => $users,
+        ]);
+    }
+
+     /**
+     * @return JSendResponse
+     * @throws ValidateAdvanceCreateException
+     * @throws ValidateException
+     */
+    public function actionSumma($id)
+    {
+        $form = new AdvanceSummaForm();
+        $advance = $this->advanceService->getAdvance($id);
+        try{
+            $form = AdvanceSummaForm::loadAndValidate($advance->attributes);
+        }catch(Exception $ex){
+        }
+        $form->load(Yii::$app->request->post());
+
+        if (Yii::$app->request->isPost && $form->validate()){
+            $advance->summa_left_to_pay = $form->summa_left_to_pay;
+            $advance->update();
+
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('summa', [
+            'model' => $form,
         ]);
     }
 }

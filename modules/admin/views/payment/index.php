@@ -29,7 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $client['surname'] . ' ' . $client['name']; // $data['name'] для массивов, например, при использовании SqlDataProvider.
                 },
             ],
-            'amount',
+            // 'amount',
+            [
+                'label' => 'Осталось заплатить',
+                'format' => 'raw',
+
+                'value' => function($data){
+                    return $data['amount'].' <a href="/admin/payment/summa?id='.$data['id'].'" title="Сумма" aria-label="Сумма" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a>';
+                }
+            ],
+
             'full_amount',
             'user_id',
             [

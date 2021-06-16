@@ -28,6 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'owner_id',
             'created_at',
             [
+                'label' => 'Баланс',
+                'format' => 'raw',
+
+                'value' => function($data){
+                    return $data['balance'].' <a href="/admin/client/summa?id='.$data['id'].'" title="Сумма" aria-label="Сумма" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a>';
+                }
+            ],
+            [
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Изменить сотрудника', 
                 'headerOptions' => ['width' => '80'],

@@ -47,4 +47,18 @@ class PaymentHistory extends \app\models\base\PaymentHistory
         ];
     }
 
+    public static function getTypePaymentsTitle()
+    {
+        return [
+            0 => 'Автоматический',
+            1 => 'С карты',
+            2 => 'Наличными',
+            4 => 'С карты на баланс',
+            5 => 'Наличными на баланс',
+            6 => 'С баланса',
+            // 7 => 'Возврат',
+            // 8 => 'Возврат на баланс',
+        ];
+    }
+
 }
