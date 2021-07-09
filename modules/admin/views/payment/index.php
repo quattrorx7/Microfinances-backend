@@ -12,7 +12,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="district-index">
     <p>
-        <!-- <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?> -->
+        <? if($advance_id){ ?>
+        <?= Html::a('Добавить', ['create?id='.$advance_id], ['class' => 'btn btn-success']) ?>
+        <? } ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

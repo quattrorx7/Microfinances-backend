@@ -4,8 +4,11 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use app\components\controllers\AuthedAdminController;
+use app\modules\advance\components\AdvanceRepository;
+use app\modules\advance\providers\AdvanceProvider;
 use app\modules\payment\components\PaymentRepository;
 use app\modules\payment\components\PaymentService;
+use app\modules\payment\forms\PaymentCreateForm;
 use app\modules\payment\forms\PaymentDebtForm;
 use app\modules\payment\forms\PaymentPayForm;
 use app\modules\payment\forms\PaymentSummaForm;
@@ -21,13 +24,15 @@ class PaymentController extends AuthedAdminController
     protected PaymentProvider $paymentProvider;
     protected PaymentService $paymentService;
     protected PaymentRepository $paymentRepository;
+    protected AdvanceRepository $advanceRepository;
 
 
-    public function injectDependencies(PaymentProvider $paymentProvider, PaymentService $paymentService, PaymentRepository $paymentRepository): void
+    public function injectDependencies(PaymentProvider $paymentProvider, PaymentService $paymentService, PaymentRepository $paymentRepository, AdvanceRepository $advanceRepository): void
     {
         $this->paymentProvider = $paymentProvider;
         $this->paymentService = $paymentService;
         $this->paymentRepository = $paymentRepository;
+        $this->advanceRepository = $advanceRepository;
     }
     /**
      * Lists all Client models.
@@ -37,9 +42,12 @@ class PaymentController extends AuthedAdminController
     {
         [$searchModel, $dataProvider] = $this->paymentProvider->search(Yii::$app->request->queryParams);
 
+        $req = Yii::$app->request->queryParams;
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'advance_id' => $req['PaymentSearch']['advance_id']??null,
         ]);
     }
 
@@ -101,17 +109,22 @@ class PaymentController extends AuthedAdminController
      * @throws ValidateAdvanceCreateException
      * @throws ValidateException
      */
-    public function actionCreate()
+    public function actionCreate($id)
     {
-        $form = new PaymentPayForm();
+        $form = new PaymentCreateForm();
         $form->load(Yii::$app->request->post());
 
-       
+        $advance = $this->advanceRepository->getAdvanceById($id);
 
-        if (Yii::$app->request->isPost && $form->validate()){
-            return $this->redirect(['index']);
+        if($advance->payment_left==0){
+            throw new \yii\Web\HttpException(420, 'Все платежи уже созданы');
         }
 
+        if (Yii::$app->request->isPost && $form->validate()) {
+            $this->paymentService->generatePayment($advance, $form->date_pay);
+
+            return $this->redirect(['index', 'PaymentSearch[advance_id]'=>$advance->id]);
+        }
 
         return $this->render('create', [
             'model' => $form,

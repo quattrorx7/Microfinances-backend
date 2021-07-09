@@ -147,6 +147,26 @@ class PaymentService extends BaseService
 
     }
 
+    public function generatePayment(Advance $advance, $data): void
+    {
+        /** @var Advance $advance */
+        $model = $this->paymentRepository
+            ->getPaymentByDateAndAdvance($data, $advance->id);
+
+        if ($model) {
+            throw new \yii\Web\HttpException(420, 'Платеж на дату '.$data.' уже создан');
+        }
+
+        $date_pay = new DateTime($data);
+        $model = $this->paymentFactory->createByDate($date_pay);
+
+        $this->paymentPopulator
+            ->populateFromAdvance($model, $advance);
+
+        $this->paymentRepository->savePayment($model);
+        $advance->updateCounters(['payment_left' => -1]);
+    }
+
     public function getGroupedPayments(string $date, User $user): PaymentCollection
     {
         $payments = $this->paymentRepository

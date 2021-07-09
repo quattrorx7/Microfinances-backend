@@ -7,18 +7,20 @@ use yii\base\Model;
 
 class PaymentCreateForm extends Model
 {
+    public $date_pay;
 
     public function rules(): array
     {
         return [
-
+            ['date_pay', 'date', 'format' => 'php:Y-m-d'],
+            [['date_pay'], 'required'],
         ];
     }
 
     public function attributeLabels(): array
     {
         return [
-
+            'date_pay' => 'Дата платежа',
         ];
     }
 
