@@ -27,7 +27,7 @@ class UserController extends Controller
 
         $data['isAdmin'] = strtoupper(trim($isAdmin)) === 'Y' ? User::SUPERADMIN : 0;
 
-        $model = new DynamicModel(['login', 'password', 'isAdmin']);
+        $model = new DynamicModel(['email', 'username', 'password', 'isAdmin']);
         $model
             ->addRule(['email', 'password', 'username'], 'required')
             ->addRule(['email', 'password', 'username'], 'trim')
