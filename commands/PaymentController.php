@@ -30,6 +30,8 @@ class PaymentController extends Controller
 
         $this->paymentService
             ->generatePaymentData($models);
+
+        echo date('Y.m.d H:i'). " Payment create is OK";
     }
 
     /** попытка оплатить долги через резерв */
@@ -39,5 +41,7 @@ class PaymentController extends Controller
             ->getDebtPayments(DateHelper::getModifyDate(DateHelper::nowWithoutHours(), '-1 day'));
 
         $this->paymentService->payDebtsFromClientBalance($models);
+
+        echo date('Y.m.d H:i'). " Payment debts is OK";
     }
 }
